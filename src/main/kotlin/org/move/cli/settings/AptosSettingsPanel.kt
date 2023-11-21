@@ -23,7 +23,7 @@ class AptosSettingsPanel(
         pathField(
             FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor(),
             this,
-            "Choose Aptos CLI"
+            "Choose Sui CLI"
         ) { text ->
             aptosExec = AptosExec.LocalPath(text)
             onAptosExecUpdate()
@@ -56,7 +56,7 @@ class AptosSettingsPanel(
         panelData = PanelData(
             aptosExec = AptosExec.fromSettingsFormat(defaultProjectSettings.state.aptosPath),
         )
-        buttonsGroup("Aptos CLI") {
+        buttonsGroup("Sui CLI") {
             row {
                 radioButton("Bundled")
                     .bindSelected(
@@ -82,7 +82,7 @@ class AptosSettingsPanel(
                     .align(AlignX.FILL).resizableColumn()
             }
         }
-        row("aptos --version :") { cell(versionLabel) }
+        row("sui --version :") { cell(versionLabel) }
         row {
             link("Set default project settings") {
                 ProjectManager.getInstance().defaultProject.showSettings<PerProjectMoveConfigurable>()

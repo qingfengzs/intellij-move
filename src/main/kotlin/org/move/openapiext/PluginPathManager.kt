@@ -9,6 +9,7 @@ import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.util.SystemInfo
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
 
 const val PLUGIN_ID: String = "org.move.lang"
 
@@ -46,15 +47,26 @@ object PluginPathManager {
     val bundledAptosCli: String?
         get() {
             val openssl3 = service<OpenSSLInfoService>().openssl3
+            val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
+            val osArch = System.getProperty("os.arch").lowercase(Locale.getDefault())
+
+            val isMac = osName.contains("mac")
+            val isArm = osArch.contains("aarch64") || osArch.contains("arm")
+
+            if (isMac && isArm) {
+                println("This is a Mac with ARM architecture")
+            } else {
+                println("This is not a Mac with ARM architecture")
+            }
             val (os, binaryName) = when {
-                SystemInfo.isMac -> "macos" to "aptos"
-                SystemInfo.isWindows -> "windows" to "aptos.exe"
+                isMac && isArm -> "macos-arm" to "64"
+                isMac && !isArm -> "macos" to "-x86_64"
+                SystemInfo.isWindows -> "windows" to "-x86_64.exe"
                 else -> {
-                    val platform = if (openssl3) "ubuntu22" else "ubuntu"
-                    platform to "aptos"
+                    "ubuntu" to "-x86_64"
                 }
             }
-            val aptosCli = pluginDir().resolve("bin/$os/$binaryName").takeIf { Files.exists(it) } ?: return null
+            val aptosCli = pluginDir().resolve("bin/$os/target/release/sui-$os$binaryName").takeIf { Files.exists(it) } ?: return null
             return if (Files.isExecutable(aptosCli) || aptosCli.toFile().setExecutable(true)) {
                 aptosCli.toString()
             } else {

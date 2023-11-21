@@ -20,6 +20,8 @@ val kotlinStdlibVersion = "1.9.0"
 val pluginJarName = "intellij-move-$pluginVersion"
 
 val aptosVersion = "2.0.3"
+val network = "testnet"
+val suiVersion = "v1.14.0"
 
 group = pluginGroup
 version = pluginVersion
@@ -127,14 +129,15 @@ allprojects {
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         }
 
-        task("downloadAptosBinaries") {
-            val baseUrl = "https://github.com/aptos-labs/aptos-core/releases/download/aptos-cli-v$aptosVersion"
+        task("downloadSuiBinaries") {
+            val baseUrl = "https://github.com/MystenLabs/sui/releases/download/$network-$suiVersion"
             doLast {
-                for (releasePlatform in listOf("MacOSX", "Ubuntu-22.04", "Ubuntu", "Windows")) {
-                    val zipFileName = "aptos-cli-$aptosVersion-$releasePlatform-x86_64.zip"
+                for (releasePlatform in listOf("macos-arm64", "macos-x86_64", "ubuntu-x86_64", "windows-x86_64")) {
+                    val zipFileName = "sui-$network-$suiVersion-$releasePlatform.tgz"
                     val zipFileUrl = "$baseUrl/$zipFileName"
                     val zipRoot = "${rootProject.buildDir}/zip"
                     val zipFile = file("$zipRoot/$zipFileName")
+                    println("下载路径"+zipFileUrl)
                     if (zipFile.exists()) {
                         continue
                     }
@@ -146,16 +149,17 @@ allprojects {
 
                     val platformName =
                         when (releasePlatform) {
-                            "MacOSX" -> "macos"
-                            "Ubuntu" -> "ubuntu"
-                            "Ubuntu-22.04" -> "ubuntu22"
-                            "Windows" -> "windows"
+                            "macos-arm64" -> "macos-arm"
+                            "macos-x86_64" -> "macos"
+                            "ubuntu-x86_64" -> "ubuntu"
+                            "windows-x86_64" -> "windows"
                             else -> error("unreachable")
                         }
                     val platformRoot = file("${rootProject.rootDir}/bin/$platformName")
+                    println("解压文件"+tarTree(zipFile))
                     copy {
                         from(
-                            zipTree(zipFile)
+                            tarTree(zipFile)
                         )
                         into(platformRoot)
                     }
@@ -231,7 +235,7 @@ project(":plugin") {
         }
 
         buildPlugin {
-            dependsOn("downloadAptosBinaries")
+            dependsOn("downloadSuiBinaries")
         }
 
         withType<PrepareSandboxTask> {

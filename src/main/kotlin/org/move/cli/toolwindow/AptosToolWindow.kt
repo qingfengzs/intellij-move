@@ -111,7 +111,7 @@ class AptosToolWindow(private val project: Project) {
         @JvmStatic
         val SELECTED_MOVE_PROJECT: DataKey<MoveProject> = DataKey.create("SELECTED_MOVE_PROJECT")
 
-        const val APTOS_TOOLBAR_PLACE: String = "Aptos Toolbar"
+        const val APTOS_TOOLBAR_PLACE: String = "Sui Toolbar"
 
 //        private const val ID: String = "Aptos"
 

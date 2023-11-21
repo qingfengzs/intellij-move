@@ -176,10 +176,10 @@
 
         <breadcrumbsInfoProvider implementation="org.move.ide.MvBreadcrumbsProvider" />
 
-        <toolWindow id="Aptos"
+        <toolWindow id="Sui"
                     anchor="right"
                     factoryClass="org.move.cli.toolwindow.AptosToolWindowFactory"
-                    icon="/icons/aptos.svg" />
+                    icon="/icons/sui.svg" />
 
 
 
