@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 
-class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Move Language"),
+class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Sui Move Language"),
                                                          SearchableConfigurable {
 
     override fun getId(): String = "org.move.settings"
@@ -25,24 +25,24 @@ class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Move
                     checkBox("Auto-fold specs in opened files")
                         .bindSelected(settingsState::foldSpecs)
                 }
-                row {
-                    checkBox("Disable telemetry for new Run Configurations")
-                        .bindSelected(settingsState::disableTelemetry)
-                }
-                row {
-                    checkBox("Enable debug mode")
-                        .bindSelected(settingsState::debugMode)
-                    comment(
-                        "Enables some explicit crashes in the plugin code. Useful for the error reporting."
-                    )
-                }
-                row {
-                    checkBox("Skip fetching latest git dependencies for tests")
-                        .bindSelected(settingsState::skipFetchLatestGitDeps)
-                    comment(
-                        "Adds --skip-fetch-latest-git-deps to the test runs."
-                    )
-                }
+//                row {
+//                    checkBox("Disable telemetry for new Run Configurations")
+//                        .bindSelected(settingsState::disableTelemetry)
+//                }
+//                row {
+//                    checkBox("Enable debug mode")
+//                        .bindSelected(settingsState::debugMode)
+//                    comment(
+//                        "Enables some explicit crashes in the plugin code. Useful for the error reporting."
+//                    )
+//                }
+//                row {
+//                    checkBox("Skip fetching latest git dependencies for tests")
+//                        .bindSelected(settingsState::skipFetchLatestGitDeps)
+//                    comment(
+//                        "Adds --skip-fetch-latest-git-deps to the test runs."
+//                    )
+//                }
             }
         }
     }

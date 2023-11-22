@@ -51,7 +51,7 @@ class InvalidAptosBinaryNotification(
         if (isNotificationDisabled(file)) return null
 
         return EditorNotificationPanel().apply {
-            text = "Aptos binary path is not provided or invalid"
+            text = "Sui binary path is not provided or invalid"
             createActionLabel("Configure") {
                 project.showSettings<PerProjectMoveConfigurable>()
             }
