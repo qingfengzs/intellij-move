@@ -39,5 +39,7 @@ object MoveIcons {
     val SPEC_SOURCE_MODULE_GUTTER = load("/icons/up.svg")
     val SPEC_SOURCE_MODULE_GUTTER_DARK = load("/icons/up_dark.svg")
 
+    val SUI_LOGO = load("icons/sui-icon.png")
+    val SUI_ICON = load("icons/sui-icon.png")
     private fun load(path: String): Icon = IconLoader.getIcon(path, MoveIcons::class.java)
 }

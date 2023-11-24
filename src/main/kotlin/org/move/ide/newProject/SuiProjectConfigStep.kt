@@ -9,8 +9,8 @@ import com.intellij.ide.util.projectWizard.AbstractNewProjectStep
 import com.intellij.ide.util.projectWizard.ProjectSettingsStepBase
 import com.intellij.platform.DirectoryProjectGenerator
 
-class AptosProjectConfigStep(generator: DirectoryProjectGenerator<AptosProjectConfig>) :
-    ProjectSettingsStepBase<AptosProjectConfig>(
+class SuiProjectConfigStep(generator: DirectoryProjectGenerator<SuiProjectConfig>) :
+    ProjectSettingsStepBase<SuiProjectConfig>(
         generator,
         AbstractNewProjectStep.AbstractCallback()
     )

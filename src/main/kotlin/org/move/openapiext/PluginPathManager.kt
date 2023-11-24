@@ -4,7 +4,6 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.util.SystemInfo
 import java.nio.file.Files
@@ -46,7 +45,6 @@ object PluginPathManager {
 
     val bundledAptosCli: String?
         get() {
-            val openssl3 = service<OpenSSLInfoService>().openssl3
             val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
             val osArch = System.getProperty("os.arch").lowercase(Locale.getDefault())
 

@@ -9,7 +9,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import org.move.cli.moveProjects
-import org.move.cli.settings.AptosSettingsPanel
+import org.move.cli.settings.SuiSettingsPanel
 import org.move.cli.settings.moveSettings
 import org.move.openapiext.isFeatureEnabled
 import javax.swing.JComponent
@@ -19,17 +19,17 @@ class AptosConfigurationWizardStep(
     private val configurationUpdaterConsumer: ((ModuleBuilder.ModuleConfigurationUpdater) -> Unit)? = null
 ) : ModuleWizardStep() {
 
-    private val aptosSettingsPanel = AptosSettingsPanel(showDefaultProjectSettingsLink = true)
+    private val suiSettingsPanel = SuiSettingsPanel(showDefaultProjectSettingsLink = true)
 
     override fun getComponent(): JComponent =
         panel {
-            aptosSettingsPanel.attachTo(this)
+            suiSettingsPanel.attachTo(this)
         }.withBorderIfNeeded()
 
-    override fun disposeUIResources() = Disposer.dispose(aptosSettingsPanel)
+    override fun disposeUIResources() = Disposer.dispose(suiSettingsPanel)
 
     override fun updateDataModel() {
-        val panelData = aptosSettingsPanel.panelData
+        val panelData = suiSettingsPanel.panelData
         ConfigurationUpdater.data = panelData
 
         val projectBuilder = context.projectBuilder
@@ -55,13 +55,13 @@ class AptosConfigurationWizardStep(
     private fun isNewWizard(): Boolean = isFeatureEnabled("new.project.wizard")
 
     private object ConfigurationUpdater : ModuleBuilder.ModuleConfigurationUpdater() {
-        var data: AptosSettingsPanel.PanelData? = null
+        var data: SuiSettingsPanel.PanelData? = null
 
         override fun update(module: Module, rootModel: ModifiableRootModel) {
             val data = data
             if (data != null) {
                 module.project.moveSettings.modify {
-                    it.aptosPath = data.aptosExec.pathToSettingsFormat()
+                    it.suiPath = data.suiExec.pathToSettingsFormat()
                 }
             }
             // We don't use SDK, but let's inherit one to reduce the amount of

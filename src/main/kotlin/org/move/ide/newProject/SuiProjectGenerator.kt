@@ -13,38 +13,38 @@ import com.intellij.platform.ProjectGeneratorPeer
 import org.move.cli.PluginApplicationDisposable
 import org.move.cli.moveProjects
 import org.move.cli.runConfigurations.addDefaultBuildRunConfiguration
-import org.move.cli.settings.AptosSettingsPanel
+import org.move.cli.settings.SuiSettingsPanel
 import org.move.cli.settings.moveSettings
 import org.move.ide.MoveIcons
 import org.move.ide.notifications.updateAllNotifications
 import org.move.openapiext.computeWithCancelableProgress
 import org.move.stdext.unwrapOrThrow
 
-data class AptosProjectConfig(
-    val panelData: AptosSettingsPanel.PanelData,
+data class SuiProjectConfig(
+    val panelData: SuiSettingsPanel.PanelData,
 )
 
-class AptosProjectGenerator: DirectoryProjectGeneratorBase<AptosProjectConfig>(),
-                             CustomStepProjectGenerator<AptosProjectConfig> {
+class SuiProjectGenerator: DirectoryProjectGeneratorBase<SuiProjectConfig>(),
+                             CustomStepProjectGenerator<SuiProjectConfig> {
 
     private val disposable = service<PluginApplicationDisposable>()
 
-    override fun getName() = "Aptos"
-    override fun getLogo() = MoveIcons.APTOS_LOGO
-    override fun createPeer(): ProjectGeneratorPeer<AptosProjectConfig> = AptosProjectGeneratorPeer(disposable)
+    override fun getName() = "Sui"
+    override fun getLogo() = MoveIcons.SUI_LOGO
+    override fun createPeer(): ProjectGeneratorPeer<SuiProjectConfig> = SuiProjectGeneratorPeer(disposable)
 
     override fun generateProject(
         project: Project,
         baseDir: VirtualFile,
-        projectConfig: AptosProjectConfig,
+        projectConfig: SuiProjectConfig,
         module: Module
     ) {
-        val aptosExecutor = projectConfig.panelData.aptosExec.toExecutor() ?: return
+        val suiExecutor = projectConfig.panelData.suiExec.toExecutor() ?: return
         val packageName = project.name
 
         val manifestFile =
-            project.computeWithCancelableProgress("Generating Aptos project...") {
-                val manifestFile = aptosExecutor.moveInit(
+            project.computeWithCancelableProgress("Generating Sui Project...") {
+                val manifestFile = suiExecutor.moveNew(
                     project,
                     disposable,
                     rootDirectory = baseDir,
@@ -57,7 +57,7 @@ class AptosProjectGenerator: DirectoryProjectGeneratorBase<AptosProjectConfig>()
 
 
         project.moveSettings.modify {
-            it.aptosPath = projectConfig.panelData.aptosExec.pathToSettingsFormat()
+            it.suiPath = projectConfig.panelData.suiExec.pathToSettingsFormat()
         }
         project.addDefaultBuildRunConfiguration(isSelected = true)
         project.openFile(manifestFile)
@@ -67,8 +67,8 @@ class AptosProjectGenerator: DirectoryProjectGeneratorBase<AptosProjectConfig>()
     }
 
     override fun createStep(
-        projectGenerator: DirectoryProjectGenerator<AptosProjectConfig>,
-        callback: AbstractNewProjectStep.AbstractCallback<AptosProjectConfig>
+        projectGenerator: DirectoryProjectGenerator<SuiProjectConfig>,
+        callback: AbstractNewProjectStep.AbstractCallback<SuiProjectConfig>
     ): AbstractActionWithPanel =
-        AptosProjectConfigStep(projectGenerator)
+        SuiProjectConfigStep(projectGenerator)
 }

@@ -16,7 +16,7 @@ val codeVersion = "1.31.0"
 val pluginVersion = "$codeVersion.$platformVersion"
 val pluginGroup = "org.move"
 val javaVersion = JavaVersion.VERSION_17
-val kotlinStdlibVersion = "1.9.0"
+val kotlinStdlibVersion = "1.8.20"
 val pluginJarName = "intellij-move-$pluginVersion"
 
 val aptosVersion = "2.0.3"
@@ -28,7 +28,7 @@ version = pluginVersion
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.8.20"
     id("org.jetbrains.intellij") version "1.15.0"
     id("org.jetbrains.grammarkit") version "2022.3.1"
     id("net.saliman.properties") version "1.5.2"
@@ -141,11 +141,11 @@ allprojects {
                     if (zipFile.exists()) {
                         continue
                     }
-                    download.run {
-                        src(zipFileUrl)
-                        dest(zipFile)
-                        overwrite(false)
-                    }
+//                    download.run {
+//                        src(zipFileUrl)
+//                        dest(zipFile)
+//                        overwrite(false)
+//                    }
 
                     val platformName =
                         when (releasePlatform) {
@@ -234,9 +234,9 @@ project(":plugin") {
             jbrVersion.set(prop("jbrVersion"))
         }
 
-        buildPlugin {
-            dependsOn("downloadSuiBinaries")
-        }
+//        buildPlugin {
+//            dependsOn("downloadSuiBinaries")
+//        }
 
         withType<PrepareSandboxTask> {
             // copy bin/ directory inside the plugin zip file

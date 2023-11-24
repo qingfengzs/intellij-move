@@ -10,10 +10,10 @@ import org.move.ide.MoveIcons
 
 class AptosConfigurationType :
     ConfigurationTypeBase(
-        "AptosCommandConfiguration",
-        "Aptos",
-        "Aptos command execution",
-        NotNullLazyValue.createConstantValue(MoveIcons.APTOS_LOGO)
+        "SuiCommandConfiguration",
+        "Sui",
+        "Sui command execution",
+        NotNullLazyValue.createConstantValue(MoveIcons.SUI_ICON)
     ) {
 
     init {

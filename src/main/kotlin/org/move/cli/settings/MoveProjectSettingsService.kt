@@ -43,6 +43,7 @@ class MoveProjectSettingsService(private val project: Project) : PersistentState
     data class State(
         // null -> Bundled, not null -> Local
         var aptosPath: String? = null,
+        var suiPath: String? = null,
         var foldSpecs: Boolean = false,
         var disableTelemetry: Boolean = true,
         var debugMode: Boolean = false,
@@ -124,8 +125,10 @@ val Project.moveSettings: MoveProjectSettingsService get() = service()
 val Project.collapseSpecs: Boolean get() = this.moveSettings.state.foldSpecs
 
 val Project.aptosExec: AptosExec get() = AptosExec.fromSettingsFormat(this.moveSettings.state.aptosPath)
+val Project.suiExec: SuiExec get() = SuiExec.fromSettingsFormat(this.moveSettings.state.suiPath)
 
 val Project.aptosPath: Path? get() = this.aptosExec.pathOrNull()
+val Project.suiPath: Path? get() = this.suiExec.pathOrNull()
 
 fun Path?.isValidExecutable(): Boolean {
     return this != null

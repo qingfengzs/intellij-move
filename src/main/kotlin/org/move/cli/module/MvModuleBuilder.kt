@@ -12,7 +12,7 @@ import com.intellij.openapi.util.Disposer
 import org.move.cli.Consts
 import org.move.cli.runConfigurations.addDefaultBuildRunConfiguration
 import org.move.cli.runConfigurations.aptos.AptosCliExecutor
-import org.move.cli.settings.AptosSettingsPanel
+import org.move.cli.settings.SuiSettingsPanel
 import org.move.ide.newProject.openFile
 import org.move.openapiext.computeWithCancelableProgress
 import org.move.stdext.unwrapOrThrow
@@ -35,17 +35,17 @@ class MvModuleBuilder : ModuleBuilder() {
         val root = doAddContentEntry(modifiableRootModel)?.file ?: return
         modifiableRootModel.inheritSdk()
 
-        val aptosPath = configurationData?.aptosExec?.pathOrNull()
+        val suiPath = configurationData?.suiExec?.pathOrNull()
         root.refresh(false, true)
 
         // Just work if user "creates new project" over an existing one.
-        if (aptosPath != null && root.findChild(Consts.MANIFEST_FILE) == null) {
-            val aptosCli = AptosCliExecutor(aptosPath)
+        if (suiPath != null && root.findChild(Consts.MANIFEST_FILE) == null) {
+            val aptosCli = AptosCliExecutor(suiPath)
             val project = modifiableRootModel.project
             val packageName = project.name.replace(' ', '_')
 
             ApplicationManager.getApplication().executeOnPooledThread {
-                val manifestFile = project.computeWithCancelableProgress("Generating Aptos project...") {
+                val manifestFile = project.computeWithCancelableProgress("Generating Sui project...") {
                     aptosCli.moveInit(
                         project,
                         modifiableRootModel.module,
@@ -60,5 +60,5 @@ class MvModuleBuilder : ModuleBuilder() {
         }
     }
 
-    var configurationData: AptosSettingsPanel.PanelData? = null
+    var configurationData: SuiSettingsPanel.PanelData? = null
 }

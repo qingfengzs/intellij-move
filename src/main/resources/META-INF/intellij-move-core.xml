@@ -179,7 +179,7 @@
         <toolWindow id="Sui"
                     anchor="right"
                     factoryClass="org.move.cli.toolwindow.AptosToolWindowFactory"
-                    icon="/icons/sui.svg" />
+                    icon="/icons/sui-icon.svg" />
 
 
 
@@ -278,7 +278,7 @@
 
         <projectOpenProcessor id="Move" implementation="org.move.cli.AptosProjectOpenProcessor"/>
 
-        <directoryProjectGenerator implementation="org.move.ide.newProject.AptosProjectGenerator" />
+        <directoryProjectGenerator implementation="org.move.ide.newProject.SuiProjectGenerator" />
 
         <projectConfigurable instance="org.move.cli.settings.PerProjectMoveConfigurable"
                              displayName="Move Language"

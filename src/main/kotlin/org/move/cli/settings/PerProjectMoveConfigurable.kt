@@ -15,11 +15,11 @@ class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Sui 
 
     private val settingsState: MoveProjectSettingsService.State = project.moveSettings.state
 
-    private val aptosSettingsPanel = AptosSettingsPanel(showDefaultProjectSettingsLink = !project.isDefault)
+    private val suiSettingsPanel = SuiSettingsPanel(showDefaultProjectSettingsLink = !project.isDefault)
 
     override fun createPanel(): DialogPanel {
         return panel {
-            aptosSettingsPanel.attachTo(this)
+            suiSettingsPanel.attachTo(this)
             group {
                 row {
                     checkBox("Auto-fold specs in opened files")
@@ -49,26 +49,25 @@ class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Sui 
 
     override fun disposeUIResources() {
         super<BoundConfigurable>.disposeUIResources()
-        Disposer.dispose(aptosSettingsPanel)
+        Disposer.dispose(suiSettingsPanel)
     }
 
     override fun reset() {
         super<BoundConfigurable>.reset()
-        aptosSettingsPanel.panelData =
-            AptosSettingsPanel.PanelData(AptosExec.fromSettingsFormat(settingsState.aptosPath))
-//        aptosSettingsPanel.panelData = AptosSettingsPanel.PanelData(state.aptosPath)
+        suiSettingsPanel.panelData =
+            SuiSettingsPanel.PanelData(SuiExec.fromSettingsFormat(settingsState.suiPath))
     }
 
     override fun isModified(): Boolean {
         if (super<BoundConfigurable>.isModified()) return true
-        val panelData = aptosSettingsPanel.panelData
-        return panelData.aptosExec.pathToSettingsFormat() != settingsState.aptosPath
+        val panelData = suiSettingsPanel.panelData
+        return panelData.suiExec.pathToSettingsFormat() != settingsState.suiPath
     }
 
     override fun apply() {
         super.apply()
         val newSettingsState = settingsState
-        newSettingsState.aptosPath = aptosSettingsPanel.panelData.aptosExec.pathToSettingsFormat()
+        newSettingsState.aptosPath = suiSettingsPanel.panelData.suiExec.pathToSettingsFormat()
         project.moveSettings.state = newSettingsState
 
     }
