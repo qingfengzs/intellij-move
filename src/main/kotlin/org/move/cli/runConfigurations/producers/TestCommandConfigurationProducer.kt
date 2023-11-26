@@ -4,9 +4,9 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import org.move.cli.MoveProject
-import org.move.cli.runConfigurations.aptos.AptosCommandLine
-import org.move.cli.runConfigurations.aptos.AptosConfigurationType
-import org.move.cli.runConfigurations.aptos.any.AnyCommandConfigurationFactory
+import org.move.cli.runConfigurations.sui.SuiCommandLine
+import org.move.cli.runConfigurations.sui.SuiConfigurationType
+import org.move.cli.runConfigurations.sui.any.AnyCommandConfigurationFactory
 import org.move.cli.settings.skipFetchLatestGitDeps
 import org.move.lang.MoveFile
 import org.move.lang.core.psi.MvFunction
@@ -21,7 +21,7 @@ import org.toml.lang.psi.TomlFile
 class TestCommandConfigurationProducer : CommandConfigurationProducerBase() {
 
     override fun getConfigurationFactory() =
-        AnyCommandConfigurationFactory(AptosConfigurationType.getInstance())
+        AnyCommandConfigurationFactory(SuiConfigurationType.getInstance())
 
     override fun configFromLocation(location: PsiElement) = fromLocation(location)
 
@@ -69,7 +69,7 @@ class TestCommandConfigurationProducer : CommandConfigurationProducerBase() {
             return CommandLineFromContext(
                 fn,
                 confName,
-                AptosCommandLine(subCommand, workingDirectory = rootPath)
+                SuiCommandLine(subCommand, workingDirectory = rootPath)
             )
         }
 
@@ -90,7 +90,7 @@ class TestCommandConfigurationProducer : CommandConfigurationProducerBase() {
             return CommandLineFromContext(
                 mod,
                 confName,
-                AptosCommandLine(subCommand, workingDirectory = rootPath)
+                SuiCommandLine(subCommand, workingDirectory = rootPath)
             )
         }
 
@@ -110,7 +110,7 @@ class TestCommandConfigurationProducer : CommandConfigurationProducerBase() {
             return CommandLineFromContext(
                 location,
                 confName,
-                AptosCommandLine(subCommand, workingDirectory = rootPath)
+                SuiCommandLine(subCommand, workingDirectory = rootPath)
             )
         }
     }

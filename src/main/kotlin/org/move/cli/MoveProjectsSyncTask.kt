@@ -24,7 +24,6 @@ class MoveProjectsSyncTask(
     override fun run(indicator: ProgressIndicator) {
         indicator.isIndeterminate = true
 
-        // aptos move fetch
         fetchDependencies()
 
         val projects = PsiDocumentManager
@@ -34,7 +33,6 @@ class MoveProjectsSyncTask(
     }
 
     private fun fetchDependencies() {
-        // run `aptos move fetch` here
     }
 
     companion object {

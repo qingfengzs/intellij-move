@@ -1,6 +1,5 @@
 package org.move.cli
 
-import org.move.cli.manifest.AptosConfigYaml
 import org.move.cli.manifest.MoveToml
 import org.move.openapiext.toPsiFile
 import org.move.openapiext.toVirtualFile
@@ -32,6 +31,6 @@ class MoveTomlTest : MvTestBase() {
         check(moveToml.deps.size == 1)
 
         val movePackage = MovePackage.fromMoveToml(moveToml)!!
-        check(movePackage.aptosConfigYaml?.profiles == setOf("default", "emergency"))
+        check(movePackage.suiConfigYaml?.profiles == setOf("default", "emergency"))
     }
 }

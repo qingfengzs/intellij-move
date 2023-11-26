@@ -2,7 +2,7 @@ package org.move.cli
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import org.move.cli.manifest.AptosConfigYaml
+import org.move.cli.manifest.SuiConfigYaml
 import org.move.cli.manifest.MoveToml
 import org.move.lang.toNioPathOrNull
 import org.move.openapiext.checkReadAccessAllowed
@@ -14,7 +14,7 @@ data class MovePackage(
     val project: Project,
     val contentRoot: VirtualFile,
     val moveToml: MoveToml,
-    val aptosConfigYaml: AptosConfigYaml?,
+    val suiConfigYaml: SuiConfigYaml?,
 ) {
     val packageName = this.moveToml.packageName ?: ""
 
@@ -52,20 +52,20 @@ data class MovePackage(
             checkReadAccessAllowed()
             val contentRoot = moveToml.tomlFile?.parent?.virtualFile ?: return null
 
-            var aptosConfigYaml: AptosConfigYaml? = null
+            var suiConfigYaml: SuiConfigYaml? = null
             var root: VirtualFile? = contentRoot
             while (true) {
                 if (root == null) break
                 val candidatePath = root
-                    .findChild(".aptos")
+                    .findChild(".sui")
                     ?.takeIf { it.isDirectory }
                     ?.findChild("config.yaml")
                 if (candidatePath != null) {
-                    aptosConfigYaml = AptosConfigYaml.fromPath(candidatePath.pathAsPath) ?: break
+                    suiConfigYaml = SuiConfigYaml.fromPath(candidatePath.pathAsPath) ?: break
                 }
                 root = root.parent
             }
-            return MovePackage(moveToml.project, contentRoot, moveToml, aptosConfigYaml)
+            return MovePackage(moveToml.project, contentRoot, moveToml, suiConfigYaml)
         }
     }
 }

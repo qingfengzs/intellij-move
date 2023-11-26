@@ -1,17 +1,4 @@
 <idea-plugin>
-<!--    <id>org.move.lang</id>-->
-<!--    <name>Move Language</name>-->
-
-<!--    <vendor>Pontem</vendor>-->
-
-<!--    <description>-->
-<!--        <![CDATA[-->
-<!--            <p>Support for Move, smart-contract language for Aptos and other blockchains.</p>-->
-
-<!--            <p><a href="https://github.com/pontem-network/intellij-move">https://github.com/pontem-network/intellij-move</a></p>-->
-<!--        ]]>-->
-<!--    </description>-->
-
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
      on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
@@ -35,7 +22,7 @@
         <configurationType
                 implementation="org.move.cli.runConfigurations.legacy.MoveConfigurationType"/>
         <configurationType
-                implementation="org.move.cli.runConfigurations.aptos.AptosConfigurationType"/>
+                implementation="org.move.cli.runConfigurations.sui.SuiConfigurationType"/>
         <runConfigurationProducer
                 implementation="org.move.cli.runConfigurations.producers.TestCommandConfigurationProducer"/>
         <runConfigurationProducer
@@ -178,8 +165,8 @@
 
         <toolWindow id="Sui"
                     anchor="right"
-                    factoryClass="org.move.cli.toolwindow.AptosToolWindowFactory"
-                    icon="/icons/sui-icon.svg" />
+                    factoryClass="org.move.cli.toolwindow.SuiToolWindowFactory"
+                    icon="/icons/sui.svg"/>
 
 
 
@@ -276,7 +263,7 @@
         <moduleBuilder builderClass="org.move.cli.module.MvModuleBuilder"/>
         <projectTaskRunner implementation="org.move.cli.runConfigurations.AptosBuildTaskRunner" />
 
-        <projectOpenProcessor id="Move" implementation="org.move.cli.AptosProjectOpenProcessor"/>
+        <projectOpenProcessor id="Move" implementation="org.move.cli.SuiProjectOpenProcessor"/>
 
         <directoryProjectGenerator implementation="org.move.ide.newProject.SuiProjectGenerator" />
 
@@ -302,7 +289,7 @@
         <!-- Notifications -->
         <notificationGroup id="Move Language" displayType="BALLOON"/>
         <editorNotificationProvider
-                implementation="org.move.ide.notifications.InvalidAptosBinaryNotification"/>
+                implementation="org.move.ide.notifications.InvalidSuiBinaryNotification"/>
 
         <intentionAction>
             <className>org.move.ide.intentions.RemoveCurlyBracesIntention</className>
@@ -350,20 +337,36 @@
                 description="Create new Move file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
-<!--        <action id="Move.DownloadAptosCLI"-->
-<!--                class="org.move.ide.actions.DownloadAptosAction"-->
-<!--                text="Download Aptos CLI"-->
-<!--                description="Download Aptos CLI">-->
-<!--&lt;!&ndash;            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>&ndash;&gt;-->
-<!--        </action>-->
         <action id="Move.RefreshAllProjects"
                 description="Update Move project information"
                 text="Update Move Projects"
                 class="org.move.ide.actions.RefreshMoveProjectsAction"
                 icon="AllIcons.Actions.Refresh"/>
-
-        <group id="Move.Aptos">
+        <action id="Move.GetActiveAddress"
+                description="Get active address"
+                text="Get Active Address"
+                class="org.move.ide.actions.GetActiveAddressAction"
+                icon="AllIcons.Actions.PreserveCaseSelected"/>
+        <action id="Move.GetGas"
+                description="Get gas"
+                text="Get Gas"
+                class="org.move.ide.actions.GetGasAction"
+                icon="AllIcons.Actions.PreserveCase"/>
+        <action id="Move.OpenAddressDialog"
+                description="Open address dialog"
+                text="Open Address Dialog"
+                class="org.move.ide.actions.OpenSwitchAddressDialogAction"
+                icon="AllIcons.Actions.ListChanges"/>
+        <action id="Move.OpenEnvsDialog"
+                description="Open envs dialog"
+                text="Open Envs Dialog"
+                class="org.move.ide.actions.OpenSwitchEnvsDialogAction"
+                icon="AllIcons.Actions.DiffWithClipboard"/>
+        <group id="Move.Sui">
             <reference id="Move.RefreshAllProjects"/>
+            <reference id="Move.GetActiveAddress"/>
+            <!--            <reference id="Move.GetGas"/>-->
+            <reference id="Move.OpenAddressDialog"/>
         </group>
     </actions>
 </idea-plugin>

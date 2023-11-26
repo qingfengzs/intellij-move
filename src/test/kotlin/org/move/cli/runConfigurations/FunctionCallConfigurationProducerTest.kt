@@ -1,7 +1,7 @@
 package org.move.cli.runConfigurations
 
 import com.intellij.execution.actions.ConfigurationContext
-import org.move.cli.runConfigurations.aptos.FunctionCallConfigurationBase
+import org.move.cli.runConfigurations.sui.FunctionCallConfigurationBase
 import org.move.lang.core.psi.MvFunction
 import org.move.lang.core.psi.ext.ancestorOrSelf
 import org.move.utils.tests.RunConfigurationProducerTestBase

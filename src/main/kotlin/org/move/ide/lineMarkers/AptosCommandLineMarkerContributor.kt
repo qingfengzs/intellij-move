@@ -4,8 +4,8 @@ import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.psi.PsiElement
-import org.move.cli.runConfigurations.aptos.run.RunCommandConfigurationHandler
-import org.move.cli.runConfigurations.aptos.view.ViewCommandConfigurationHandler
+import org.move.cli.runConfigurations.sui.run.RunCommandConfigurationHandler
+import org.move.cli.runConfigurations.sui.view.ViewCommandConfigurationHandler
 import org.move.cli.runConfigurations.producers.TestCommandConfigurationProducer
 import org.move.ide.MoveIcons
 import org.move.lang.MvElementTypes.IDENTIFIER

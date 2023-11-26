@@ -29,10 +29,9 @@ class UseStmtWrapper(val useStmt: MvUseStmt) : Comparable<UseStmtWrapper> {
 
     val addressLevel: Int = when (this.addr?.namedAddress?.referenceName?.lowercase()) {
         "std" -> 0
-        "aptos_std" -> 1
-        "aptos_framework" -> 2
-        "aptos_token" -> 3
-        else -> 4
+        "sui" -> 1
+        "coin" -> 2
+        else -> 3
     }
 //    val packageGroupLevel: Int = when {
 //

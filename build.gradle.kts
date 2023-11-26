@@ -1,9 +1,10 @@
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunPluginVerifierTask
+import org.jetbrains.intellij.tasks.VerifyPluginTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
-val publishingToken = System.getenv("JB_PUB_TOKEN") ?: null
+val publishingToken = System.getenv("PUBLISH_TOKEN") ?: null
 // set by default in Github Actions
 val isCI = System.getenv("CI") != null
 
@@ -12,14 +13,12 @@ fun prop(name: String): String =
         ?: error("Property `$name` is not defined in gradle.properties for environment `$platformVersion`")
 
 val platformVersion = prop("shortPlatformVersion")
-val codeVersion = "1.31.0"
+val codeVersion = "1.0.0"
 val pluginVersion = "$codeVersion.$platformVersion"
 val pluginGroup = "org.move"
 val javaVersion = JavaVersion.VERSION_17
 val kotlinStdlibVersion = "1.8.20"
-val pluginJarName = "intellij-move-$pluginVersion"
-
-val aptosVersion = "2.0.3"
+val pluginJarName = "intellij-sui-move-$pluginVersion"
 val network = "testnet"
 val suiVersion = "v1.14.0"
 
@@ -29,7 +28,7 @@ version = pluginVersion
 plugins {
     id("java")
     kotlin("jvm") version "1.8.20"
-    id("org.jetbrains.intellij") version "1.15.0"
+    id("org.jetbrains.intellij") version "1.16.0"
     id("org.jetbrains.grammarkit") version "2022.3.1"
     id("net.saliman.properties") version "1.5.2"
     id("org.gradle.idea")
@@ -38,10 +37,7 @@ plugins {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinStdlibVersion")
-
-    implementation("io.sentry:sentry:6.25.0") {
-        exclude("org.slf4j")
-    }
+    implementation("io.sentry:sentry:6.25.0") { exclude("org.slf4j") }
     implementation("com.github.ajalt.clikt:clikt:3.5.2")
 }
 
@@ -61,20 +57,20 @@ allprojects {
 
     intellij {
         pluginName.set(pluginJarName)
+        version.set(prop("platformVersion"))
         type.set(prop("platformType"))
-
         downloadSources.set(!isCI)
         instrumentCode.set(false)
         ideaDependencyCachePath.set(dependencyCachePath)
+        plugins.set(
+            prop("platformPlugins")
+                .split(',')
+                .map(String::trim)
+                .filter(String::isNotEmpty)
+        )
 
-        // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-        plugins.set(prop("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
-
-        version.set(prop("platformVersion"))
-//        localPath.set("/home/mkurnikov/pontem-ide/pontem-ide-2023.2/")
-//        localSourcesPath.set("/home/mkurnikov/pontem-ide/pontem-232.SNAPSHOT-source")
     }
-
+    println("Sandbox 目录:${project.buildDir}/idea-sandbox")
     configure<JavaPluginExtension> {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
@@ -99,12 +95,12 @@ allprojects {
             version.set(pluginVersion)
             changeNotes.set(
                 """
-    <body>
-        <p><a href="https://github.com/pontem-network/intellij-move/blob/master/changelog/$pluginVersion.md">
-            Changelog for Intellij-Move $pluginVersion on Github
-            </a></p>
-    </body>
-            """
+                <body>
+                    <p><a href="https://github.com/pontem-network/intellij-move/blob/master/changelog/$pluginVersion.md">
+                        Changelog for Intellij-Move $pluginVersion on Github
+                        </a></p>
+                </body>
+                """
             )
             sinceBuild.set(prop("pluginSinceBuild"))
             untilBuild.set(prop("pluginUntilBuild"))
@@ -137,7 +133,7 @@ allprojects {
                     val zipFileUrl = "$baseUrl/$zipFileName"
                     val zipRoot = "${rootProject.buildDir}/zip"
                     val zipFile = file("$zipRoot/$zipFileName")
-                    println("下载路径"+zipFileUrl)
+                    println("下载路径" + zipFileUrl)
                     if (zipFile.exists()) {
                         continue
                     }
@@ -156,7 +152,7 @@ allprojects {
                             else -> error("unreachable")
                         }
                     val platformRoot = file("${rootProject.rootDir}/bin/$platformName")
-                    println("解压文件"+tarTree(zipFile))
+                    println("解压文件" + tarTree(zipFile))
                     copy {
                         from(
                             tarTree(zipFile)
@@ -188,6 +184,7 @@ project(":") {
         withType<KotlinCompile> {
             dependsOn(generateLexer, generateParser)
         }
+
     }
 
     task("resolveDependencies") {
@@ -221,12 +218,22 @@ project(":plugin") {
                     )
                 )
             )
-        }
 
+        }
+//        signPlugin {
+//            certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+//            privateKey.set(System.getenv("PRIVATE_KEY"))
+//            password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+//        }
         publishPlugin {
             token.set(publishingToken)
         }
 
+        verifyPlugin {
+            pluginDir.set(
+                file("$rootDir/plugin/build/idea-sandbox/plugins/$pluginJarName")
+            )
+        }
         runIde { enabled = true }
         prepareSandbox { enabled = true }
         buildSearchableOptions {
@@ -269,4 +276,3 @@ val Project.dependencyCachePath
         }
         return cachePath.absolutePath
     }
-

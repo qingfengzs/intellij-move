@@ -11,7 +11,7 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.util.Disposer
 import org.move.cli.Consts
 import org.move.cli.runConfigurations.addDefaultBuildRunConfiguration
-import org.move.cli.runConfigurations.aptos.AptosCliExecutor
+import org.move.cli.runConfigurations.sui.SuiCliExecutor
 import org.move.cli.settings.SuiSettingsPanel
 import org.move.ide.newProject.openFile
 import org.move.openapiext.computeWithCancelableProgress
@@ -26,7 +26,7 @@ class MvModuleBuilder : ModuleBuilder() {
         context: WizardContext,
         parentDisposable: Disposable
     ): ModuleWizardStep {
-        return AptosConfigurationWizardStep(context).apply {
+        return SuiConfigurationWizardStep(context).apply {
             Disposer.register(parentDisposable, this::disposeUIResources)
         }
     }
@@ -40,13 +40,13 @@ class MvModuleBuilder : ModuleBuilder() {
 
         // Just work if user "creates new project" over an existing one.
         if (suiPath != null && root.findChild(Consts.MANIFEST_FILE) == null) {
-            val aptosCli = AptosCliExecutor(suiPath)
+            val suiCli = SuiCliExecutor(suiPath)
             val project = modifiableRootModel.project
             val packageName = project.name.replace(' ', '_')
 
             ApplicationManager.getApplication().executeOnPooledThread {
                 val manifestFile = project.computeWithCancelableProgress("Generating Sui project...") {
-                    aptosCli.moveInit(
+                    suiCli.moveNew(
                         project,
                         modifiableRootModel.module,
                         rootDirectory = root,

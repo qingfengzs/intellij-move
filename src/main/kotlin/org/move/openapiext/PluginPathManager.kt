@@ -71,4 +71,14 @@ object PluginPathManager {
                 null
             }
         }
+
+    val bundledSuiCli: String?
+        get() {
+            if (!SystemInfo.isWindows) {
+                val result = runCommand("whereis sui")
+                return result.split("sui: ").getOrNull(1)?.trim()
+            } else {
+                return null
+            }
+        }
 }

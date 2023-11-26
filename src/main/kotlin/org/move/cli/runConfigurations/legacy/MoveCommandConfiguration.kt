@@ -9,7 +9,7 @@ import com.intellij.openapi.util.NlsContexts
 import com.intellij.util.execution.ParametersListUtil
 import org.jdom.Element
 import org.move.cli.*
-import org.move.cli.settings.aptosPath
+import org.move.cli.settings.suiPath
 import org.move.stdext.exists
 import java.nio.file.Path
 
@@ -19,7 +19,7 @@ class MoveCommandConfiguration(
 ) : LocatableConfigurationBase<RunProfileState>(project, factory, "Move"),
     RunConfigurationWithSuppressedDefaultDebugAction {
 
-    var command: String = "move compile"
+    var command: String = "move build"
     var workingDirectory: Path? = if (!project.isDefault) {
         project.moveProjects.allProjects.firstOrNull()?.contentRootPath
     } else {
@@ -66,19 +66,19 @@ class MoveCommandConfiguration(
             parsed.additionalArguments,
             environmentVariables
         )
-        val aptosPath = project.aptosPath
-            ?: return CleanConfiguration.error("No Aptos CLI specified")
+        val suiPath = project.suiPath
+            ?: return CleanConfiguration.error("No Sui CLI specified")
 
-        if (!aptosPath.exists()) {
-            return CleanConfiguration.error("Invalid Aptos CLI: $aptosPath")
+        if (!suiPath.exists()) {
+            return CleanConfiguration.error("Invalid Sui CLI: $suiPath")
         }
-        return CleanConfiguration.Ok(cmd, aptosPath)
+        return CleanConfiguration.Ok(cmd, suiPath)
     }
 
     sealed class CleanConfiguration {
         class Ok(
             val cmd: MoveCommandLine,
-            val aptosLocation: Path,
+            val suiLocation: Path,
         ) : CleanConfiguration()
 
         class Err(val error: RuntimeConfigurationError) : CleanConfiguration()

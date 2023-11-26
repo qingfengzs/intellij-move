@@ -4,15 +4,18 @@ import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.io.isDirectory
 import org.move.cli.Consts
-import org.move.cli.settings.aptosExec
 import org.move.cli.settings.isValidExecutable
 import org.move.cli.settings.suiExec
 import org.move.openapiext.*
 import org.move.openapiext.common.isUnitTestMode
 import org.move.stdext.RsResult
+import org.move.stdext.executableName
+import org.move.stdext.isExecutableFile
 import org.move.stdext.unwrapOrElse
 import java.nio.file.Path
+import java.nio.file.Paths
 
 class SuiCliExecutor(val location: Path) {
 
@@ -54,22 +57,20 @@ class SuiCliExecutor(val location: Path) {
         return commandLine.toGeneralCommandLine(this).execute(owner)
     }
 
-    fun client(
+    fun simpleCommand(
         project: Project,
-        owner: Disposable,
         subCommand:String,
-    ): MvProcessResult<ProcessOutput> {
-        if (!isUnitTestMode) {
-            checkIsBackgroundThread()
-        }
-        val commandLine = SuiCommandLine(
-            "client",
-            arguments = listOf(
-                subCommand
-            ),
+        args: List<String>,
+        onComplete: (ProcessOutput?) -> Unit
+    ) {
+        val suiCommandLine = SuiCommandLine(
+            subCommand,
+            arguments = args,
             workingDirectory = project.root
         )
-        return commandLine.toGeneralCommandLine(this).execute(owner)
+        val commandLine = suiCommandLine.toGeneralCommandLine(this)
+        commandLine.executeAsync(onComplete)
+
     }
 
     fun moveNew(
@@ -121,30 +122,30 @@ class SuiCliExecutor(val location: Path) {
 
         data class GeneratedFilesHolder(val manifest: VirtualFile)
 
-//        fun suggestPath(): String? {
-//            for (path in homePathCandidates()) {
-//                when {
-//                    path.isDirectory() -> {
-//                        val candidate = path.resolveExisting(executableName("aptos")) ?: continue
-//                        if (candidate.isExecutableFile())
-//                            return candidate.toAbsolutePath().toString()
-//                    }
-//                    path.isExecutableFile() && path.fileName.toString() == executableName("aptos") -> {
-//                        if (path.isExecutableFile())
-//                            return path.toAbsolutePath().toString()
-//                    }
-//                }
-//            }
-//            return null
-//        }
+        fun suggestPath(): String? {
+            for (path in homePathCandidates()) {
+                when {
+                    path.isDirectory() -> {
+                        val candidate = path.resolveExisting(executableName("sui")) ?: continue
+                        if (candidate.isExecutableFile())
+                            return candidate.toAbsolutePath().toString()
+                    }
 
-//        private fun homePathCandidates(): Sequence<Path> {
-//            return System.getenv("PATH")
-//                .orEmpty()
-//                .split(File.pathSeparator)
-//                .asSequence()
-//                .filter { it.isNotEmpty() }
-//                .mapNotNull { it.toPathOrNull() }
-//        }
+                    path.isExecutableFile() && path.fileName.toString() == executableName("suis") -> {
+                        if (path.isExecutableFile())
+                            return path.toAbsolutePath().toString()
+                    }
+                }
+            }
+            return null
+        }
+
+        private fun homePathCandidates(): Sequence<Path> {
+            val pathVariable = System.getenv("PATH") ?: return emptySequence()
+            val pathSeparator = System.getProperty("path.separator")
+
+            return pathVariable.split(pathSeparator).asSequence().map { Paths.get(it) }
+        }
     }
+
 }

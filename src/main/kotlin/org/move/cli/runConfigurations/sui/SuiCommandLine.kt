@@ -5,8 +5,8 @@ import com.intellij.execution.configuration.EnvironmentVariablesData
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.util.text.StringUtil
 import org.move.cli.MoveProject
-import org.move.cli.runConfigurations.aptos.any.AnyCommandConfiguration
-import org.move.cli.runConfigurations.aptos.any.AnyCommandConfigurationFactory
+import org.move.cli.runConfigurations.sui.any.AnyCommandConfiguration
+import org.move.cli.runConfigurations.sui.any.AnyCommandConfigurationFactory
 import java.nio.file.Path
 
 data class SuiCommandLine(

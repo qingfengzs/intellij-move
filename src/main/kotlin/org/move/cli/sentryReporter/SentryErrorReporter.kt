@@ -82,7 +82,7 @@ class SentryErrorReporter : ErrorReportSubmitter() {
                 )
             if (project != null) {
                 val settings = project.moveSettings.state.asMap().toMutableMap()
-                settings.remove("aptosPath")
+                settings.remove("suiPath")
                 sentryEvent.contexts["Settings"] = settings
                 sentryEvent.contexts["Projects"] =
                     project.moveProjects.allProjects.map { MoveProjectContext.from(it) }

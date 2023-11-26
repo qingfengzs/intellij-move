@@ -8,7 +8,7 @@ import com.intellij.task.*
 import org.jetbrains.concurrency.Promise
 import org.jetbrains.concurrency.resolvedPromise
 import org.move.cli.moveProjectRoot
-import org.move.openapiext.aptosBuildRunConfigurations
+import org.move.openapiext.suiBuildRunConfigurations
 import org.move.openapiext.runManager
 
 @Suppress("UnstableApiUsage")
@@ -23,7 +23,7 @@ class AptosBuildTaskRunner : ProjectTaskRunner() {
         vararg tasks: ProjectTask?
     ): Promise<Result> {
         val buildConfiguration =
-            project.aptosBuildRunConfigurations().firstOrNull()
+            project.suiBuildRunConfigurations().firstOrNull()
                 ?: project.addDefaultBuildRunConfiguration().configuration
         val configurationSettings =
             project.runManager.findConfigurationByName(buildConfiguration.name)

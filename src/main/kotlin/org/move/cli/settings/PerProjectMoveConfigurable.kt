@@ -67,7 +67,7 @@ class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Sui 
     override fun apply() {
         super.apply()
         val newSettingsState = settingsState
-        newSettingsState.aptosPath = suiSettingsPanel.panelData.suiExec.pathToSettingsFormat()
+        newSettingsState.suiPath = suiSettingsPanel.panelData.suiExec.pathToSettingsFormat()
         project.moveSettings.state = newSettingsState
 
     }

@@ -1,9 +1,9 @@
 package org.move.cli.runConfigurations
 
 import org.move.cli.moveProjects
-import org.move.cli.runConfigurations.aptos.CommandConfigurationHandler
-import org.move.cli.runConfigurations.aptos.run.RunCommandConfigurationHandler
-import org.move.cli.runConfigurations.aptos.view.ViewCommandConfigurationHandler
+import org.move.cli.runConfigurations.sui.CommandConfigurationHandler
+import org.move.cli.runConfigurations.sui.run.RunCommandConfigurationHandler
+import org.move.cli.runConfigurations.sui.view.ViewCommandConfigurationHandler
 import org.move.utils.tests.MvProjectTestBase
 import org.move.utils.tests.TreeBuilder
 

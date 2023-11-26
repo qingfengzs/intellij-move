@@ -27,7 +27,7 @@ class UpdateNotificationsOnSettingsChangeListener(val project: Project) : MoveSe
     }
 }
 
-class InvalidAptosBinaryNotification(
+class InvalidSuiBinaryNotification(
     private val project: Project
 ) : EditorNotificationProvider,
     DumbAware {
@@ -47,7 +47,7 @@ class InvalidAptosBinaryNotification(
             project.moveProjects.refreshAllProjects()
         }
 
-        if (project.aptosPath.isValidExecutable()) return null
+        if (project.suiPath.isValidExecutable()) return null
         if (isNotificationDisabled(file)) return null
 
         return EditorNotificationPanel().apply {

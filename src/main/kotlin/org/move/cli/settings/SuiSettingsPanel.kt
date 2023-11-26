@@ -43,7 +43,7 @@ class SuiSettingsPanel(
         get() = PanelData(suiExec)
         set(value) {
             when (value.suiExec) {
-                is SuiExec.Bundled -> localPathField.text = ""
+                is SuiExec.Bundled -> localPathField.text = value.suiExec.execPath
                 else -> localPathField.text = value.suiExec.execPath
             }
             onSuiExecUpdate()
