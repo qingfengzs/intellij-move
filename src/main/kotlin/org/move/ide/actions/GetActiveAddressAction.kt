@@ -7,11 +7,27 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import org.move.cli.settings.suiExec
+import org.move.stdext.isExecutableFile
+import org.move.stdext.toPathOrNull
+import java.nio.file.Path
 
 class GetActiveAddressAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
 
         val project = e.project ?: return
+
+        // check sui cli installed
+        val path = project.suiExec.execPath.toPathOrNull()
+        if (path == null || !path.isExecutableFile()) {
+            Notifications.Bus.notify(
+                Notification(
+                    "Move Language",
+                    "No sui cli can found",
+                    "Please set sui cli first.",
+                    NotificationType.WARNING
+                )
+            )
+        }
 
         val onProcessComplete: (ProcessOutput?) -> Unit = { output ->
             if (output != null && output.exitCode == 0) {
