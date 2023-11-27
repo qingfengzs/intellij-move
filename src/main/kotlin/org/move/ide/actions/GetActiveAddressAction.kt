@@ -9,13 +9,11 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import org.move.cli.settings.suiExec
 import org.move.stdext.isExecutableFile
 import org.move.stdext.toPathOrNull
-import java.nio.file.Path
 
 class GetActiveAddressAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
 
         val project = e.project ?: return
-
         // check sui cli installed
         val path = project.suiExec.execPath.toPathOrNull()
         if (path == null || !path.isExecutableFile()) {
@@ -27,24 +25,24 @@ class GetActiveAddressAction : AnAction() {
                     NotificationType.WARNING
                 )
             )
-        }
-
-        val onProcessComplete: (ProcessOutput?) -> Unit = { output ->
-            if (output != null && output.exitCode == 0) {
-                println("Process executed successfully with output: ${output.stdout}")
-                Notifications.Bus.notify(
-                    Notification(
-                        "Move Language",
-                        "Active address",
-                        "${output?.stdout}",
-                        NotificationType.INFORMATION
+        } else {
+            val onProcessComplete: (ProcessOutput?) -> Unit = { output ->
+                if (output != null && output.exitCode == 0) {
+                    println("Process executed successfully with output: ${output.stdout}")
+                    Notifications.Bus.notify(
+                        Notification(
+                            "Move Language",
+                            "Active address",
+                            "${output?.stdout}",
+                            NotificationType.INFORMATION
+                        )
                     )
-                )
-            } else {
-                println("Process failed with error: ${output?.stderr}")
+                } else {
+                    println("Process failed with error: ${output?.stderr}")
+                }
             }
+            project.suiExec.toExecutor()?.simpleCommand(project, "client", listOf("active-address"), onProcessComplete)
         }
-        project.suiExec.toExecutor()?.simpleCommand(project, "client", listOf("active-address"), onProcessComplete)
     }
 
 }

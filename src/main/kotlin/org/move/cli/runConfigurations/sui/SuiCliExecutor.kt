@@ -131,7 +131,7 @@ class SuiCliExecutor(val location: Path) {
                             return candidate.toAbsolutePath().toString()
                     }
 
-                    path.isExecutableFile() && path.fileName.toString() == executableName("suis") -> {
+                    path.isExecutableFile() && path.fileName.toString() == executableName("sui") -> {
                         if (path.isExecutableFile())
                             return path.toAbsolutePath().toString()
                     }
