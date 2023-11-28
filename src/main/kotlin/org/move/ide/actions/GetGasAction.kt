@@ -1,11 +1,6 @@
 package org.move.ide.actions
 
-import com.intellij.execution.RunManager
-import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.process.ProcessOutput
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import org.move.cli.settings.suiExec
@@ -21,12 +16,12 @@ class GetGasAction : AnAction() {
                 println("Process executed successfully with output: ${output.stdout}")
                 val stdout = output.stdout
                 var message = "";
-                if (!stdout.startsWith("No gas")) {
-                    message = convertToHtmlTable(stdout)
+                message = if (!stdout.startsWith("No gas")) {
+                    convertToHtmlTable(stdout)
                 } else {
-                    message = stdout
+                    stdout
                 }
-
+                println(message)
             } else {
                 println("Process failed with error: ${output?.stderr}")
             }

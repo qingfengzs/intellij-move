@@ -33,7 +33,7 @@ class GetActiveAddressAction : AnAction() {
                         Notification(
                             "Move Language",
                             "Active address",
-                            "${output?.stdout}",
+                            output.stdout,
                             NotificationType.INFORMATION
                         )
                     )

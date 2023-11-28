@@ -59,14 +59,12 @@ class SuiProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeerI
         if (suiPath == null || !suiPath.isValidExecutable()) {
             return ValidationInfo("Invalid path to Sui executable")
         }
-
-//        if (aptosInitEnabled()) {
-//            return aptosSettingsPanel.validate()
-//        }
-        return null
+        val version = this.suiSettingsPanel.getVersionLable()
+        return if (version != "N/A") {
+            null
+        } else {
+            ValidationInfo("Invalid path to Sui executable")
+        }
     }
 
-//    private fun aptosInitEnabled(): Boolean {
-//        return aptosInitCheckBox.isSelected
-//    }
 }

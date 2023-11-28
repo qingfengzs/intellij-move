@@ -26,7 +26,7 @@ import javax.swing.plaf.basic.BasicComboBoxEditor
  * A combobox with browse button for choosing a path to a toolchain, also capable of showing progress indicator.
  * To toggle progress indicator visibility use [setBusy] method.
  */
-class MvAptosPathChoosingComboBox(onTextChanged: () -> Unit = {}) :
+class MvSuiPathChoosingComboBox(onTextChanged: () -> Unit = {}) :
     ComponentWithBrowseButton<ComboBoxWithWidePopup<Path>>(ComboBoxWithWidePopup(), null) {
 
     private val editor: BasicComboBoxEditor = object : BasicComboBoxEditor() {

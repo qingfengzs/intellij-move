@@ -93,7 +93,6 @@ class SuiToolWindow(private val project: Project) {
 
     val toolbar: ActionToolbar = run {
         val actionManager = ActionManager.getInstance()
-        val action = actionManager.getAction("Move.Sui")
         actionManager.createActionToolbar(
             SUI_TOOLBAR_PLACE,
             actionManager.getAction("Move.Sui") as DefaultActionGroup,

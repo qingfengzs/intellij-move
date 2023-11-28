@@ -16,6 +16,7 @@ import org.move.openapiext.showSettings
 import org.move.stdext.toPathOrNull
 
 import com.intellij.openapi.application.PathManager
+import org.move.cli.defaultMoveSettings
 import java.io.File
 import java.nio.file.Paths
 
@@ -36,6 +37,10 @@ class SuiSettingsPanel(
 
     private val versionLabel = VersionLabel()
     private val versionUpdateDebouncer = UiDebouncer(this)
+
+    fun getVersionLable(): String {
+        return this.versionLabel.text
+    }
 
     data class PanelData(val suiExec: SuiExec)
 
@@ -135,6 +140,10 @@ class SuiSettingsPanel(
         val suiExecPath = suiExec.execPath.toPathOrNull()
         versionUpdateDebouncer.run(
             onPooledThread = {
+                val defaultMoveSettings = ProjectManager.getInstance().defaultMoveSettings
+                defaultMoveSettings?.modify {
+                    it.suiPath = suiExecPath.toString()
+                }
                 suiExecPath?.let { SuiCliExecutor(it).version() }
             },
             onUiThread = { version ->
