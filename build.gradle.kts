@@ -50,9 +50,14 @@ allprojects {
     }
 
     repositories {
-        mavenCentral()
-        maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
-        gradlePluginPortal()
+//        mavenCentral()
+//        maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
+//        gradlePluginPortal()
+        maven("https://maven.aliyun.com/repository/central/")
+        maven("https://maven.aliyun.com/repository/public/" )
+        maven("https://maven.aliyun.com/repository/google/" )
+        maven("https://maven.aliyun.com/repository/jcenter/")
+        maven("https://maven.aliyun.com/repository/gradle-plugin")
     }
 
     intellij {
@@ -62,6 +67,7 @@ allprojects {
         downloadSources.set(!isCI)
         instrumentCode.set(false)
         ideaDependencyCachePath.set(dependencyCachePath)
+        updateSinceUntilBuild.set(false)
         plugins.set(
             prop("platformPlugins")
                 .split(',')
@@ -103,7 +109,7 @@ allprojects {
                 """
             )
             sinceBuild.set(prop("pluginSinceBuild"))
-            untilBuild.set(prop("pluginUntilBuild"))
+//            untilBuild.set(prop("pluginUntilBuild"))
         }
 
         withType<KotlinCompile> {

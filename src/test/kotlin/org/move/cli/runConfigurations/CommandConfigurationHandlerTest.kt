@@ -2,7 +2,7 @@ package org.move.cli.runConfigurations
 
 import org.move.cli.moveProjects
 import org.move.cli.runConfigurations.sui.CommandConfigurationHandler
-import org.move.cli.runConfigurations.sui.run.RunCommandConfigurationHandler
+import org.move.cli.runConfigurations.sui.run.TestCommandConfigurationHandler
 import org.move.cli.runConfigurations.sui.view.ViewCommandConfigurationHandler
 import org.move.utils.tests.MvProjectTestBase
 import org.move.utils.tests.TreeBuilder
@@ -33,7 +33,7 @@ profiles:
                 }
             },
             "move run --profile another --function-id 0x1::m::main --args u64:100",
-            RunCommandConfigurationHandler(),
+            TestCommandConfigurationHandler(),
             expectedProfile = "another"
         )
 

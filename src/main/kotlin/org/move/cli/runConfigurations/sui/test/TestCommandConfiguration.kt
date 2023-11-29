@@ -6,7 +6,7 @@ import org.move.cli.moveProjects
 import org.move.cli.runConfigurations.sui.FunctionCallConfigurationBase
 import org.move.cli.runConfigurations.sui.FunctionCallConfigurationEditor
 
-class RunCommandConfiguration(
+class TestCommandConfiguration(
     project: Project,
     factory: ConfigurationFactory
 ) : FunctionCallConfigurationBase(project, factory, TestCommandConfigurationHandler()) {

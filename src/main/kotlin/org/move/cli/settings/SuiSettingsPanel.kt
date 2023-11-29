@@ -18,6 +18,7 @@ import org.move.stdext.toPathOrNull
 import com.intellij.openapi.application.PathManager
 import org.move.cli.defaultMoveSettings
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Paths
 
 class SuiSettingsPanel(
@@ -31,6 +32,7 @@ class SuiSettingsPanel(
             this,
             "Choose Sui CLI"
         ) { text ->
+            println("chufa file path change : " + text)
             suiExec = SuiExec.LocalPath(text)
             onSuiExecUpdate()
         }
@@ -47,6 +49,7 @@ class SuiSettingsPanel(
     var panelData: PanelData
         get() = PanelData(suiExec)
         set(value) {
+            println("set panelData set sui path : "+value.suiExec.execPath)
             when (value.suiExec) {
                 is SuiExec.Bundled -> localPathField.text = value.suiExec.execPath
                 else -> localPathField.text = value.suiExec.execPath
@@ -140,11 +143,23 @@ class SuiSettingsPanel(
         val suiExecPath = suiExec.execPath.toPathOrNull()
         versionUpdateDebouncer.run(
             onPooledThread = {
-                val defaultMoveSettings = ProjectManager.getInstance().defaultMoveSettings
-                defaultMoveSettings?.modify {
-                    it.suiPath = suiExecPath.toString()
+                suiExecPath?.let {
+                    val version = SuiCliExecutor(it).version()
+                    val regex = Regex("sui\\s+(\\d+\\.\\d+\\.\\d+(-[a-f0-9]+)?)")
+                    val matchResult = version?.let { it1 -> regex.find(it1) }
+                    if (matchResult != null) {
+                        // update default setting
+                        val defaultMoveSettings = ProjectManager.getInstance().defaultMoveSettings
+                        defaultMoveSettings?.modify {
+                            it.suiPath = suiExecPath.toString()
+                        }
+                        val matchResultValue = matchResult.value
+                        println("match result:$matchResultValue")
+                        return@let version
+                    } else {
+                        return@let ""
+                    }
                 }
-                suiExecPath?.let { SuiCliExecutor(it).version() }
             },
             onUiThread = { version ->
                 versionLabel.setVersion(version)

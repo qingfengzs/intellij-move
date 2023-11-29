@@ -4,9 +4,10 @@ import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.psi.PsiElement
-import org.move.cli.runConfigurations.sui.run.RunCommandConfigurationHandler
+import org.move.cli.runConfigurations.sui.run.TestCommandConfigurationHandler
 import org.move.cli.runConfigurations.sui.view.ViewCommandConfigurationHandler
-import org.move.cli.runConfigurations.producers.TestCommandConfigurationProducer
+import org.move.cli.runConfigurations.producers.AnyCommandConfigurationProducer
+import org.move.cli.runConfigurations.sui.run.BuildCommandConfigurationHandler
 import org.move.ide.MoveIcons
 import org.move.lang.MvElementTypes.IDENTIFIER
 import org.move.lang.core.psi.MvFunction
@@ -28,7 +29,7 @@ class AptosCommandLineMarkerContributor : RunLineMarkerContributor() {
             when {
                 parent.isTest -> {
                     val config =
-                        TestCommandConfigurationProducer.fromLocation(parent, climbUp = false)
+                        AnyCommandConfigurationProducer.fromLocation(parent, climbUp = false)
                     if (config != null) {
                         return Info(
                             MoveIcons.RUN_TEST_ITEM,
@@ -38,7 +39,7 @@ class AptosCommandLineMarkerContributor : RunLineMarkerContributor() {
                     }
                 }
                 parent.isEntry -> {
-                    val config = RunCommandConfigurationHandler().configurationFromLocation(parent)
+                    val config = BuildCommandConfigurationHandler().configurationFromLocation(parent)
                     if (config != null) {
                         return Info(
                             MoveIcons.RUN_TRANSACTION_ITEM,
@@ -60,7 +61,7 @@ class AptosCommandLineMarkerContributor : RunLineMarkerContributor() {
             }
         }
         if (parent is MvModule) {
-            val testConfig = TestCommandConfigurationProducer.fromLocation(parent, climbUp = false)
+            val testConfig = AnyCommandConfigurationProducer.fromLocation(parent, climbUp = false)
             if (testConfig != null) {
                 return Info(
                     MoveIcons.RUN_ALL_TESTS_IN_ITEM,

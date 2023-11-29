@@ -4,8 +4,8 @@ import com.intellij.execution.configurations.ConfigurationTypeBase
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.util.NotNullLazyValue
 import org.move.cli.runConfigurations.sui.any.AnyCommandConfigurationFactory
-import org.move.cli.runConfigurations.sui.run.RunCommandConfigurationFactory
-import org.move.cli.runConfigurations.sui.view.ViewCommandConfigurationFactory
+import org.move.cli.runConfigurations.sui.run.BuildCommandConfigurationFactory
+import org.move.cli.runConfigurations.sui.run.TestCommandConfigurationFactory
 import org.move.ide.MoveIcons
 
 class SuiConfigurationType :
@@ -17,8 +17,8 @@ class SuiConfigurationType :
     ) {
 
     init {
-        addFactory(RunCommandConfigurationFactory(this))
-        addFactory(ViewCommandConfigurationFactory(this))
+        addFactory(BuildCommandConfigurationFactory(this))
+        addFactory(TestCommandConfigurationFactory(this))
         addFactory(AnyCommandConfigurationFactory(this))
     }
 

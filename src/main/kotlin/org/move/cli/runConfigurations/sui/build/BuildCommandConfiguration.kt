@@ -6,17 +6,16 @@ import org.move.cli.moveProjects
 import org.move.cli.runConfigurations.sui.FunctionCallConfigurationBase
 import org.move.cli.runConfigurations.sui.FunctionCallConfigurationEditor
 
-class RunCommandConfiguration(
+class BuildCommandConfiguration(
     project: Project,
     factory: ConfigurationFactory
-) : FunctionCallConfigurationBase(project, factory, TestCommandConfigurationHandler()) {
+) : FunctionCallConfigurationBase(project, factory, BuildCommandConfigurationHandler()) {
 
-    override fun getConfigurationEditor(): FunctionCallConfigurationEditor<TestCommandConfiguration> {
+    override fun getConfigurationEditor(): FunctionCallConfigurationEditor<BuildCommandConfiguration> {
         val moveProject = project.moveProjects.allProjects.first()
-        val editor = FunctionCallConfigurationEditor<TestCommandConfiguration>(
-            TestCommandConfigurationHandler(),
+        return FunctionCallConfigurationEditor(
+            BuildCommandConfigurationHandler(),
             moveProject,
         )
-        return editor
     }
 }

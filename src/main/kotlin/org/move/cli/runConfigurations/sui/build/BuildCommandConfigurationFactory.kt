@@ -5,15 +5,15 @@ import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.project.Project
 
-class RunCommandConfigurationFactory(
+class BuildCommandConfigurationFactory(
     configurationType: ConfigurationType
 ) : ConfigurationFactory(configurationType) {
 
-    override fun getId(): String = "RunCommand"
+    override fun getId(): String = "BuildCommand"
 
-    override fun getName(): String = "run"
+    override fun getName(): String = "build"
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration {
-        return TestCommandConfiguration(project, this)
+        return BuildCommandConfiguration(project, this)
     }
 }

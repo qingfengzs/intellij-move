@@ -6,6 +6,8 @@ import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.table.JBTable
 import org.move.cli.settings.suiExec
 import java.awt.Dimension
 import java.awt.event.MouseAdapter
@@ -22,30 +24,26 @@ class AddressDialog(var data: List<String>) : DialogWrapper(true) {
 
     override fun createCenterPanel(): JComponent {
         val panel = JPanel()
-
         // 创建表格模型并填充数据
         val tableModel = DefaultTableModel(arrayOf("Address"), 0)
         data.forEach { address ->
             tableModel.addRow(arrayOf(address))
         }
-        val table = JTable(tableModel)
+        val table = JBTable(tableModel)
+        // 设置table点击行之后的效果，改变颜色北京，不要选中文字
+        table.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
 
-        // 调整列宽
-        val columnModel = table.columnModel
-        columnModel.getColumn(0).preferredWidth = 500
-
-        // 添加点击事件监听器
-        table.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
-                val row = table.rowAtPoint(e.point)
-                if (row >= 0) {
-                    executeCommand(tableModel.getValueAt(row, 0).toString())
-                }
-                dispose() // 关闭对话框
+        // 为table添加确认按钮
+        val button = JButton("Switch")
+        button.addActionListener {
+            val row = table.selectedRow
+            if (row >= 0) {
+                executeCommand(tableModel.getValueAt(row, 0).toString())
             }
-        })
+            dispose() // 关闭对话框
+        }
 
-        val scrollPane = JScrollPane(table)
+        val scrollPane = JBScrollPane(table)
         scrollPane.preferredSize = Dimension(550, 150) // 调整滚动面板大小
         panel.add(scrollPane)
         return panel

@@ -5,10 +5,10 @@ import com.intellij.psi.PsiElement
 import org.move.cli.runConfigurations.sui.SuiConfigurationType
 import org.move.cli.runConfigurations.sui.run.*
 
-class RunCommandConfigurationProducer : FunctionCallConfigurationProducerBase<RunCommandConfiguration>() {
+class BuildCommandConfigurationProducer : FunctionCallConfigurationProducerBase<BuildCommandConfiguration>() {
     override fun getConfigurationFactory(): ConfigurationFactory =
-        RunCommandConfigurationFactory(SuiConfigurationType.getInstance())
+        BuildCommandConfigurationFactory(SuiConfigurationType.getInstance())
 
     override fun configFromLocation(location: PsiElement) =
-        RunCommandConfigurationHandler().configurationFromLocation(location)
+        BuildCommandConfigurationHandler().configurationFromLocation(location)
 }

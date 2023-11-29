@@ -24,11 +24,11 @@
         <configurationType
                 implementation="org.move.cli.runConfigurations.sui.SuiConfigurationType"/>
         <runConfigurationProducer
+                implementation="org.move.cli.runConfigurations.producers.AnyCommandConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="org.move.cli.runConfigurations.producers.BuildCommandConfigurationProducer"/>
+        <runConfigurationProducer
                 implementation="org.move.cli.runConfigurations.producers.TestCommandConfigurationProducer"/>
-        <runConfigurationProducer
-                implementation="org.move.cli.runConfigurations.producers.RunCommandConfigurationProducer"/>
-        <runConfigurationProducer
-                implementation="org.move.cli.runConfigurations.producers.ViewCommandConfigurationProducer"/>
         <runLineMarkerContributor language="Move"
                                   implementationClass="org.move.ide.lineMarkers.AptosCommandLineMarkerContributor"/>
 
