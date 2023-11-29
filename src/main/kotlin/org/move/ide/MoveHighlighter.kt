@@ -24,7 +24,6 @@ class MvHighlighter : SyntaxHighlighterBase() {
             BLOCK_COMMENT -> MvColor.BLOCK_COMMENT
             EOL_COMMENT -> MvColor.EOL_COMMENT
             EOL_DOC_COMMENT -> MvColor.DOC_COMMENT
-
             L_PAREN, R_PAREN -> MvColor.PARENTHESES
             L_BRACE, R_BRACE -> MvColor.BRACES
             L_BRACK, R_BRACK -> MvColor.BRACKETS

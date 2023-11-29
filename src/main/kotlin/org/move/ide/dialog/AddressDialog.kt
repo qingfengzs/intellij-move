@@ -10,10 +10,10 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
 import org.move.cli.settings.suiExec
 import java.awt.Dimension
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.util.regex.Matcher
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.ListSelectionModel
 import javax.swing.table.DefaultTableModel
 
 class AddressDialog(var data: List<String>) : DialogWrapper(true) {
@@ -46,13 +46,10 @@ class AddressDialog(var data: List<String>) : DialogWrapper(true) {
         val scrollPane = JBScrollPane(table)
         scrollPane.preferredSize = Dimension(550, 150) // 调整滚动面板大小
         panel.add(scrollPane)
+        panel.add(button)
         return panel
     }
 
-    // 移除标准按钮
-    override fun createActions(): Array<Action> {
-        return arrayOf()
-    }
 
     private fun executeCommand(address: String) {
         // 获取project 对象

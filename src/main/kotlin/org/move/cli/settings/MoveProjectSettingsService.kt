@@ -47,7 +47,8 @@ class MoveProjectSettingsService(private val project: Project) : PersistentState
         var foldSpecs: Boolean = false,
         var disableTelemetry: Boolean = true,
         var debugMode: Boolean = false,
-        var skipFetchLatestGitDeps: Boolean = false
+        var skipFetchLatestGitDeps: Boolean = false,
+        var isValidExec: Boolean = false
     )
 
     @Volatile
@@ -127,7 +128,6 @@ val Project.collapseSpecs: Boolean get() = this.moveSettings.state.foldSpecs
 val Project.aptosExec: AptosExec get() = AptosExec.fromSettingsFormat(this.moveSettings.state.aptosPath)
 val Project.suiExec: SuiExec get() = SuiExec.fromSettingsFormat(this.moveSettings.state.suiPath)
 
-val Project.aptosPath: Path? get() = this.aptosExec.pathOrNull()
 val Project.suiPath: Path? get() = this.suiExec.pathOrNull()
 
 fun Path?.isValidExecutable(): Boolean {
@@ -137,6 +137,7 @@ fun Path?.isValidExecutable(): Boolean {
             && this.isExecutableFile()
 }
 
+val Project.isValidSuiExec: Boolean get() = this.moveSettings.state.isValidExec
 val Project.isDebugModeEnabled: Boolean get() = this.moveSettings.state.debugMode
 
 fun <T> Project.debugErrorOrFallback(message: String, fallback: T): T {

@@ -6,19 +6,11 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.ui.dsl.builder.selected
-import org.move.cli.runConfigurations.aptos.AptosCliExecutor
-import org.move.cli.runConfigurations.sui.SuiCliExecutor
 import org.move.openapiext.UiDebouncer
 import org.move.openapiext.pathField
 import org.move.openapiext.showSettings
 import org.move.stdext.toPathOrNull
-
-import com.intellij.openapi.application.PathManager
-import org.move.cli.defaultMoveSettings
 import java.io.File
-import java.nio.file.Files
 import java.nio.file.Paths
 
 class SuiSettingsPanel(
@@ -32,9 +24,8 @@ class SuiSettingsPanel(
             this,
             "Choose Sui CLI"
         ) { text ->
-            println("chufa file path change : " + text)
             suiExec = SuiExec.LocalPath(text)
-            onSuiExecUpdate()
+            onSuiExecUpdate("path")
         }
 
     private val versionLabel = VersionLabel()
@@ -49,12 +40,11 @@ class SuiSettingsPanel(
     var panelData: PanelData
         get() = PanelData(suiExec)
         set(value) {
-            println("set panelData set sui path : "+value.suiExec.execPath)
             when (value.suiExec) {
                 is SuiExec.Bundled -> localPathField.text = value.suiExec.execPath
                 else -> localPathField.text = value.suiExec.execPath
             }
-            onSuiExecUpdate()
+            onSuiExecUpdate("set")
         }
 
     var suiExec: SuiExec = SuiExec.Bundled
@@ -137,29 +127,12 @@ class SuiSettingsPanel(
         return null
     }
 
-
-
-    private fun onSuiExecUpdate() {
+    private fun onSuiExecUpdate(source: String) {
         val suiExecPath = suiExec.execPath.toPathOrNull()
+        println(source + ":" + suiExecPath)
         versionUpdateDebouncer.run(
             onPooledThread = {
-                suiExecPath?.let {
-                    val version = SuiCliExecutor(it).version()
-                    val regex = Regex("sui\\s+(\\d+\\.\\d+\\.\\d+(-[a-f0-9]+)?)")
-                    val matchResult = version?.let { it1 -> regex.find(it1) }
-                    if (matchResult != null) {
-                        // update default setting
-                        val defaultMoveSettings = ProjectManager.getInstance().defaultMoveSettings
-                        defaultMoveSettings?.modify {
-                            it.suiPath = suiExecPath.toString()
-                        }
-                        val matchResultValue = matchResult.value
-                        println("match result:$matchResultValue")
-                        return@let version
-                    } else {
-                        return@let ""
-                    }
-                }
+                SuiExec.getVersion(suiExecPath)
             },
             onUiThread = { version ->
                 versionLabel.setVersion(version)
@@ -167,6 +140,7 @@ class SuiSettingsPanel(
             }
         )
     }
+
 
     override fun dispose() {
         Disposer.dispose(localPathField)

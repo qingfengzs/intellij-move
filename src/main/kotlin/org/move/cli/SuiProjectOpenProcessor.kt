@@ -14,9 +14,9 @@ import org.move.cli.settings.moveSettings
 import org.move.ide.MoveIcons
 import org.move.ide.newProject.openFile
 import org.move.ide.notifications.updateAllNotifications
+import org.move.openapiext.contentRoots
 import org.move.openapiext.suiBuildRunConfigurations
 import org.move.openapiext.suiRunConfigurations
-import org.move.openapiext.contentRoots
 import javax.swing.Icon
 
 class SuiProjectOpenProcessor : ProjectOpenProcessor() {
@@ -37,12 +37,19 @@ class SuiProjectOpenProcessor : ProjectOpenProcessor() {
             virtualFile,
             projectToClose,
             forceOpenInNewFrame
-        )?.also {
+        )?.also { it ->
             StartupManager.getInstance(it).runAfterOpened {
                 // create default build configuration if it doesn't exist
                 if (it.suiBuildRunConfigurations().isEmpty()) {
                     val isEmpty = it.suiRunConfigurations().isEmpty()
                     it.addDefaultBuildRunConfiguration(isSelected = isEmpty)
+                }
+                val defaultProjectSettings = ProjectManager.getInstance().defaultMoveSettings
+                it.moveSettings.modify {
+                    val suiPath = defaultProjectSettings?.state?.suiPath ?: ""
+                    it.suiPath = if (suiPath == "") {
+                        SuiCliExecutor.suggestPath().toString()
+                    } else suiPath
                 }
 
                 // opens Move.toml file
@@ -54,13 +61,6 @@ class SuiProjectOpenProcessor : ProjectOpenProcessor() {
                     }
                     updateAllNotifications(it)
                 }
-
-                val defaultProjectSettings = ProjectManager.getInstance().defaultMoveSettings
-                it.moveSettings.modify {
-                    val suiPath = defaultProjectSettings?.state?.suiPath
-                    it.suiPath = suiPath ?: SuiCliExecutor.suggestPath()
-                }
-
                 it.moveProjects.refreshAllProjects()
 
             }

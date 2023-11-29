@@ -7,6 +7,9 @@ import com.intellij.openapi.util.Computable
 import com.intellij.psi.PsiDocumentManager
 import org.move.cli.manifest.MoveToml
 import org.move.cli.manifest.TomlDependency
+import org.move.cli.settings.SuiExec
+import org.move.cli.settings.moveSettings
+import org.move.cli.settings.suiPath
 import org.move.lang.toNioPathOrNull
 import org.move.lang.toTomlFile
 import org.move.openapiext.contentRoots
@@ -29,6 +32,14 @@ class MoveProjectsSyncTask(
         val projects = PsiDocumentManager
             .getInstance(project)
             .commitAndRunReadAction(Computable { loadProjects(project) })
+        project.moveSettings.state = project.moveSettings.state.also {
+            val version = SuiExec.getVersion(project.suiPath)
+            if (version == "") {
+                it.isValidExec = false
+            } else {
+                it.isValidExec = true
+            }
+        }
         future.complete(projects)
     }
 

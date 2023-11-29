@@ -9,7 +9,10 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
 import org.move.cli.moveProjects
-import org.move.cli.settings.*
+import org.move.cli.settings.MoveSettingsChangedEvent
+import org.move.cli.settings.MoveSettingsListener
+import org.move.cli.settings.PerProjectMoveConfigurable
+import org.move.cli.settings.moveSettings
 import org.move.lang.isMoveOrManifest
 import org.move.openapiext.common.isUnitTestMode
 import org.move.openapiext.showSettings
@@ -47,8 +50,9 @@ class InvalidSuiBinaryNotification(
             project.moveProjects.refreshAllProjects()
         }
 
-        if (project.suiPath.isValidExecutable()) return null
         if (isNotificationDisabled(file)) return null
+
+        if (project.moveSettings.state.isValidExec) return null
 
         return EditorNotificationPanel().apply {
             text = "Sui binary path is not provided or invalid"

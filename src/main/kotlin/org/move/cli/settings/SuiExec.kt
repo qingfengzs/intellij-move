@@ -1,11 +1,11 @@
 package org.move.cli.settings
 
-import org.move.cli.runConfigurations.aptos.AptosCliExecutor
+import com.intellij.openapi.project.ProjectManager
+import org.move.cli.defaultMoveSettings
 import org.move.cli.runConfigurations.sui.SuiCliExecutor
 import org.move.openapiext.PluginPathManager
 import org.move.stdext.toPathOrNull
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import java.nio.file.Path
 
 sealed class SuiExec {
     abstract val execPath: String
@@ -35,6 +35,28 @@ sealed class SuiExec {
                 else -> LocalPath(suiPath)
             }
 
+        fun getVersion(suiExecPath: Path?): String? {
+            return suiExecPath?.let {
+                val version = SuiCliExecutor(it).version()
+                val regex = Regex("sui\\s+(\\d+\\.\\d+\\.\\d+(-[a-f0-9]+)?)")
+                val matchResult = version?.let { it1 -> regex.find(it1) }
+                var state = ProjectManager.getInstance().defaultProject.moveSettings.state
+                if (matchResult != null) {
+                    // update default setting
+                    val defaultMoveSettings = ProjectManager.getInstance().defaultMoveSettings
+                    defaultMoveSettings?.modify {
+                        it.suiPath = suiExecPath.toString()
+                    }
+                    state = state.also { it.isValidExec = true }
+                    val matchResultValue = matchResult.value
+                    println("match result:$matchResultValue")
+                    return@let version
+                } else {
+                    state = state.also { it.isValidExec = false }
+                    return@let ""
+                }
+            }
+        }
 
     }
 }
