@@ -10,7 +10,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
-const val PLUGIN_ID: String = "org.move.lang"
+const val PLUGIN_ID: String = "org.sui.move"
 
 fun plugin(): IdeaPluginDescriptor = PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))!!
 

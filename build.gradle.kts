@@ -1,6 +1,5 @@
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunPluginVerifierTask
-import org.jetbrains.intellij.tasks.VerifyPluginTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
@@ -15,7 +14,7 @@ fun prop(name: String): String =
 val platformVersion = prop("shortPlatformVersion")
 val codeVersion = "1.0.0"
 val pluginVersion = "$codeVersion.$platformVersion"
-val pluginGroup = "org.move"
+val pluginGroup = "org.sui.move"
 val javaVersion = JavaVersion.VERSION_17
 val kotlinStdlibVersion = "1.8.20"
 val pluginJarName = "intellij-sui-move-$pluginVersion"
