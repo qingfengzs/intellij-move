@@ -37,19 +37,20 @@ The plugin features a dedicated ToolWindow with the following functionalities:
 
 - Refresh Project:
 
-  ![img.png](img.png) : synchronize the latest state of your project.
+  ![img.png](docs/static/img.png) : synchronize the latest state of your project.
 
 - Get Active Address:
 
-  ![img_1.png](img_1.png) : displays the current active address information.
+  ![img_1.png](docs/static/img_1.png) : displays the current active address information.
 
 - Switch Account:
 
-  ![img_2.png](img_2.png) : to switch between different accounts.
+  ![img_2.png](docs/static/img_2.png) : to switch between different accounts.
 
 - Switch Network:
 
-  ![img_3.png](img_3.png) : allows switching between different network environments, such as from a development network
+  ![img_3.png](docs/static/img_3.png) : allows switching between different network environments, such as from a
+  development network
   to a test network.
 
 ## Notes

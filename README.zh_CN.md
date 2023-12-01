@@ -35,19 +35,19 @@ Move.toml 和 move 二进制集成
 
 - 刷新项目:
 
-  ![img.png](img.png) ： 同步项目的最新状态。
+  ![img.png](docs/static/img.png) ： 同步项目的最新状态。
 
 - 获取当前活跃地址:
 
-  ![img_1.png](img_1.png)： 显示当前活跃地址信息。
+  ![img_1.png](docs/static/img_1.png)： 显示当前活跃地址信息。
 
 - 切换账户:
 
-  ![img_2.png](img_2.png)： 在不同账户间切换。
+  ![img_2.png](docs/static/img_2.png)： 在不同账户间切换。
 
 - 切换网络:
 
-  ![img_3.png](img_3.png)： 允许在不同网络环境之间切换，例如从开发网络切换到测试网络。
+  ![img_3.png](docs/static/img_3.png)： 允许在不同网络环境之间切换，例如从开发网络切换到测试网络。
 
 ## 注意事项
 
