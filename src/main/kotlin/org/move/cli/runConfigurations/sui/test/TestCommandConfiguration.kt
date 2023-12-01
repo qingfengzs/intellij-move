@@ -10,7 +10,7 @@ class TestCommandConfiguration(
     project: Project,
     factory: ConfigurationFactory
 ) : FunctionCallConfigurationBase(project, factory, TestCommandConfigurationHandler()) {
-
+    override var command: String = "move test"
     override fun getConfigurationEditor(): FunctionCallConfigurationEditor<TestCommandConfiguration> {
         val moveProject = project.moveProjects.allProjects.first()
         val editor = FunctionCallConfigurationEditor<TestCommandConfiguration>(

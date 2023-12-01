@@ -6,14 +6,16 @@ import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.table.JBTable
 import org.move.cli.settings.suiExec
+import org.move.ide.actions.OpenSwitchEnvsDialogAction
+import java.awt.BorderLayout
 import java.awt.Dimension
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
 
-class EnvDialog(var data: List<String>) : DialogWrapper(true) {
+class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true) {
     init {
         init()
         title = "Click Env To Switch"
@@ -21,29 +23,28 @@ class EnvDialog(var data: List<String>) : DialogWrapper(true) {
 
     override fun createCenterPanel(): JComponent {
         val panel = JPanel()
+        val tableModel = DefaultTableModel(arrayOf("alias", "rpc", "ws"), 0)
+        val table = JBTable(tableModel)
 
-        val tableModel = DefaultTableModel(arrayOf("Envs"), 0)
-        data.forEach { env ->
-            tableModel.addRow(arrayOf(env))
+        data.netList.forEach { net ->
+            tableModel.addRow(arrayOf(net.alias, net.rpc, net.ws))
         }
-        val table = JTable(tableModel)
+        table.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
 
-        val columnModel = table.columnModel
-        columnModel.getColumn(0).preferredWidth = 500
-
-        table.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
-                val row = table.rowAtPoint(e.point)
-                if (row >= 0) {
-                    executeCommand(tableModel.getValueAt(row, 0).toString())
-                }
-                dispose()
+        val button = JButton("Switch")
+        button.addActionListener {
+            val row = table.selectedRow
+            if (row >= 0) {
+                executeCommand(tableModel.getValueAt(row, 0).toString())
             }
-        })
+            dispose()
+        }
 
-        val scrollPane = JScrollPane(table)
+        val scrollPane = JBScrollPane(table)
         scrollPane.preferredSize = Dimension(550, 150)
-        panel.add(scrollPane)
+        panel.layout = BorderLayout()
+        panel.add(scrollPane, BorderLayout.NORTH)
+        panel.add(button, BorderLayout.AFTER_LINE_ENDS)
         return panel
     }
 

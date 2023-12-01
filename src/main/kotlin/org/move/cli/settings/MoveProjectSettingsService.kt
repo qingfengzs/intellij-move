@@ -45,7 +45,6 @@ class MoveProjectSettingsService(private val project: Project) : PersistentState
         var aptosPath: String? = null,
         var suiPath: String? = null,
         var foldSpecs: Boolean = false,
-        var disableTelemetry: Boolean = true,
         var debugMode: Boolean = false,
         var skipFetchLatestGitDeps: Boolean = false,
         var isValidExec: Boolean = false

@@ -23,14 +23,14 @@
                 implementation="org.move.cli.runConfigurations.legacy.MoveConfigurationType"/>
         <configurationType
                 implementation="org.move.cli.runConfigurations.sui.SuiConfigurationType"/>
-        <runConfigurationProducer
-                implementation="org.move.cli.runConfigurations.producers.AnyCommandConfigurationProducer"/>
-        <runConfigurationProducer
-                implementation="org.move.cli.runConfigurations.producers.BuildCommandConfigurationProducer"/>
-        <runConfigurationProducer
-                implementation="org.move.cli.runConfigurations.producers.TestCommandConfigurationProducer"/>
-        <runLineMarkerContributor language="Move"
-                                  implementationClass="org.move.ide.lineMarkers.AptosCommandLineMarkerContributor"/>
+        <!--        <runConfigurationProducer-->
+        <!--                implementation="org.move.cli.runConfigurations.producers.AnyCommandConfigurationProducer"/>-->
+        <!--        <runConfigurationProducer-->
+        <!--                implementation="org.move.cli.runConfigurations.producers.BuildCommandConfigurationProducer"/>-->
+        <!--        <runConfigurationProducer-->
+        <!--                implementation="org.move.cli.runConfigurations.producers.TestCommandConfigurationProducer"/>-->
+        <!--        <runLineMarkerContributor language="Move"-->
+        <!--                                  implementationClass="org.move.ide.lineMarkers.AptosCommandLineMarkerContributor"/>-->
 
         <lang.parserDefinition language="Move"
                                implementationClass="org.move.lang.MoveParserDefinition"/>
@@ -268,7 +268,7 @@
         <directoryProjectGenerator implementation="org.move.ide.newProject.SuiProjectGenerator" />
 
         <projectConfigurable instance="org.move.cli.settings.PerProjectMoveConfigurable"
-                             displayName="Move Language"
+                             displayName="Sui Move Language"
                              groupId="language"
                              id="language.move"/>
         <projectService serviceInterface="org.move.utils.ProjectRootService"
@@ -323,7 +323,11 @@
         <errorHandler implementation="org.move.cli.sentryReporter.SentryErrorReporter" />
 
     </extensions>
-
+    <applicationListeners>
+        <listener
+                class="org.move.cli.settings.MvApplicationSettingListener"
+                topic="org.move.cli.settings.ApplicationSettingTopic"/>
+    </applicationListeners>
     <projectListeners>
         <listener class="org.move.ide.notifications.UpdateNotificationsOnSettingsChangeListener"
                   topic="org.move.cli.settings.MoveSettingsListener"
@@ -367,6 +371,7 @@
             <reference id="Move.GetActiveAddress"/>
             <!--            <reference id="Move.GetGas"/>-->
             <reference id="Move.OpenAddressDialog"/>
+            <reference id="Move.OpenEnvsDialog"/>
         </group>
     </actions>
 </idea-plugin>

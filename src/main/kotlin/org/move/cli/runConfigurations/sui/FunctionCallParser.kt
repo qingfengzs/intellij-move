@@ -16,7 +16,7 @@ data class FunctionCallParser(
 ) {
     companion object {
         class Parser : CliktCommand() {
-            val functionId: String by option("--function-id").required()
+            val functionId: String by option("--function").required()
             val typeParams: List<String> by option("--type-args").multiple()
             val params: List<String> by option("--args").multiple()
             val profile: String? by option("--profile")
@@ -37,7 +37,7 @@ data class FunctionCallParser(
                 return RsResult.Err(e.message ?: "")
             }
             val functionId = runParser.functionId
-            val profile = runParser.profile ?: "default"
+            val profile = ""
             val parser = FunctionCallParser(functionId, runParser.typeParams, runParser.params, profile)
             return RsResult.Ok(parser)
         }

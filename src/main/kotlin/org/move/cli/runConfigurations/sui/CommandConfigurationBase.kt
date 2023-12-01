@@ -12,7 +12,6 @@ import com.intellij.openapi.util.NlsContexts
 import org.jdom.Element
 import org.move.cli.readPath
 import org.move.cli.readString
-import org.move.cli.runConfigurations.sui.SuiCommandLine
 import org.move.cli.runConfigurations.legacy.MoveCommandConfiguration
 import org.move.cli.writePath
 import org.move.cli.writeString
@@ -26,7 +25,7 @@ abstract class CommandConfigurationBase(
     LocatableConfigurationBase<SuiCommandLineState>(project, factory),
     RunConfigurationWithSuppressedDefaultDebugAction {
 
-    var command: String = ""
+    abstract var command: String
     var workingDirectory: Path? = null
     var environmentVariables: EnvironmentVariablesData = EnvironmentVariablesData.DEFAULT
 

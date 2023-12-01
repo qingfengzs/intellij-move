@@ -11,7 +11,7 @@ class BuildCommandConfigurationFactory(
 
     override fun getId(): String = "BuildCommand"
 
-    override fun getName(): String = "build"
+    override fun getName(): String = "Build"
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration {
         return BuildCommandConfiguration(project, this)

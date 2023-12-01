@@ -46,8 +46,12 @@ sealed class SuiExec {
                     val defaultMoveSettings = ProjectManager.getInstance().defaultMoveSettings
                     defaultMoveSettings?.modify {
                         it.suiPath = suiExecPath.toString()
+                        it.isValidExec = true
                     }
-                    state = state.also { it.isValidExec = true }
+                    state = state.also {
+                        it.suiPath = suiExecPath.toString()
+                        it.isValidExec = true
+                    }
                     val matchResultValue = matchResult.value
                     println("match result:$matchResultValue")
                     return@let version

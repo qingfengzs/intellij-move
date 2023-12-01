@@ -19,6 +19,10 @@ class SuiConfigurationWizardStep(
     private val configurationUpdaterConsumer: ((ModuleBuilder.ModuleConfigurationUpdater) -> Unit)? = null
 ) : ModuleWizardStep() {
 
+    init {
+
+    }
+
     private val suiSettingsPanel = SuiSettingsPanel(showDefaultProjectSettingsLink = true)
 
     override fun getComponent(): JComponent =

@@ -28,14 +28,11 @@ abstract class CommandConfigurationHandler {
         val moveProject = function.moveProject ?: return null
 
         val functionId = function.functionId(moveProject) ?: return null
-        val profileName = moveProject.profiles.firstOrNull()
         val workingDirectory = moveProject.contentRootPath
 
         val arguments = mutableListOf<String>()
-        if (profileName != null) {
-            arguments.addAll(listOf("--profile", profileName))
-        }
-        arguments.addAll(listOf("--function-id", functionId))
+
+        arguments.addAll(listOf("--function", functionId))
 
         val commandLine = SuiCommandLine(subCommand, arguments, workingDirectory)
         return CommandLineFromContext(
@@ -67,8 +64,7 @@ abstract class CommandConfigurationHandler {
 
         val commandArguments = listOf(
             subCommand.split(' '),
-            listOf("--profile", profileName),
-            listOf("--function-id", functionId),
+            listOf("--function", functionId),
             typeParams,
             params
         ).flatten()
@@ -90,14 +86,6 @@ abstract class CommandConfigurationHandler {
         val function = getFunctionByCmdName(moveProject, functionId)
             ?: return RsResult.Err("function with this functionId does not exist in the current project")
 
-        val suiConfig = moveProject.suiConfigYaml
-        if (suiConfig == null) {
-            return RsResult.Err("Sui account is not initialized for the current project")
-        }
-
-        if (profileName !in suiConfig.profiles) {
-            return RsResult.Err("account '$profileName' is not present in the project's accounts")
-        }
         val transaction = FunctionCall.template(function)
 
         val typeParameterNames = function.typeParameters.mapNotNull { it.name }

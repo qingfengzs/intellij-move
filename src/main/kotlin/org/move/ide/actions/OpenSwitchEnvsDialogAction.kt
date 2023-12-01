@@ -1,13 +1,13 @@
 package org.move.ide.actions
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import org.move.cli.settings.suiExec
-import org.move.ide.dialog.AddressDialog
 import org.move.ide.dialog.EnvDialog
-import java.util.regex.Pattern
 
 class OpenSwitchEnvsDialogAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -17,17 +17,34 @@ class OpenSwitchEnvsDialogAction : AnAction() {
         val onProcessComplete: (ProcessOutput?) -> Unit = { output ->
             if (output != null && output.exitCode == 0) {
                 println("Process executed successfully with output: ${output.stdout}")
-                val envs = output.stdout
-                val regex = """(?<=^|\n)[^\n]+?""".toRegex()
-                val envList = regex.findAll(envs).map { it.value }.toSet().toList()
+                val envJSON = output.stdout
+                val gson = Gson()
+                val type = object : TypeToken<List<Any>>() {}.type
+                val parsedList: List<Any> = gson.fromJson(envJSON, type)
+                val netList =
+                    gson.fromJson<List<NetEnv>>(gson.toJson(parsedList[0]), object : TypeToken<List<NetEnv>>() {}.type)
+                val active = parsedList[1] as String
+
+                val envs = Envs(active, netList)
+
                 ApplicationManager.getApplication().invokeLater {
-                    EnvDialog(envList).show()
+                    EnvDialog(envs).show()
                 }
             } else {
                 println("Process failed with error: ${output?.stderr}")
             }
         }
-        project.suiExec.toExecutor()?.simpleCommand(project, "client", listOf("envs"), onProcessComplete)
+        project.suiExec.toExecutor()?.simpleCommand(project, "client", listOf("envs", "--json"), onProcessComplete)
     }
 
+    data class Envs(
+        val active: String,
+        val netList: List<NetEnv>
+    )
+
+    data class NetEnv(
+        val alias: String,
+        val rpc: String,
+        val ws: String?
+    )
 }

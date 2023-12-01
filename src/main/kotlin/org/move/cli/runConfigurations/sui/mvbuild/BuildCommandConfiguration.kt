@@ -10,7 +10,7 @@ class BuildCommandConfiguration(
     project: Project,
     factory: ConfigurationFactory
 ) : FunctionCallConfigurationBase(project, factory, BuildCommandConfigurationHandler()) {
-
+    override var command: String = "move build"
     override fun getConfigurationEditor(): FunctionCallConfigurationEditor<BuildCommandConfiguration> {
         val moveProject = project.moveProjects.allProjects.first()
         return FunctionCallConfigurationEditor(

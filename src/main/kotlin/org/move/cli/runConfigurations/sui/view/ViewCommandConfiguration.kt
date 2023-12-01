@@ -10,7 +10,7 @@ class ViewCommandConfiguration(
     project: Project,
     factory: ConfigurationFactory
 ) : FunctionCallConfigurationBase(project, factory, ViewCommandConfigurationHandler()) {
-
+    override var command: String = "move view"
     override fun getConfigurationEditor(): FunctionCallConfigurationEditor<ViewCommandConfiguration> {
         val moveProject = project.moveProjects.allProjects.first()
         val editor = FunctionCallConfigurationEditor<ViewCommandConfiguration>(

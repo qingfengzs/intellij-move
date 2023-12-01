@@ -23,7 +23,7 @@ class SuiCliExecutor(val location: Path) {
         project: Project,
         owner: Disposable,
         alias: String,
-        rpc:String,
+        rpc: String,
     ): MvProcessResult<ProcessOutput> {
         if (!isUnitTestMode) {
             checkIsBackgroundThread()
@@ -32,7 +32,7 @@ class SuiCliExecutor(val location: Path) {
             "client new-env ",
             arguments = listOf(
                 "--alias", alias,
-                "--rpc",rpc
+                "--rpc", rpc
             ),
             workingDirectory = project.root
         )
@@ -59,7 +59,7 @@ class SuiCliExecutor(val location: Path) {
 
     fun simpleCommand(
         project: Project,
-        subCommand:String,
+        subCommand: String,
         args: List<String>,
         onComplete: (ProcessOutput?) -> Unit
     ) {
@@ -87,6 +87,8 @@ class SuiCliExecutor(val location: Path) {
             "move",
             listOf(
                 "new",
+                "--path",
+                rootDirectory.path,
                 packageName,
             ),
             workingDirectory = project.root
@@ -117,7 +119,7 @@ class SuiCliExecutor(val location: Path) {
     }
 
     companion object {
-//        fun fromProject(project: Project): AptosCliExecutor? = project.aptosPath?.let { AptosCliExecutor(it) }
+        //        fun fromProject(project: Project): AptosCliExecutor? = project.aptosPath?.let { AptosCliExecutor(it) }
         fun fromProject(project: Project): SuiCliExecutor? = project.suiExec.toExecutor()
 
         data class GeneratedFilesHolder(val manifest: VirtualFile)

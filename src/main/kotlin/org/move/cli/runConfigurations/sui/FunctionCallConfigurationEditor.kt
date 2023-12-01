@@ -136,14 +136,6 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
                         functionCallPanel.reset(moveProject)
                     }
             }
-            row("Account") {
-                cell(accountComboBox)
-                    .align(AlignX.FILL)
-//                    .horizontalAlign(HorizontalAlign.FILL)
-                    .whenItemSelectedFromUi {
-                        signerAccount = it
-                    }
-            }
             separator()
             row {
                 cell(functionCallPanel)
@@ -157,12 +149,12 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
     }
 
     fun fillAccountsComboBox() {
-        accountComboBox.removeAllItems()
-        val accounts = moveProject.suiConfigYaml?.profiles.orEmpty()
-        accounts.forEach { accountName ->
-            accountComboBox.addItem(accountName)
-        }
-        accountComboBox.isEnabled = accountComboBox.model.size > 1
+//        accountComboBox.removeAllItems()
+//        val accounts = moveProject.suiConfigYaml?.profiles.orEmpty()
+//        accounts.forEach { accountName ->
+//            accountComboBox.addItem(accountName)
+//        }
+//        accountComboBox.isEnabled = accountComboBox.model.size > 1
     }
 
 //    private fun validateEditor() {

@@ -1,6 +1,7 @@
 package org.move.cli.settings
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
@@ -38,7 +39,7 @@ class SuiSettingsPanel(
     data class PanelData(val suiExec: SuiExec)
 
     var panelData: PanelData
-        get() = PanelData(suiExec)
+        get() = PanelData(SuiExec.LocalPath(localPathField.text))
         set(value) {
             when (value.suiExec) {
                 is SuiExec.Bundled -> localPathField.text = value.suiExec.execPath
@@ -47,7 +48,7 @@ class SuiSettingsPanel(
             onSuiExecUpdate("set")
         }
 
-    var suiExec: SuiExec = SuiExec.Bundled
+    var suiExec: SuiExec = SuiExec.LocalPath(localPathField.text)
 
     fun attachTo(layout: Panel) = with(layout) {
         // Don't use `Project.toolchain` or `Project.rustSettings` here because
@@ -132,6 +133,11 @@ class SuiSettingsPanel(
         println(source + ":" + suiExecPath)
         versionUpdateDebouncer.run(
             onPooledThread = {
+                // send path change topic
+                val bus = ApplicationManager.getApplication().messageBus
+                val publisher = bus.syncPublisher(MvApplicationSettingService.MOVE_APPLICATION_SETTINGS_TOPIC)
+                publisher.suiCliPathChanged(SuiCliPathSettingsChangedEvent(panelData, panelData))
+
                 SuiExec.getVersion(suiExecPath)
             },
             onUiThread = { version ->
@@ -143,6 +149,7 @@ class SuiSettingsPanel(
 
 
     override fun dispose() {
+        println("dispose panelData")
         Disposer.dispose(localPathField)
     }
 }

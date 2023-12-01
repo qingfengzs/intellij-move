@@ -8,7 +8,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.PlatformProjectOpenProcessor
 import com.intellij.projectImport.ProjectOpenProcessor
 import org.move.cli.runConfigurations.addDefaultBuildRunConfiguration
-import org.move.cli.runConfigurations.sui.SuiCliExecutor
 import org.move.cli.settings.MoveProjectSettingsService
 import org.move.cli.settings.moveSettings
 import org.move.ide.MoveIcons
@@ -39,6 +38,7 @@ class SuiProjectOpenProcessor : ProjectOpenProcessor() {
             forceOpenInNewFrame
         )?.also { it ->
             StartupManager.getInstance(it).runAfterOpened {
+                println("open project")
                 // create default build configuration if it doesn't exist
                 if (it.suiBuildRunConfigurations().isEmpty()) {
                     val isEmpty = it.suiRunConfigurations().isEmpty()
@@ -47,9 +47,7 @@ class SuiProjectOpenProcessor : ProjectOpenProcessor() {
                 val defaultProjectSettings = ProjectManager.getInstance().defaultMoveSettings
                 it.moveSettings.modify {
                     val suiPath = defaultProjectSettings?.state?.suiPath ?: ""
-                    it.suiPath = if (suiPath == "") {
-                        SuiCliExecutor.suggestPath().toString()
-                    } else suiPath
+                    it.suiPath = suiPath
                 }
 
                 // opens Move.toml file
