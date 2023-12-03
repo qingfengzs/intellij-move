@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.RefactoringFactory
 import org.move.ide.inspections.DiagnosticFix
-import org.move.openapiext.nonBlocking
+import org.sui.openapiext.nonBlocking
 
 /**
  * Fix that renames the given element.

@@ -17,9 +17,9 @@ import org.move.lang.core.psi.*
 import org.move.lang.core.psi.ext.ancestorOrSelf
 import org.move.lang.core.psi.ext.childrenOfType
 import org.move.lang.core.psi.ext.modules
-import org.move.openapiext.resolveAbsPath
-import org.move.openapiext.toPsiFile
 import org.move.stdext.chain
+import org.sui.openapiext.resolveAbsPath
+import org.sui.openapiext.toPsiFile
 import org.toml.lang.psi.TomlFile
 import java.nio.file.Path
 

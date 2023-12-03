@@ -3,7 +3,7 @@
  * found in the LICENSE file.
  */
 
-package org.move.openapiext
+package org.sui.openapiext
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -38,8 +38,8 @@ import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.concurrency.AppExecutorUtil
 import org.jdom.Element
 import org.move.lang.toNioPathOrNull
-import org.move.openapiext.common.isHeadlessEnvironment
-import org.move.openapiext.common.isUnitTestMode
+import org.sui.openapiext.common.isHeadlessEnvironment
+import org.sui.openapiext.common.isUnitTestMode
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.Callable

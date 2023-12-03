@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.concurrency.AppExecutorUtil
 import org.move.lang.core.psi.ext.startOffset
-import org.move.openapiext.common.isUnitTestMode
+import org.sui.openapiext.common.isUnitTestMode
 import java.util.concurrent.Callable
 import java.util.concurrent.Executor
 

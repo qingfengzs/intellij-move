@@ -9,7 +9,7 @@ import com.intellij.psi.NavigatablePsiElement
 import org.move.lang.MoveFile
 import org.move.lang.core.psi.*
 import org.move.lang.core.psi.ext.*
-import org.move.openapiext.common.isUnitTestMode
+import org.sui.openapiext.common.isUnitTestMode
 
 class MvStructureViewTreeElement(val element: NavigatablePsiElement): StructureViewTreeElement,
                                                                       Queryable {

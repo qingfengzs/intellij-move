@@ -9,7 +9,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.layout.ComponentPredicate
 import com.intellij.util.Urls
-import org.move.openapiext.pathField
+import org.sui.openapiext.pathField
 
 class AptosInitSettingsPanel(val panelEnabled: ComponentPredicate) : Disposable {
     private val privateKeyPathField =

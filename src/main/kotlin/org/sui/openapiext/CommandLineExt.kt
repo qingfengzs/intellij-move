@@ -1,4 +1,4 @@
-package org.move.openapiext
+package org.sui.openapiext
 
 /*
  * Use of this source code is governed by the MIT license that can be

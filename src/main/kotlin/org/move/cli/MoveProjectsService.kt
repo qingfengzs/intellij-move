@@ -30,11 +30,11 @@ import org.move.cli.settings.MoveSettingsListener
 import org.move.cli.settings.debugErrorOrFallback
 import org.move.lang.core.psi.ext.elementType
 import org.move.lang.toNioPathOrNull
-import org.move.openapiext.common.isUnitTestMode
-import org.move.openapiext.toVirtualFile
 import org.move.stdext.AsyncValue
 import org.move.stdext.IndexEntry
 import org.move.stdext.MoveProjectsIndex
+import org.sui.openapiext.common.isUnitTestMode
+import org.sui.openapiext.toVirtualFile
 import java.io.File
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture

@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFile
 import org.move.cli.moveProjects
 import org.move.lang.MoveFile
 import org.move.lang.core.psi.MvVisitor
-import org.move.openapiext.common.isUnitTestMode
+import org.sui.openapiext.common.isUnitTestMode
 
 abstract class MvLocalInspectionTool : LocalInspectionTool() {
     final override fun buildVisitor(

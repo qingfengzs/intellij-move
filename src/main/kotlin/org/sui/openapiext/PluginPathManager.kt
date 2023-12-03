@@ -1,4 +1,4 @@
-package org.move.openapiext
+package org.sui.openapiext
 
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.plugins.IdeaPluginDescriptor

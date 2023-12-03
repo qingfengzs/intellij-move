@@ -1,4 +1,4 @@
-package org.move.openapiext
+package org.sui.openapiext
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.ex.EditorEx

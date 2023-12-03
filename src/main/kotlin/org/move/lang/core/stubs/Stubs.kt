@@ -10,10 +10,10 @@ import org.move.lang.core.types.StubAddress
 import org.move.lang.core.types.deserializeStubAddress
 import org.move.lang.core.types.psiStubAddress
 import org.move.lang.core.types.serializeStubAddress
-import org.move.openapiext.readNameAsString
-import org.move.openapiext.readUTFFastAsNullable
-import org.move.openapiext.writeUTFFastAsNullable
 import org.move.stdext.makeBitMask
+import org.sui.openapiext.readNameAsString
+import org.sui.openapiext.readUTFFastAsNullable
+import org.sui.openapiext.writeUTFFastAsNullable
 
 interface MvNamedStub {
     val name: String?

@@ -11,13 +11,13 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.intellij.lang.annotations.Language
 import org.move.lang.core.psi.MvNamedElement
 import org.move.lang.core.resolve.ref.MvReferenceElement
-import org.move.openapiext.document
-import org.move.openapiext.toPsiFile
-import org.move.openapiext.toVirtualFile
 import org.move.utils.tests.FileTreeBuilder
 import org.move.utils.tests.MvProjectTestBase
 import org.move.utils.tests.TestProject
 import org.move.utils.tests.base.findElementWithDataAndOffsetInEditor
+import org.sui.openapiext.document
+import org.sui.openapiext.toPsiFile
+import org.sui.openapiext.toVirtualFile
 import kotlin.math.min
 
 abstract class ResolveProjectTestCase : MvProjectTestBase() {

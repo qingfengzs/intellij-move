@@ -7,8 +7,8 @@ import com.intellij.psi.tree.TokenSet.orSet
 import org.move.lang.MoveFile
 import org.move.lang.MvElementTypes.*
 import org.move.lang.core.psi.*
-import org.move.openapiext.document
-import org.move.openapiext.getOffsetPosition
+import org.sui.openapiext.document
+import org.sui.openapiext.getOffsetPosition
 import com.intellij.psi.tree.TokenSet.create as ts
 
 

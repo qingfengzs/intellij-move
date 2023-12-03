@@ -8,8 +8,8 @@ import com.intellij.task.*
 import org.jetbrains.concurrency.Promise
 import org.jetbrains.concurrency.resolvedPromise
 import org.move.cli.moveProjectRoot
-import org.move.openapiext.suiBuildRunConfigurations
-import org.move.openapiext.runManager
+import org.sui.openapiext.runManager
+import org.sui.openapiext.suiBuildRunConfigurations
 
 @Suppress("UnstableApiUsage")
 class AptosBuildTaskRunner : ProjectTaskRunner() {

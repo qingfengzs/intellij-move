@@ -7,10 +7,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import org.move.cli.Consts
 import org.move.cli.settings.aptosExec
 import org.move.cli.settings.isValidExecutable
-import org.move.openapiext.*
-import org.move.openapiext.common.isUnitTestMode
 import org.move.stdext.RsResult
 import org.move.stdext.unwrapOrElse
+import org.sui.openapiext.*
+import org.sui.openapiext.common.isUnitTestMode
 import java.nio.file.Path
 
 class AptosCliExecutor(val location: Path) {

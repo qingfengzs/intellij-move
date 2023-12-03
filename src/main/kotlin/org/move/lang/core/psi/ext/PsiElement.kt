@@ -15,7 +15,7 @@ import com.intellij.util.SmartList
 import org.move.lang.MoveFile
 import org.move.lang.core.psi.*
 import org.move.lang.core.stubs.impl.MvFileStub
-import org.move.openapiext.document
+import org.sui.openapiext.document
 
 fun PsiElement.hasChild(tokenType: IElementType): Boolean = childrenByType(tokenType).toList().isNotEmpty()
 

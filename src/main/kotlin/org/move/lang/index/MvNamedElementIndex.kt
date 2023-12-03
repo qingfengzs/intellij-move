@@ -7,8 +7,8 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.stubs.StubIndexKey
 import org.move.lang.core.psi.MvNamedElement
 import org.move.lang.core.stubs.impl.MvFileStub
-import org.move.openapiext.checkCommitIsNotInProgress
-import org.move.openapiext.getElements
+import org.sui.openapiext.checkCommitIsNotInProgress
+import org.sui.openapiext.getElements
 
 class MvNamedElementIndex : StringStubIndexExtension<MvNamedElement>() {
     override fun getVersion(): Int = MvFileStub.Type.stubVersion
@@ -16,7 +16,7 @@ class MvNamedElementIndex : StringStubIndexExtension<MvNamedElement>() {
 
     companion object {
         val KEY: StubIndexKey<String, MvNamedElement> =
-            StubIndexKey.createIndexKey("org.move.index.NamedElementIndex")
+            StubIndexKey.createIndexKey("org.sui.move.index.NamedElementIndex")
 
         fun getAllKeys(project: Project): Collection<String> {
             checkCommitIsNotInProgress(project)

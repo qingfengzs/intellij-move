@@ -1,4 +1,4 @@
-package org.move.openapiext
+package org.sui.openapiext
 
 import org.move.lang.core.psi.ext.ancestorStrict
 import org.toml.lang.psi.*

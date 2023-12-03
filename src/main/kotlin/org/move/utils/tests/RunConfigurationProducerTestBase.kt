@@ -8,8 +8,8 @@ import com.intellij.psi.PsiFileSystemItem
 import org.jdom.Element
 import org.move.cli.runConfigurations.legacy.MoveCommandConfiguration
 import org.move.lang.core.psi.ext.ancestorOrSelf
-import org.move.openapiext.toXmlString
 import org.move.utils.tests.base.TestCase
+import org.sui.openapiext.toXmlString
 
 abstract class RunConfigurationProducerTestBase(val testDir: String) : MvProjectTestBase() {
     protected fun checkOnFsItem(fsItem: PsiFileSystemItem) {

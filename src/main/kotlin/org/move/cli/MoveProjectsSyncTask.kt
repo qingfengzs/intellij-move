@@ -12,11 +12,11 @@ import org.move.cli.settings.moveSettings
 import org.move.cli.settings.suiPath
 import org.move.lang.toNioPathOrNull
 import org.move.lang.toTomlFile
-import org.move.openapiext.contentRoots
-import org.move.openapiext.resolveExisting
-import org.move.openapiext.toVirtualFile
 import org.move.stdext.iterateFiles
 import org.move.stdext.withExtended
+import org.sui.openapiext.contentRoots
+import org.sui.openapiext.resolveExisting
+import org.sui.openapiext.toVirtualFile
 import java.util.concurrent.CompletableFuture
 
 class MoveProjectsSyncTask(

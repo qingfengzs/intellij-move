@@ -1,4 +1,4 @@
-package org.move.openapiext
+package org.sui.openapiext
 
 import com.intellij.openapi.project.Project
 import org.move.cli.fsDepth

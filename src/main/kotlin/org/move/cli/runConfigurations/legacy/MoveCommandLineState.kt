@@ -8,7 +8,7 @@ import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
 import org.move.cli.MoveFileHyperlinkFilter
-import org.move.openapiext.withWorkDirectory
+import org.sui.openapiext.withWorkDirectory
 import java.nio.file.Path
 
 class MoveCommandLineState(

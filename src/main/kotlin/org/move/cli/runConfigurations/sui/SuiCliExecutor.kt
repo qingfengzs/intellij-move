@@ -8,12 +8,12 @@ import com.intellij.util.io.isDirectory
 import org.move.cli.Consts
 import org.move.cli.settings.isValidExecutable
 import org.move.cli.settings.suiExec
-import org.move.openapiext.*
-import org.move.openapiext.common.isUnitTestMode
 import org.move.stdext.RsResult
 import org.move.stdext.executableName
 import org.move.stdext.isExecutableFile
 import org.move.stdext.unwrapOrElse
+import org.sui.openapiext.*
+import org.sui.openapiext.common.isUnitTestMode
 import java.nio.file.Path
 import java.nio.file.Paths
 

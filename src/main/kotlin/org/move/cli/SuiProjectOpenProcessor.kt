@@ -13,9 +13,9 @@ import org.move.cli.settings.moveSettings
 import org.move.ide.MoveIcons
 import org.move.ide.newProject.openFile
 import org.move.ide.notifications.updateAllNotifications
-import org.move.openapiext.contentRoots
-import org.move.openapiext.suiBuildRunConfigurations
-import org.move.openapiext.suiRunConfigurations
+import org.sui.openapiext.contentRoots
+import org.sui.openapiext.suiBuildRunConfigurations
+import org.sui.openapiext.suiRunConfigurations
 import javax.swing.Icon
 
 class SuiProjectOpenProcessor : ProjectOpenProcessor() {

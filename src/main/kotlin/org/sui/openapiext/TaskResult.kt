@@ -3,7 +3,7 @@
  * found in the LICENSE file.
  */
 
-package org.move.openapiext
+package org.sui.openapiext
 
 sealed class TaskResult<out T> {
     class Ok<out T>(val value: T) : TaskResult<T>()

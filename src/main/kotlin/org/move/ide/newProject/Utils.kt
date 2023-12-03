@@ -5,7 +5,7 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.move.cli.runConfigurations.sui.SuiCliExecutor.Companion.GeneratedFilesHolder
-import org.move.openapiext.common.isHeadlessEnvironment
+import org.sui.openapiext.common.isHeadlessEnvironment
 
 fun Project.openFile(file: VirtualFile) = openFiles(GeneratedFilesHolder(file))
 

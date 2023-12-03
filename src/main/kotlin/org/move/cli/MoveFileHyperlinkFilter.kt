@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
-import org.move.openapiext.resolveAbsPath
+import org.sui.openapiext.resolveAbsPath
 import java.nio.file.Path
 
 class MoveFileHyperlinkFilter(

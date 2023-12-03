@@ -16,9 +16,9 @@ import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.ComboboxSpeedSearch
 import com.intellij.ui.components.fields.ExtendableTextComponent
 import com.intellij.ui.components.fields.ExtendableTextField
-import org.move.openapiext.addTextChangeListener
-import org.move.openapiext.pathAsPath
 import org.move.stdext.toPathOrNull
+import org.sui.openapiext.addTextChangeListener
+import org.sui.openapiext.pathAsPath
 import java.nio.file.Path
 import javax.swing.plaf.basic.BasicComboBoxEditor
 

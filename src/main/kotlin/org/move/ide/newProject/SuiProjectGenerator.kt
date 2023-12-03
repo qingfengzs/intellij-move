@@ -17,8 +17,8 @@ import org.move.cli.settings.SuiSettingsPanel
 import org.move.cli.settings.moveSettings
 import org.move.ide.MoveIcons
 import org.move.ide.notifications.updateAllNotifications
-import org.move.openapiext.computeWithCancelableProgress
 import org.move.stdext.unwrapOrThrow
+import org.sui.openapiext.computeWithCancelableProgress
 
 data class SuiProjectConfig(
     val panelData: SuiSettingsPanel.PanelData,

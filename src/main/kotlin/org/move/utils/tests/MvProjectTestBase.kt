@@ -12,10 +12,10 @@ import com.intellij.testFramework.fixtures.CodeInsightFixtureTestCase
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 import org.intellij.lang.annotations.Language
 import org.move.cli.moveProjects
-import org.move.openapiext.toPsiDirectory
-import org.move.openapiext.toPsiFile
-import org.move.openapiext.toVirtualFile
 import org.move.utils.tests.base.TestCase
+import org.sui.openapiext.toPsiDirectory
+import org.sui.openapiext.toPsiFile
+import org.sui.openapiext.toVirtualFile
 
 abstract class MvProjectTestBase : CodeInsightFixtureTestCase<ModuleFixtureBuilder<*>>() {
     var _testProject: TestProject? = null

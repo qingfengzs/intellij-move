@@ -11,7 +11,7 @@ import com.intellij.util.ui.JBUI
 import org.move.cli.moveProjects
 import org.move.cli.settings.SuiSettingsPanel
 import org.move.cli.settings.moveSettings
-import org.move.openapiext.isFeatureEnabled
+import org.sui.openapiext.isFeatureEnabled
 import javax.swing.JComponent
 
 class SuiConfigurationWizardStep(

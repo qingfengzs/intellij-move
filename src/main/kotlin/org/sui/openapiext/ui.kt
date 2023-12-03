@@ -1,4 +1,4 @@
-package org.move.openapiext
+package org.sui.openapiext
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ModalityState

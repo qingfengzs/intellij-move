@@ -13,7 +13,7 @@ import com.intellij.psi.PsiFile
 import org.move.lang.MoveFileBase
 import org.move.lang.MvElementTypes.*
 import org.move.lang.core.tokenSetOf
-import org.move.openapiext.isValidOffset
+import org.sui.openapiext.isValidOffset
 
 private val INVALID_INSIDE_TOKENS = tokenSetOf(L_BRACE, R_BRACE, SEMICOLON)
 

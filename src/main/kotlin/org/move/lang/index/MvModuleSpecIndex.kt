@@ -6,8 +6,8 @@ import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
 import org.move.lang.core.psi.MvModuleSpec
 import org.move.lang.core.stubs.impl.MvFileStub
-import org.move.openapiext.checkCommitIsNotInProgress
-import org.move.openapiext.getElements
+import org.sui.openapiext.checkCommitIsNotInProgress
+import org.sui.openapiext.getElements
 
 class MvModuleSpecIndex : StringStubIndexExtension<MvModuleSpec>() {
     override fun getVersion(): Int = MvFileStub.Type.stubVersion
@@ -15,7 +15,7 @@ class MvModuleSpecIndex : StringStubIndexExtension<MvModuleSpec>() {
 
     companion object {
         val KEY: StubIndexKey<String, MvModuleSpec> =
-            StubIndexKey.createIndexKey("org.move.index.ModuleSpecIndex")
+            StubIndexKey.createIndexKey("org.sui.move.index.ModuleSpecIndex")
 
         fun getElementsByModuleName(
             project: Project,

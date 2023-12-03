@@ -21,8 +21,8 @@ import io.sentry.protocol.Message
 import io.sentry.protocol.SentryId
 import org.move.cli.moveProjects
 import org.move.cli.settings.moveSettings
-import org.move.openapiext.project
 import org.move.stdext.asMap
+import org.sui.openapiext.project
 import java.awt.Component
 
 

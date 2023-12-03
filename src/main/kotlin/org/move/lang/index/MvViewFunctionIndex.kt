@@ -10,8 +10,8 @@ import org.move.cli.MoveProject
 import org.move.lang.core.psi.MvFunction
 import org.move.lang.core.stubs.impl.MvFileStub
 import org.move.lang.core.types.ItemQualName
-import org.move.openapiext.checkCommitIsNotInProgress
-import org.move.openapiext.getElements
+import org.sui.openapiext.checkCommitIsNotInProgress
+import org.sui.openapiext.getElements
 
 class MvViewFunctionIndex : StringStubIndexExtension<MvFunction>() {
     override fun getKey() = KEY
@@ -19,7 +19,7 @@ class MvViewFunctionIndex : StringStubIndexExtension<MvFunction>() {
 
     companion object {
         val KEY: StubIndexKey<String, MvFunction> =
-            StubIndexKey.createIndexKey("org.move.index.MvViewFunctionIndex")
+            StubIndexKey.createIndexKey("org.sui.move.index.MvViewFunctionIndex")
 
 //        fun getViewFunction(
 //            project: Project,

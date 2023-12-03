@@ -7,7 +7,7 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import org.move.lang.core.psi.MvElementImpl
 import org.move.lang.core.psi.MvNamedAddress
 import org.move.lang.core.resolve.ref.NamedAddressReference
-import org.move.openapiext.parentTable
+import org.sui.openapiext.parentTable
 import org.toml.lang.psi.TomlKey
 import org.toml.lang.psi.TomlKeySegment
 import org.toml.lang.psi.TomlKeyValue

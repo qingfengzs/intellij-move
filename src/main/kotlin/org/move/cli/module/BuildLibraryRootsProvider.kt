@@ -8,8 +8,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import org.move.cli.MoveProject
 import org.move.cli.moveProjects
 import org.move.ide.MoveIcons
-import org.move.openapiext.contentRoots
-import org.move.openapiext.toVirtualFile
+import org.sui.openapiext.contentRoots
+import org.sui.openapiext.toVirtualFile
 import javax.swing.Icon
 
 class MoveLibrary(

@@ -12,7 +12,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiElement
 import com.intellij.util.containers.ContainerUtil
 import org.jetbrains.annotations.TestOnly
-import org.move.openapiext.common.isUnitTestMode
+import org.sui.openapiext.common.isUnitTestMode
 
 abstract class MvAnnotatorBase : Annotator {
     final override fun annotate(element: PsiElement, holder: AnnotationHolder) {

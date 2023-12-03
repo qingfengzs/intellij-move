@@ -5,7 +5,7 @@ import org.move.lang.core.psi.ext.childrenOfType
 import org.move.lang.core.psi.ext.isTestOnly
 import org.move.lang.core.psi.ext.names
 import org.move.lang.core.types.ItemQualName
-import org.move.openapiext.checkWriteAccessAllowed
+import org.sui.openapiext.checkWriteAccessAllowed
 
 /**
  * Inserts a use declaration to the mod where [context] located for importing the selected candidate ([this]).

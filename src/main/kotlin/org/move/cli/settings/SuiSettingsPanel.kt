@@ -7,10 +7,10 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Panel
-import org.move.openapiext.UiDebouncer
-import org.move.openapiext.pathField
-import org.move.openapiext.showSettings
 import org.move.stdext.toPathOrNull
+import org.sui.openapiext.UiDebouncer
+import org.sui.openapiext.pathField
+import org.sui.openapiext.showSettings
 import java.io.File
 import java.nio.file.Paths
 

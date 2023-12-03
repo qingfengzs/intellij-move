@@ -3,8 +3,8 @@ package org.move.cli.settings
 import com.intellij.openapi.project.ProjectManager
 import org.move.cli.defaultMoveSettings
 import org.move.cli.runConfigurations.sui.SuiCliExecutor
-import org.move.openapiext.PluginPathManager
 import org.move.stdext.toPathOrNull
+import org.sui.openapiext.PluginPathManager
 import java.nio.file.Path
 
 sealed class SuiExec {

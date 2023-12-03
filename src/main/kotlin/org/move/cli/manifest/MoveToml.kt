@@ -2,8 +2,8 @@ package org.move.cli.manifest
 
 import com.intellij.openapi.project.Project
 import org.move.cli.*
-import org.move.openapiext.*
 import org.move.stdext.chain
+import org.sui.openapiext.*
 import org.toml.lang.psi.TomlFile
 import java.nio.file.Path
 

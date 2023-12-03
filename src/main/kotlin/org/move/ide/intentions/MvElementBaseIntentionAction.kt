@@ -6,8 +6,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import org.move.openapiext.checkReadAccessAllowed
-import org.move.openapiext.checkWriteAccessAllowed
+import org.sui.openapiext.checkReadAccessAllowed
+import org.sui.openapiext.checkWriteAccessAllowed
 
 /**
  * A base class for implementing intentions: actions available via "light bulb" / `Alt+Enter`.

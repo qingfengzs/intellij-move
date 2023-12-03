@@ -11,10 +11,10 @@ import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.progress.impl.ProgressManagerImpl
 import com.intellij.openapi.project.DumbService
 import com.intellij.util.concurrency.QueueProcessor
-import org.move.openapiext.checkIsDispatchThread
-import org.move.openapiext.common.isHeadlessEnvironment
-import org.move.openapiext.common.isUnitTestMode
 import org.move.stdext.exhaustive
+import org.sui.openapiext.checkIsDispatchThread
+import org.sui.openapiext.common.isHeadlessEnvironment
+import org.sui.openapiext.common.isUnitTestMode
 import java.util.function.BiConsumer
 
 /** Inspired by [com.intellij.openapi.progress.BackgroundTaskQueue] */

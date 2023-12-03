@@ -2,7 +2,7 @@ package org.move.ide.refactoring.toml
 
 import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
-import org.move.openapiext.addressesTable
+import org.sui.openapiext.addressesTable
 import org.toml.lang.psi.TomlKeySegment
 
 class MvRenameAddressProcessor : RenamePsiElementProcessor() {

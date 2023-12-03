@@ -1,4 +1,4 @@
-package org.move.openapiext
+package org.sui.openapiext
 
 import com.intellij.execution.RunManager
 import com.intellij.openapi.options.Configurable

@@ -8,7 +8,7 @@ import org.move.lang.core.resolve.processQualItem
 import org.move.lang.core.types.ItemQualName
 import org.move.lang.index.MvNamedElementIndex
 import org.move.lang.moveProject
-import org.move.openapiext.common.isUnitTestMode
+import org.sui.openapiext.common.isUnitTestMode
 
 data class ImportCandidate(val element: MvQualNamedElement, val qualName: ItemQualName)
 

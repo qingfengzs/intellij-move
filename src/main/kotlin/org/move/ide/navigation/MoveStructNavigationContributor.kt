@@ -8,7 +8,7 @@ import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
 import org.move.lang.core.psi.MvNamedElement
 import org.move.lang.core.psi.MvStruct
-import org.move.openapiext.allMoveFiles
+import org.sui.openapiext.allMoveFiles
 
 class MvStructNavigationContributor : ChooseByNameContributorEx {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {

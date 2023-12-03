@@ -1,8 +1,8 @@
 package org.move.cli
 
 import org.move.lang.core.types.AddressLit
-import org.move.openapiext.singleSegmentOrNull
-import org.move.openapiext.stringValue
+import org.sui.openapiext.singleSegmentOrNull
+import org.sui.openapiext.stringValue
 import org.toml.lang.psi.TomlKeySegment
 import org.toml.lang.psi.TomlKeyValue
 

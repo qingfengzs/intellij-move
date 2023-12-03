@@ -8,18 +8,18 @@ import com.intellij.psi.search.GlobalSearchScopes
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
-import org.move.cli.manifest.SuiConfigYaml
 import org.move.cli.manifest.MoveToml
+import org.move.cli.manifest.SuiConfigYaml
 import org.move.lang.MoveFile
 import org.move.lang.core.types.Address
 import org.move.lang.core.types.AddressLit
 import org.move.lang.toMoveFile
 import org.move.lang.toNioPathOrNull
-import org.move.openapiext.common.checkUnitTestMode
-import org.move.openapiext.contentRoots
 import org.move.stdext.chain
 import org.move.stdext.iterateMoveVirtualFiles
 import org.move.stdext.wrapWithList
+import org.sui.openapiext.common.checkUnitTestMode
+import org.sui.openapiext.contentRoots
 import java.nio.file.Path
 
 data class MoveProject(

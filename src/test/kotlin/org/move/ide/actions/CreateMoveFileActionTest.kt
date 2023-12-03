@@ -2,8 +2,8 @@ package org.move.ide.actions
 
 import com.intellij.ide.fileTemplates.FileTemplateManager
 import org.intellij.lang.annotations.Language
-import org.move.openapiext.toPsiDirectory
 import org.move.utils.tests.MvProjectTestBase
+import org.sui.openapiext.toPsiDirectory
 
 class CreateMoveFileActionTest : MvProjectTestBase() {
     fun `test create module from template`() {

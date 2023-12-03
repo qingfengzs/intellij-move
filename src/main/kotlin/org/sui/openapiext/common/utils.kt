@@ -1,4 +1,4 @@
-package org.move.openapiext.common
+package org.sui.openapiext.common
 
 import com.intellij.openapi.application.ApplicationManager
 

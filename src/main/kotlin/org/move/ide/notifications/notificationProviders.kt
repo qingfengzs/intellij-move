@@ -14,8 +14,8 @@ import org.move.cli.settings.MoveSettingsListener
 import org.move.cli.settings.PerProjectMoveConfigurable
 import org.move.cli.settings.moveSettings
 import org.move.lang.isMoveOrManifest
-import org.move.openapiext.common.isUnitTestMode
-import org.move.openapiext.showSettings
+import org.sui.openapiext.common.isUnitTestMode
+import org.sui.openapiext.showSettings
 import java.util.function.Function
 import javax.swing.JComponent
 

@@ -3,7 +3,7 @@
  * found in the LICENSE file.
  */
 
-package org.move.openapiext
+package org.sui.openapiext
 
 import com.fasterxml.jackson.core.JacksonException
 import com.intellij.execution.ExecutionException

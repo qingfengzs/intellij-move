@@ -1,4 +1,4 @@
-package org.move.openapiext
+package org.sui.openapiext
 
 import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.CommonDataKeys

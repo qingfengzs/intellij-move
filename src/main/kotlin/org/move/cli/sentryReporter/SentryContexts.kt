@@ -2,9 +2,9 @@ package org.move.cli.sentryReporter
 
 import org.move.cli.MoveProject
 import org.move.cli.manifest.TomlDependency
-import org.move.openapiext.getTable
-import org.move.openapiext.getTablesByFirstSegment
-import org.move.openapiext.syntheticLibraries
+import org.sui.openapiext.getTable
+import org.sui.openapiext.getTablesByFirstSegment
+import org.sui.openapiext.syntheticLibraries
 
 @Suppress("PropertyName")
 data class MoveTomlContext(

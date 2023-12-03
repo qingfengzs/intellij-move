@@ -19,11 +19,11 @@ import org.intellij.lang.annotations.Language
 import org.move.cli.manifest.TomlDependency
 import org.move.lang.core.psi.ext.ancestorStrict
 import org.move.lang.core.resolve.ref.MvReferenceElement
-import org.move.openapiext.document
-import org.move.openapiext.fullyRefreshDirectory
-import org.move.openapiext.toPsiFile
 import org.move.utils.tests.resolve.TestResolveResult
 import org.move.utils.tests.resolve.checkResolvedFile
+import org.sui.openapiext.document
+import org.sui.openapiext.fullyRefreshDirectory
+import org.sui.openapiext.toPsiFile
 
 typealias TreeBuilder = FileTreeBuilder.() -> Unit
 

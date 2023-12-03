@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.util.text.findTextRange
 import org.move.ide.annotator.MvAnnotatorBase
-import org.move.openapiext.stringValue
+import org.sui.openapiext.stringValue
 import org.toml.lang.psi.TomlTable
 
 class MoveTomlErrorAnnotator : MvAnnotatorBase() {

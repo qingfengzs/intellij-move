@@ -20,8 +20,8 @@ import org.move.lang.core.resolve.mslLetScope
 import org.move.lang.core.resolve.processFileItems
 import org.move.lang.core.resolve.ref.MvReferenceElement
 import org.move.lang.core.resolve.ref.Visibility
-import org.move.openapiext.common.checkUnitTestMode
-import org.move.openapiext.runWriteCommandAction
+import org.sui.openapiext.common.checkUnitTestMode
+import org.sui.openapiext.runWriteCommandAction
 
 class AutoImportFix(element: MvReferenceElement) : DiagnosticFix<MvReferenceElement>(element), HighPriorityAction {
 

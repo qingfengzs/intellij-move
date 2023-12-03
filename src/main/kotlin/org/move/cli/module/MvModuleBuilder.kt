@@ -18,8 +18,8 @@ import org.move.cli.runConfigurations.addDefaultBuildRunConfiguration
 import org.move.cli.runConfigurations.sui.SuiCliExecutor
 import org.move.cli.settings.SuiSettingsPanel
 import org.move.ide.newProject.openFile
-import org.move.openapiext.computeWithCancelableProgress
 import org.move.stdext.unwrapOrThrow
+import org.sui.openapiext.computeWithCancelableProgress
 
 class MvModuleBuilder : ModuleBuilder() {
     override fun getModuleType(): ModuleType<*> = MvModuleType.INSTANCE
