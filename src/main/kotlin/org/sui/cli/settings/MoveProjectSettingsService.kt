@@ -35,7 +35,7 @@ private const val settingsServiceName: String = "MoveProjectSettingsService_Sui"
     name = settingsServiceName,
     storages = [
         Storage(StoragePathMacros.WORKSPACE_FILE),
-        Storage("misc.xml", deprecated = true)
+        Storage("sui-misc.xml", deprecated = true)
     ]
 )
 class MoveProjectSettingsService(private val project: Project) : PersistentStateComponent<Element> {
