@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.util.CachedValuesManager
 import org.sui.lang.core.psi.*
 
-fun MvSpecCodeBlock.builtinSpecConsts(): List<MvSuiConst> {
+fun MvSpecCodeBlock.builtinSpecConsts(): List<MvConst> {
     return CachedValuesManager.getProjectPsiDependentCache(this) {
         val psiFactory = it.project.psiFactory
         listOf(

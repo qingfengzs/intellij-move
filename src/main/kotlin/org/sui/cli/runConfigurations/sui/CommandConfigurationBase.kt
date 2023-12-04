@@ -25,7 +25,7 @@ abstract class CommandConfigurationBase(
     LocatableConfigurationBase<SuiCommandLineState>(project, factory),
     RunConfigurationWithSuppressedDefaultDebugAction {
 
-    abstract var command: String
+    var command: String = ""
     var workingDirectory: Path? = null
     var environmentVariables: EnvironmentVariablesData = EnvironmentVariablesData.DEFAULT
 
@@ -45,12 +45,7 @@ abstract class CommandConfigurationBase(
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): SuiCommandLineState? {
         return clean().ok?.let { stateConfig ->
-//            AptosCommandLineState(environment, stateConfig.aptosPath, stateConfig.commandLine)
-//            if (command.startsWith("move test")) {
-//                AptosTestCommandLineState(environment, stateConfig.aptosPath, stateConfig.commandLine)
-//            } else {
             SuiCommandLineState(environment, stateConfig.suiPath, stateConfig.commandLine)
-//            }
         }
     }
 

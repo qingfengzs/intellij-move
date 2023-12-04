@@ -16,7 +16,7 @@ class MvStructureViewTreeElement(val element: NavigatablePsiElement): StructureV
         get() {
             return when (element) {
                 is MvFunction -> element.visibility != FunctionVisibility.PRIVATE
-                is MvSuiConst -> false
+                is MvConst -> false
                 else -> true
             }
         }

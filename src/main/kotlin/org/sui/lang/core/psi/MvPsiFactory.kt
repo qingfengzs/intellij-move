@@ -76,12 +76,12 @@ class MvPsiFactory(val project: Project) {
 //    fun tryCreateExpression(text: CharSequence): MvExpr? =
 //        createFromText("module 0x1::_DummyModule { fun m() { let _ = $text; } }")
 
-    fun const(text: String): MvSuiConst =
+    fun const(text: String): MvConst =
         createFromText("module 0x1::_DummyModule { $text }")
             ?: error("Failed to create const")
 
     @Suppress("InvalidModuleDeclaration")
-    fun builtinConst(text: String): MvSuiConst =
+    fun builtinConst(text: String): MvConst =
         createFromText("module spec_builtins { $text }") ?: error("Failed to create const")
 
     inline fun <reified T : MvExpr> expr(text: String): T =

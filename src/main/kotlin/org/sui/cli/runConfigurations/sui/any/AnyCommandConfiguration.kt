@@ -11,7 +11,6 @@ class AnyCommandConfiguration(
 ) :
     CommandConfigurationBase(project, factory) {
 
-    override var command: String = ""
     init {
         workingDirectory = if (!project.isDefault) {
             project.moveProjects.allProjects.firstOrNull()?.contentRootPath

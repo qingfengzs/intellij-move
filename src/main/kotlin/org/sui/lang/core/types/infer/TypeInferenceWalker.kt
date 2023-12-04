@@ -297,7 +297,7 @@ class TypeInferenceWalker(
         val item = refExpr.path.reference?.resolveWithAliases() ?: return TyUnknown
         val ty = when (item) {
             is MvBindingPat -> ctx.getPatType(item)
-            is MvSuiConst -> item.type?.loweredType(msl) ?: TyUnknown
+            is MvConst -> item.type?.loweredType(msl) ?: TyUnknown
             is MvGlobalVariableStmt -> item.type?.loweredType(true) ?: TyUnknown
             is MvStructField -> item.type?.loweredType(msl) ?: TyUnknown
             // only occurs in the invalid code statements

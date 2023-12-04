@@ -16,7 +16,7 @@ class ItemTypeComparator: Comparator<MvStructureViewTreeElement> {
     private fun getIntKind(treeElement: MvStructureViewTreeElement): Int {
         val element = treeElement.element
         return when (element) {
-            is MvSuiConst -> 0
+            is MvConst -> 0
             is MvStruct -> 1
             is MvFunction -> 2
             is MvSchema -> 3

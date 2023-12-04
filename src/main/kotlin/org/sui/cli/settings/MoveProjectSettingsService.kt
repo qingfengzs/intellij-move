@@ -28,7 +28,7 @@ interface MoveSettingsListener {
     fun moveSettingsChanged(e: MoveSettingsChangedEvent)
 }
 
-private const val settingsServiceName: String = "MoveProjectSettingsService_1"
+private const val settingsServiceName: String = "MoveProjectSettingsService_Sui"
 
 @Service
 @State(

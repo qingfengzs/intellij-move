@@ -12,7 +12,7 @@ import org.sui.openapiext.runManager
 import org.sui.openapiext.suiBuildRunConfigurations
 
 @Suppress("UnstableApiUsage")
-class AptosBuildTaskRunner : ProjectTaskRunner() {
+class SuiBuildTaskRunner : ProjectTaskRunner() {
     override fun canRun(projectTask: ProjectTask): Boolean {
         return projectTask is ModuleBuildTask && projectTask.module.moveProjectRoot != null
     }

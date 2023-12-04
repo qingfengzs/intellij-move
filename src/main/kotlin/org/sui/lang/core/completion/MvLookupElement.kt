@@ -62,7 +62,7 @@ fun lookupProperties(element: MvNamedElement, context: CompletionContext): Looku
         val itemTy = when (element) {
             is MvFunctionLike -> element.declaredType(msl).retType
             is MvStruct -> element.declaredType(msl)
-            is MvSuiConst -> element.type?.loweredType(msl) ?: TyUnknown
+            is MvConst -> element.type?.loweredType(msl) ?: TyUnknown
             is MvBindingPat -> {
                 val inference = element.inference(msl)
                 // sometimes type inference won't be able to catch up with the completion, and this line crashes,

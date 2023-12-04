@@ -105,7 +105,7 @@ fun MvNamedElement.createBaseLookupElement(ns: Set<Namespace>): LookupElementBui
         is MvStructField -> this.createLookupElementWithIcon()
             .withTypeText(this.typeAnnotation?.type?.text)
 
-        is MvSuiConst -> {
+        is MvConst -> {
             val msl = this.isMsl()
             val constTy = this.type?.loweredType(msl) ?: TyUnknown
             this.createLookupElementWithIcon()

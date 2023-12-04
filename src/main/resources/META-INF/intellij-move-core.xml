@@ -263,7 +263,7 @@
         <moduleType id="MOVE_MODULE"
                     implementationClass="org.sui.cli.module.MvModuleType"/>
         <moduleBuilder builderClass="org.sui.cli.module.MvModuleBuilder"/>
-        <projectTaskRunner implementation="org.sui.cli.runConfigurations.AptosBuildTaskRunner"/>
+        <projectTaskRunner implementation="org.sui.cli.runConfigurations.SuiBuildTaskRunner"/>
 
         <projectOpenProcessor id="Move" implementation="org.sui.cli.SuiProjectOpenProcessor"/>
 
@@ -294,30 +294,37 @@
                 implementation="org.sui.ide.notifications.InvalidSuiBinaryNotification"/>
 
         <intentionAction>
+            <language>Sui Move</language>
             <className>org.sui.ide.intentions.RemoveCurlyBracesIntention</className>
             <category>Move</category>
         </intentionAction>
         <intentionAction>
+            <language>Sui Move</language>
             <className>org.sui.ide.intentions.InlineAddressBlockIntention</className>
             <category>Move</category>
         </intentionAction>
         <intentionAction>
+            <language>Sui Move</language>
             <className>org.sui.ide.intentions.ChopParameterListIntention</className>
             <category>Move</category>
         </intentionAction>
         <intentionAction>
+            <language>Sui Move</language>
             <className>org.sui.ide.intentions.ChopValueArgumentListIntention</className>
             <category>Move</category>
         </intentionAction>
         <intentionAction>
+            <language>Sui Move</language>
             <className>org.sui.ide.intentions.ChopAttrArgumentListIntention</className>
             <category>Move</category>
         </intentionAction>
         <intentionAction>
+            <language>Sui Move</language>
             <className>org.sui.ide.intentions.ChopStructLiteralIntention</className>
             <category>Move</category>
         </intentionAction>
         <intentionAction>
+            <language>Sui Move</language>
             <className>org.sui.ide.intentions.ChopStructPatIntention</className>
             <category>Move</category>
         </intentionAction>
@@ -339,7 +346,7 @@
     <actions>
         <action id="Sui.NewMoveFile"
                 class="org.sui.ide.actions.CreateMoveFileAction"
-                text="Move File"
+                text="Sui Move File"
                 description="Create new Move file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>

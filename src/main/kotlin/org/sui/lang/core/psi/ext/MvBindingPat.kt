@@ -22,7 +22,7 @@ abstract class MvBindingPatMixin(node: ASTNode) : MvMandatoryNameIdentifierOwner
     override fun getIcon(flags: Int): Icon =
         when (this.owner) {
             is MvFunctionParameter -> MoveIcons.PARAMETER
-            is MvSuiConst -> MoveIcons.CONST
+            is MvConst -> MoveIcons.CONST
             else -> MoveIcons.VARIABLE
         }
 
@@ -44,7 +44,7 @@ abstract class MvBindingPatMixin(node: ASTNode) : MvMandatoryNameIdentifierOwner
                 LocalSearchScope(function)
             }
             is MvSchemaFieldStmt -> super.getUseScope()
-            is MvSuiConst -> super.getUseScope()
+            is MvConst -> super.getUseScope()
             else -> super.getUseScope()
         }
     }

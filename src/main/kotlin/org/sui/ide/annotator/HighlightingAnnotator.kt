@@ -74,7 +74,7 @@ class HighlightingAnnotator : MvAnnotatorBase() {
         if (element is MvStructDotField) return MvColor.FIELD
         if (element is MvStructPatField) return MvColor.FIELD
         if (element is MvStructLitField) return MvColor.FIELD
-        if (element is MvSuiConst) return MvColor.CONSTANT
+        if (element is MvConst) return MvColor.CONSTANT
         if (element is MvModule) return MvColor.MODULE
         if (element is MvVectorLitExpr) return MvColor.VECTOR_LITERAL
 
@@ -136,7 +136,7 @@ class HighlightingAnnotator : MvAnnotatorBase() {
             is MvStructPat -> MvColor.STRUCT
             is MvRefExpr -> {
                 val item = path.reference?.resolve() ?: return null
-                if (item is MvSuiConst) {
+                if (item is MvConst) {
                     MvColor.CONSTANT
                 } else {
                     val msl = pathOwner.isMsl()
