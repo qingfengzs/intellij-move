@@ -37,7 +37,7 @@ import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.concurrency.AppExecutorUtil
 import org.jdom.Element
-import org.move.lang.toNioPathOrNull
+import org.sui.lang.toNioPathOrNull
 import org.sui.openapiext.common.isHeadlessEnvironment
 import org.sui.openapiext.common.isUnitTestMode
 import java.nio.file.Path

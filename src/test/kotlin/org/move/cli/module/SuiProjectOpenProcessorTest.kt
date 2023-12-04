@@ -1,9 +1,9 @@
-package org.move.cli.module
+package org.sui.cli.module
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.projectImport.ProjectOpenProcessor
-import org.move.cli.SuiProjectOpenProcessor
-import org.move.utils.tests.MvProjectTestBase
+import org.sui.cli.SuiProjectOpenProcessor
+import org.sui.utils.tests.MvProjectTestBase
 
 class SuiProjectOpenProcessorTest : MvProjectTestBase() {
     fun `test open project via directory with Move toml file`() {

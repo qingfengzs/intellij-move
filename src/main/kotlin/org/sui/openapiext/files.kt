@@ -1,12 +1,11 @@
 package org.sui.openapiext
 
 import com.intellij.openapi.project.Project
-import org.move.cli.fsDepth
-import org.move.cli.moveProjects
-import org.move.lang.MoveFile
+import org.sui.cli.fsDepth
+import org.sui.cli.moveProjects
 
-fun Project.allMoveFiles(): List<MoveFile> {
-    val files = mutableListOf<MoveFile>()
+fun Project.allMoveFiles(): List<org.sui.lang.MoveFile> {
+    val files = mutableListOf<org.sui.lang.MoveFile>()
     val visited = mutableSetOf<String>()
     // find Move.toml files in all project roots, remembering depth of those
     // then search all .move children of those files, with biggest depth first

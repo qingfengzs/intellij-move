@@ -1,5 +1,5 @@
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
-  <id>org.sui.move</id>
+    <id>org.sui.lang</id>
   <name>Sui Move Language</name>
 
   <vendor>MoveFuns</vendor>

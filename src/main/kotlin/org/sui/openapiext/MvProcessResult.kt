@@ -8,7 +8,7 @@ package org.sui.openapiext
 import com.fasterxml.jackson.core.JacksonException
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.process.ProcessOutput
-import org.move.stdext.RsResult
+import org.sui.stdext.RsResult
 
 typealias MvProcessResult<T> = RsResult<T, MvProcessExecutionException>
 

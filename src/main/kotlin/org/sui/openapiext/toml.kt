@@ -1,6 +1,6 @@
 package org.sui.openapiext
 
-import org.move.lang.core.psi.ext.ancestorStrict
+import org.sui.lang.core.psi.ext.ancestorStrict
 import org.toml.lang.psi.*
 import org.toml.lang.psi.ext.elementType
 

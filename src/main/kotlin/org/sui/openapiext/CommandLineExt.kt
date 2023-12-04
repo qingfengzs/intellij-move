@@ -17,9 +17,9 @@ import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.io.systemIndependentPath
-import org.move.cli.runConfigurations.MvCapturingProcessHandler
-import org.move.stdext.RsResult
-import org.move.stdext.unwrapOrElse
+import org.sui.cli.runConfigurations.MvCapturingProcessHandler
+import org.sui.stdext.RsResult
+import org.sui.stdext.unwrapOrElse
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path

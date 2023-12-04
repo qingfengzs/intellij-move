@@ -2,7 +2,7 @@ package org.sui.openapiext
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
-import org.move.stdext.exists
+import org.sui.stdext.exists
 import java.nio.file.Path
 import java.nio.file.Paths
 

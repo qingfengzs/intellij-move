@@ -1,9 +1,9 @@
-package org.move.cli.runConfigurations
+package org.sui.cli.runConfigurations
 
-import org.move.cli.settings.moveSettings
-import org.move.lang.core.psi.MvFunction
-import org.move.lang.core.psi.MvModule
-import org.move.utils.tests.RunConfigurationProducerTestBase
+import org.sui.cli.settings.moveSettings
+import org.sui.lang.core.psi.MvFunction
+import org.sui.lang.core.psi.MvModule
+import org.sui.utils.tests.RunConfigurationProducerTestBase
 import org.sui.openapiext.toPsiDirectory
 
 class TestCommandConfigurationProducerAny : RunConfigurationProducerTestBase("test") {
