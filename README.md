@@ -6,21 +6,25 @@
 
 Open in your IDE, search for _Sui Move Language_ and install the plugin.
 `Settings > Plugins > Marketplace`
+
 ## Features
 
 * Syntax highlighting
 * Code formatting
 * Go-to-definition
 * Type inference
-* `Move.toml` and `move` binary integration
+* Execute custom command
+* Some quick buttons
+* `sui` binary integration
 
 ## Dependencies
 
-For git dependencies specified in `Move.toml` file you need to manually run `move package build` to populate `build/` directory. 
+For git dependencies specified in `Move.toml` file you need to manually run `move package build` to populate `build/`
+directory.
 
 ## Compatible IDEs
 
-All Intellij-based IDEs starting from version 2022.3. For 2023.3 and below you can use old versions of the plugin.
+All Intellij-based IDEs starting from version 2022.3.
 
 ## Usage
 
@@ -52,6 +56,21 @@ The plugin features a dedicated ToolWindow with the following functionalities:
   ![img_3.png](docs/static/img_3.png) : allows switching between different network environments, such as from a
   development network
   to a test network.
+
+### Execute custom command:
+
+Click on `Edit Configurations` in the toolbar to configure custom commands. Click on the `+` in the top left corner,
+find `Sui Command`, and click to add a custom command.
+
+![img.png](docs/static/add-configure.png)
+
+In the configuration panel, you can set the name and command. After saving, you can click
+the ![img_2.png](docs/static/run-button.png) button in the
+toolbar to execute the command.
+
+> Note: Please make sure that the working directory is located in the current project directory.
+
+![img_1.png](docs/static/configure-panel.png)
 
 ## Notes
 

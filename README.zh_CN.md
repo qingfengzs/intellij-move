@@ -10,7 +10,9 @@
 - 代码格式化
 - 跳转到定义
 - 类型推断
-- Move.toml 和 move 二进制集成
+- 执行自定义命令
+- 一些快捷按钮
+- `sui` 二进制集成
 
 ## 依赖
 
@@ -18,7 +20,7 @@
 
 ## 兼容的 IDE
 
-从 2022.3 版本开始的所有基于 IntelliJ 的 IDE。对于 2023.3 及以下版本，你可以使用插件的旧版本。
+从 2022.3 版本开始的所有基于 IntelliJ 的 IDE。
 
 ## 使用方法
 
@@ -26,6 +28,7 @@
 
 打开 `Settings > Languages&Frameworks > Sui Move Language`，点击文件选择并选择有效的 sui cli 路径。
 然后版本标签将显示 sui cli 的版本。
+
 ![img.png](docs/static/select-sui-path.png)
 
 ### 使用 ToolWindow
@@ -48,6 +51,17 @@
 - 切换网络:
 
   ![img_3.png](docs/static/img_3.png)： 允许在不同网络环境之间切换，例如从开发网络切换到测试网络。
+
+### 执行自定义命令:
+
+点击工具栏中的`Edit Configurations` 来配置自定义命令,点击左上角的`+`，找到`Sui Command`并点击添加一个自定义命令
+![img.png](docs/static/add-configure.png)
+
+在配置面板中，你可以设置名称和命令。保存后，你可以点击工具栏中的![img_2.png](docs/static/run-button.png)按钮来执行命令。
+
+> 注意: 请确保`Working directory`设置为项目根目录。
+
+![img_1.png](docs/static/configure-panel.png)
 
 ## 注意事项
 
