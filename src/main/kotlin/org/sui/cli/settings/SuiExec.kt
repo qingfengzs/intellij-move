@@ -3,8 +3,8 @@ package org.sui.cli.settings
 import com.intellij.openapi.project.ProjectManager
 import org.sui.cli.defaultMoveSettings
 import org.sui.cli.runConfigurations.sui.SuiCliExecutor
-import org.sui.stdext.toPathOrNull
 import org.sui.openapiext.PluginPathManager
+import org.sui.stdext.toPathOrNull
 import java.nio.file.Path
 
 sealed class SuiExec {
@@ -52,8 +52,6 @@ sealed class SuiExec {
                         it.suiPath = suiExecPath.toString()
                         it.isValidExec = true
                     }
-                    val matchResultValue = matchResult.value
-                    println("match result:$matchResultValue")
                     return@let version
                 } else {
                     state = state.also { it.isValidExec = false }

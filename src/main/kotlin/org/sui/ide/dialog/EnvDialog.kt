@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
 import org.sui.cli.settings.suiExec
+import org.sui.common.NOTIFACATION_GROUP
 import org.sui.ide.actions.OpenSwitchEnvsDialogAction
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -68,6 +69,6 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
     }
 
     private fun showNotification(message: String) {
-        Notifications.Bus.notify(Notification("Sui Move Language", "Switch Env", message, NotificationType.INFORMATION))
+        Notifications.Bus.notify(Notification(NOTIFACATION_GROUP, "Switch Env", message, NotificationType.INFORMATION))
     }
 }

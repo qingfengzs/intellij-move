@@ -26,7 +26,7 @@ class MvLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
         }
     }
 
-    override fun getConfigurableDisplayName() = "Sui Move Language"
+    override fun getConfigurableDisplayName() = "Sui Move"
 
     override fun getCodeSample(settingsType: SettingsType): String =
         when (settingsType) {
@@ -57,7 +57,7 @@ class MvLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
     }
 }
 
-private fun sample(@org.intellij.lang.annotations.Language("Move") code: String) = code.trim()
+private fun sample(@org.intellij.lang.annotations.Language("Sui Move") code: String) = code.trim()
 
 private val INDENT_SAMPLE = sample(
     """

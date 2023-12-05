@@ -9,10 +9,12 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
 import org.sui.cli.settings.suiExec
+import org.sui.common.NOTIFACATION_GROUP
 import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
+
 
 class AddressDialog(var data: List<String>) : DialogWrapper(true) {
     init {
@@ -72,7 +74,7 @@ class AddressDialog(var data: List<String>) : DialogWrapper(true) {
         // 显示通知
         Notifications.Bus.notify(
             Notification(
-                "Sui Move Language",
+                NOTIFACATION_GROUP,
                 "Switch Address",
                 message,
                 NotificationType.INFORMATION

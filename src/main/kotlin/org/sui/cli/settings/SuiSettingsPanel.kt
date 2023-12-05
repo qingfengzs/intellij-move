@@ -7,10 +7,10 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Panel
-import org.sui.stdext.toPathOrNull
 import org.sui.openapiext.UiDebouncer
 import org.sui.openapiext.pathField
 import org.sui.openapiext.showSettings
+import org.sui.stdext.toPathOrNull
 import java.io.File
 import java.nio.file.Paths
 
@@ -130,21 +130,22 @@ class SuiSettingsPanel(
 
     private fun onSuiExecUpdate(source: String) {
         val suiExecPath = suiExec.execPath.toPathOrNull()
-        println(source + ":" + suiExecPath)
-        versionUpdateDebouncer.run(
-            onPooledThread = {
-                // send path change topic
-                val bus = ApplicationManager.getApplication().messageBus
-                val publisher = bus.syncPublisher(MvApplicationSettingService.MOVE_APPLICATION_SETTINGS_TOPIC)
-                publisher.suiCliPathChanged(SuiCliPathSettingsChangedEvent(panelData, panelData))
+        if (suiExecPath != null && suiExecPath.toString() != "") {
+            versionUpdateDebouncer.run(
+                onPooledThread = {
+                    // send path change topic
+                    val bus = ApplicationManager.getApplication().messageBus
+                    val publisher = bus.syncPublisher(MvApplicationSettingService.MOVE_APPLICATION_SETTINGS_TOPIC)
+                    publisher.suiCliPathChanged(SuiCliPathSettingsChangedEvent(panelData, panelData))
 
-                SuiExec.getVersion(suiExecPath)
-            },
-            onUiThread = { version ->
-                versionLabel.setVersion(version)
-                updateListener?.invoke()
-            }
-        )
+                    SuiExec.getVersion(suiExecPath)
+                },
+                onUiThread = { version ->
+                    versionLabel.setVersion(version)
+                    updateListener?.invoke()
+                }
+            )
+        }
     }
 
 

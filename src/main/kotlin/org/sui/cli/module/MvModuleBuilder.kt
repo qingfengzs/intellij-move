@@ -17,6 +17,7 @@ import org.sui.cli.defaultMoveSettings
 import org.sui.cli.runConfigurations.addDefaultBuildRunConfiguration
 import org.sui.cli.runConfigurations.sui.SuiCliExecutor
 import org.sui.cli.settings.SuiSettingsPanel
+import org.sui.common.NOTIFACATION_GROUP
 import org.sui.ide.newProject.openFile
 import org.sui.openapiext.computeWithCancelableProgress
 import org.sui.stdext.unwrapOrThrow
@@ -64,7 +65,7 @@ class MvModuleBuilder : ModuleBuilder() {
         } else {
             com.intellij.notification.Notifications.Bus.notify(
                 Notification(
-                    "Sui Move Language",
+                    NOTIFACATION_GROUP,
                     "Create Project Failed",
                     "The sui cli path is invalid",
                     NotificationType.ERROR

@@ -1,9 +1,13 @@
 package org.sui.ide.actions
 
 import com.intellij.execution.process.ProcessOutput
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import org.sui.cli.settings.suiExec
+import org.sui.common.NOTIFACATION_GROUP
 
 class GetGasAction : AnAction() {
 
@@ -15,15 +19,21 @@ class GetGasAction : AnAction() {
             if (output != null && output.exitCode == 0) {
                 println("Process executed successfully with output: ${output.stdout}")
                 val stdout = output.stdout
-                var message = "";
-                message = if (!stdout.startsWith("No gas")) {
+                val message = if (!stdout.startsWith("No gas")) {
                     convertToHtmlTable(stdout)
                 } else {
                     stdout
                 }
                 println(message)
             } else {
-                println("Process failed with error: ${output?.stderr}")
+                Notifications.Bus.notify(
+                    Notification(
+                        NOTIFACATION_GROUP,
+                        "Switch address",
+                        "Execution failure, please check the sui cli path.",
+                        NotificationType.ERROR
+                    )
+                )
             }
         }
         project.suiExec.toExecutor()?.simpleCommand(project, "client", listOf("gas"), onProcessComplete)

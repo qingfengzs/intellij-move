@@ -272,7 +272,7 @@
         <projectConfigurable instance="org.sui.cli.settings.PerProjectMoveConfigurable"
                              displayName="Sui Move Language"
                              groupId="language"
-                             id="language.move"/>
+                             id="language.sui.move"/>
         <projectService serviceInterface="org.sui.utils.SuiProjectRootService"
                         serviceImplementation="org.sui.utils.SuiProjectRootServiceImpl"
                         testServiceImplementation="org.sui.utils.TestSuiProjectRootServiceImpl"/>

@@ -7,38 +7,36 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import org.sui.cli.settings.suiExec
-import org.sui.stdext.isExecutableFile
-import org.sui.stdext.toPathOrNull
+import org.sui.common.NOTIFACATION_GROUP
+import org.sui.ide.utils.ChecCliPath.Companion.checkCliPath
 
+@Suppress("DEPRECATION")
 class GetActiveAddressAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
 
         val project = e.project ?: return
-        // check sui cli installed
-        val path = project.suiExec.execPath.toPathOrNull()
-        if (path == null || !path.isExecutableFile()) {
-            Notifications.Bus.notify(
-                Notification(
-                    "Sui Move Language",
-                    "No sui cli can found",
-                    "Please set sui cli first.",
-                    NotificationType.WARNING
-                )
-            )
-        } else {
+
+
+        if (checkCliPath(project)) {
             val onProcessComplete: (ProcessOutput?) -> Unit = { output ->
                 if (output != null && output.exitCode == 0) {
-                    println("Process executed successfully with output: ${output.stdout}")
                     Notifications.Bus.notify(
                         Notification(
-                            "Sui Move Language",
+                            NOTIFACATION_GROUP,
                             "Active address",
                             output.stdout,
                             NotificationType.INFORMATION
                         )
                     )
                 } else {
-                    println("Process failed with error: ${output?.stderr}")
+                    Notifications.Bus.notify(
+                        Notification(
+                            NOTIFACATION_GROUP,
+                            "Active address",
+                            "Execution failure, please check the sui cli path.",
+                            NotificationType.ERROR
+                        )
+                    )
                 }
             }
             project.suiExec.toExecutor()?.simpleCommand(project, "client", listOf("active-address"), onProcessComplete)

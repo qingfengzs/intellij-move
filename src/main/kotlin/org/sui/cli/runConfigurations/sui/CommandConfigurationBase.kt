@@ -10,11 +10,8 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsContexts
 import org.jdom.Element
-import org.sui.cli.readPath
-import org.sui.cli.readString
+import org.sui.cli.*
 import org.sui.cli.runConfigurations.legacy.MoveCommandConfiguration
-import org.sui.cli.writePath
-import org.sui.cli.writeString
 import org.sui.stdext.exists
 import java.nio.file.Path
 
@@ -26,7 +23,11 @@ abstract class CommandConfigurationBase(
     RunConfigurationWithSuppressedDefaultDebugAction {
 
     var command: String = ""
-    var workingDirectory: Path? = null
+    var workingDirectory: Path? = if (!project.isDefault) {
+        project.moveProjects.allProjects.firstOrNull()?.contentRootPath
+    } else {
+        null
+    }
     var environmentVariables: EnvironmentVariablesData = EnvironmentVariablesData.DEFAULT
 
     override fun writeExternal(element: Element) {

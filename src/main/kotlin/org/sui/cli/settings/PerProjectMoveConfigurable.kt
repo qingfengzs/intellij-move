@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.panel
 class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Sui Move Language"),
                                                          SearchableConfigurable {
 
-    override fun getId(): String = "org.move.settings"
+    override fun getId(): String = "org.sui.lang.settings"
 
     private val settingsState: MoveProjectSettingsService.State = project.moveSettings.state
 
