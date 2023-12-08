@@ -1,6 +1,9 @@
 package org.sui.cli.toolwindow
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiFile
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.tree.StructureTreeModel
 import com.intellij.ui.treeStructure.CachingSimpleNode
@@ -138,11 +141,28 @@ class MoveProjectsTreeStructure(
         class Entrypoint(val function: MvFunction, parent: SimpleNode) : MoveSimpleNode(parent) {
             init {
                 icon = MoveIcons.FUNCTION
+                function.containingFile
             }
 
             override fun buildChildren(): Array<SimpleNode> = emptyArray()
             override fun getName(): String = function.qualName?.editorText() ?: "null"
             override fun toTestString(): String = "Entrypoint($name)"
+
+            fun getFile(): VirtualFile {
+                val psiFile: PsiFile = function.containingFile
+                return psiFile.virtualFile
+            }
+
+            fun getLine(): Int {
+                val document = PsiDocumentManager.getInstance(project).getDocument(function.containingFile)
+                return document?.getLineNumber(function.textOffset) ?: -1
+            }
+
+            fun getColumn(): Int {
+                val document = PsiDocumentManager.getInstance(project).getDocument(function.containingFile)
+                val lineStartOffset = document?.getLineStartOffset(getLine())
+                return if (lineStartOffset != null) function.textOffset - lineStartOffset else -1
+            }
         }
 
         class Views(val functions: List<MvFunction>, parent: SimpleNode) : MoveSimpleNode(parent) {

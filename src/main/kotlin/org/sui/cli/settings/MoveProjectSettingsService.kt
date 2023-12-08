@@ -4,7 +4,9 @@ import com.intellij.configurationStore.serializeObjectInto
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.psi.PsiManager
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializer
@@ -12,6 +14,7 @@ import org.jdom.Element
 import org.jetbrains.annotations.TestOnly
 import org.sui.stdext.exists
 import org.sui.stdext.isExecutableFile
+import java.awt.KeyboardFocusManager
 import java.nio.file.Path
 import kotlin.reflect.KProperty1
 

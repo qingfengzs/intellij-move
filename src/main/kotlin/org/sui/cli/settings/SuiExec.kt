@@ -36,26 +36,21 @@ sealed class SuiExec {
             }
 
         fun getVersion(suiExecPath: Path?): String? {
-            return suiExecPath?.let {
-                val version = SuiCliExecutor(it).version()
-                val regex = Regex("sui\\s+(\\d+\\.\\d+\\.\\d+(-[a-f0-9]+)?)")
-                val matchResult = version?.let { it1 -> regex.find(it1) }
-                var state = ProjectManager.getInstance().defaultProject.moveSettings.state
-                if (matchResult != null) {
-                    // update default setting
-                    val defaultMoveSettings = ProjectManager.getInstance().defaultMoveSettings
-                    defaultMoveSettings?.modify {
-                        it.suiPath = suiExecPath.toString()
-                        it.isValidExec = true
-                    }
-                    state = state.also {
-                        it.suiPath = suiExecPath.toString()
-                        it.isValidExec = true
-                    }
-                    return@let version
+            return suiExecPath?.let { path ->
+                val executor = SuiCliExecutor(path)
+                val version = executor.version()
+                val matchResult = Regex("sui\\s+(\\d+\\.\\d+\\.\\d+(-[a-f0-9]+)?)").find(version ?: "")
+                val isValid = matchResult != null
+                if (isValid) {
+                    version
                 } else {
-                    state = state.also { it.isValidExec = false }
-                    return@let ""
+                    ""
+                }.also { _ ->
+                    val project = ProjectManager.getInstance().defaultMoveSettings
+                    project?.modify {
+                        it.suiPath = path.toString()
+                        it.isValidExec = isValid
+                    }
                 }
             }
         }

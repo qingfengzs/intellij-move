@@ -11,6 +11,7 @@ fun prop(name: String): String =
     extra.properties[name] as? String
         ?: error("Property `$name` is not defined in gradle.properties for environment `$platformVersion`")
 
+
 val platformVersion = prop("shortPlatformVersion")
 val codeVersion = "1.0.0"
 val pluginVersion = "$codeVersion.$platformVersion"
