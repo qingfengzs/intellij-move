@@ -169,7 +169,7 @@
         <toolWindow id="Sui"
                     anchor="right"
                     factoryClass="org.sui.cli.toolwindow.SuiToolWindowFactory"
-                    icon="/icons/sui.svg"/>
+                    icon="/icons/move_logo.svg"/>
 
 
         <!--        <localInspection language="Sui Move" groupPath="Move" groupName="Naming"-->

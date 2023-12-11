@@ -11,7 +11,7 @@ class SuiConfigurationType :
         "SuiCommandConfiguration",
         "Sui Command",
         "Sui command execution",
-        NotNullLazyValue.createConstantValue(MoveIcons.SUI_ICON)
+        NotNullLazyValue.createConstantValue(MoveIcons.MOVE_LOGO)
     ) {
 
     init {

@@ -17,8 +17,8 @@ import org.sui.cli.settings.SuiSettingsPanel
 import org.sui.cli.settings.moveSettings
 import org.sui.ide.MoveIcons
 import org.sui.ide.notifications.updateAllNotifications
-import org.sui.stdext.unwrapOrThrow
 import org.sui.openapiext.computeWithCancelableProgress
+import org.sui.stdext.unwrapOrThrow
 
 data class SuiProjectConfig(
     val panelData: SuiSettingsPanel.PanelData,
@@ -30,7 +30,7 @@ class SuiProjectGenerator: DirectoryProjectGeneratorBase<SuiProjectConfig>(),
     private val disposable = service<PluginApplicationDisposable>()
 
     override fun getName() = "Sui"
-    override fun getLogo() = MoveIcons.SUI_LOGO
+    override fun getLogo() = MoveIcons.MOVE_LOGO
     override fun createPeer(): ProjectGeneratorPeer<SuiProjectConfig> = SuiProjectGeneratorPeer(disposable)
 
     override fun generateProject(
