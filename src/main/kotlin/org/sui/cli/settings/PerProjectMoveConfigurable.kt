@@ -3,10 +3,13 @@ package org.sui.cli.settings
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
+import com.intellij.ui.EditorNotifications
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
+import org.sui.cli.defaultMoveSettings
 
 class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Sui Move Language"),
                                                          SearchableConfigurable {
@@ -64,11 +67,23 @@ class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Sui 
         return panelData.suiExec.pathToSettingsFormat() != settingsState.suiPath
     }
 
+    /**
+     * This method is called when user clicks "Apply" button in settings dialog.
+     * It is also called on "OK" button click, but only if [isModified] returns true.
+     */
     override fun apply() {
         super.apply()
-        val newSettingsState = settingsState
-        newSettingsState.suiPath = suiSettingsPanel.panelData.suiExec.pathToSettingsFormat()
-        project.moveSettings.state = newSettingsState
-
+        if (isModified()) {
+            val newSettingsState = settingsState.copy()
+            // update project settings
+            newSettingsState.suiPath = suiSettingsPanel.panelData.suiExec.pathToSettingsFormat()
+            newSettingsState.isValidExec = suiSettingsPanel.getVersionLable() != VersionLabel.INVALID_VERSION
+            project.moveSettings.updateStateWithoutNotification(newSettingsState)
+            // update default project settings
+            val defaultSetting = ProjectManager.getInstance().defaultMoveSettings
+            defaultSetting?.updateStateWithoutNotification(newSettingsState)
+            // update notifications
+            EditorNotifications.getInstance(project).updateAllNotifications()
+        }
     }
 }

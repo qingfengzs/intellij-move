@@ -38,18 +38,17 @@ class SuiProjectOpenProcessor : ProjectOpenProcessor() {
             forceOpenInNewFrame
         )?.also { it ->
             StartupManager.getInstance(it).runAfterOpened {
-                println("open project")
-                // create default build configuration if it doesn't exist
+                // add default build configuration
                 if (it.suiBuildRunConfigurations().isEmpty()) {
                     val isEmpty = it.suiRunConfigurations().isEmpty()
                     it.addDefaultBuildRunConfiguration(isSelected = isEmpty)
                 }
+                // set default setting cli path
                 val defaultProjectSettings = ProjectManager.getInstance().defaultMoveSettings
                 it.moveSettings.modify {
                     val suiPath = defaultProjectSettings?.state?.suiPath ?: ""
                     it.suiPath = suiPath
                 }
-
                 // opens Move.toml file
                 val packageRoot = it.contentRoots.firstOrNull()
                 if (packageRoot != null) {
@@ -59,8 +58,8 @@ class SuiProjectOpenProcessor : ProjectOpenProcessor() {
                     }
                     updateAllNotifications(it)
                 }
+                // refresh all projects
                 it.moveProjects.refreshAllProjects()
-
             }
         }
     }

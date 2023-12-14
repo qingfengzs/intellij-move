@@ -14,6 +14,7 @@ import com.intellij.ui.dsl.builder.panel
 import org.sui.cli.defaultProjectSettings
 import org.sui.cli.settings.SuiExec
 import org.sui.cli.settings.SuiSettingsPanel
+import org.sui.cli.settings.VersionLabel
 import org.sui.cli.settings.isValidExecutable
 import javax.swing.JComponent
 
@@ -60,7 +61,7 @@ class SuiProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeerI
             return ValidationInfo("Invalid path to Sui executable")
         }
         val version = this.suiSettingsPanel.getVersionLable()
-        return if (version != "N/A") {
+        return if (version != VersionLabel.INVALID_VERSION) {
             null
         } else {
             ValidationInfo("Invalid path to Sui executable")

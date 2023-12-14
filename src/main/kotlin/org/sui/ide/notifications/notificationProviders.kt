@@ -42,7 +42,7 @@ class InvalidSuiBinaryNotification(
         return Function { createNotificationPanel(file, project) }
     }
 
-    fun createNotificationPanel(file: VirtualFile, project: Project): EditorNotificationPanel? {
+    private fun createNotificationPanel(file: VirtualFile, project: Project): EditorNotificationPanel? {
         if (isUnitTestMode) return null
         if (!file.isMoveOrManifest) return null
 
@@ -76,6 +76,6 @@ class InvalidSuiBinaryNotification(
     private val VirtualFile.disablingKey: String get() = NOTIFICATION_STATUS_KEY + path
 
     companion object {
-        private const val NOTIFICATION_STATUS_KEY = "org.move.hideMoveNotifications"
+        private const val NOTIFICATION_STATUS_KEY = "org.sui.move.hideMoveNotifications"
     }
 }

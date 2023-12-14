@@ -5,12 +5,14 @@ import com.intellij.ide.util.projectWizard.CustomStepProjectGenerator
 import com.intellij.openapi.components.service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.impl.welcomeScreen.AbstractActionWithPanel
 import com.intellij.platform.DirectoryProjectGenerator
 import com.intellij.platform.DirectoryProjectGeneratorBase
 import com.intellij.platform.ProjectGeneratorPeer
 import org.sui.cli.PluginApplicationDisposable
+import org.sui.cli.defaultMoveSettings
 import org.sui.cli.moveProjects
 import org.sui.cli.runConfigurations.addDefaultBuildRunConfiguration
 import org.sui.cli.settings.SuiSettingsPanel
@@ -33,6 +35,10 @@ class SuiProjectGenerator: DirectoryProjectGeneratorBase<SuiProjectConfig>(),
     override fun getLogo() = MoveIcons.MOVE_LOGO
     override fun createPeer(): ProjectGeneratorPeer<SuiProjectConfig> = SuiProjectGeneratorPeer(disposable)
 
+    /**
+     * This method is called when the user clicks "Create" in the New Project dialog.
+     * It is called on the EDT, so it should not block.
+     */
     override fun generateProject(
         project: Project,
         baseDir: VirtualFile,
@@ -55,9 +61,13 @@ class SuiProjectGenerator: DirectoryProjectGeneratorBase<SuiProjectConfig>(),
                 manifestFile
             }
 
-
         project.moveSettings.modify {
             it.suiPath = projectConfig.panelData.suiExec.pathToSettingsFormat()
+            it.isValidExec = true
+        }
+        ProjectManager.getInstance().defaultMoveSettings?.modify {
+            it.suiPath = projectConfig.panelData.suiExec.pathToSettingsFormat()
+            it.isValidExec = true
         }
         project.addDefaultBuildRunConfiguration(isSelected = true)
         project.openFile(manifestFile)

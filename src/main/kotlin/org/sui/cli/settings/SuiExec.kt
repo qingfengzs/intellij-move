@@ -1,7 +1,5 @@
 package org.sui.cli.settings
 
-import com.intellij.openapi.project.ProjectManager
-import org.sui.cli.defaultMoveSettings
 import org.sui.cli.runConfigurations.sui.SuiCliExecutor
 import org.sui.openapiext.PluginPathManager
 import org.sui.stdext.toPathOrNull
@@ -44,13 +42,7 @@ sealed class SuiExec {
                 if (isValid) {
                     version
                 } else {
-                    ""
-                }.also { _ ->
-                    val project = ProjectManager.getInstance().defaultMoveSettings
-                    project?.modify {
-                        it.suiPath = path.toString()
-                        it.isValidExec = isValid
-                    }
+                    null
                 }
             }
         }
