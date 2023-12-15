@@ -8,7 +8,7 @@ import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
 
-private val LOG = Logger.getInstance("#org.move.stdext")
+private val LOG = Logger.getInstance("#org.sui.stdext")
 
 fun String.toPath(): Path = Paths.get(this)
 

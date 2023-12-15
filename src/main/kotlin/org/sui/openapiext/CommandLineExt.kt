@@ -24,7 +24,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
 
-private val LOG = Logger.getInstance("org.move.openapiext.CommandLineExt")
+private val LOG = Logger.getInstance("org.sui.openapiext.CommandLineExt")
 
 //@Suppress("FunctionName")
 //fun GeneralCommandLine(path: Path, vararg args: String) =

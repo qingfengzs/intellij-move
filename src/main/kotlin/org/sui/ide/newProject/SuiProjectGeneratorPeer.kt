@@ -29,7 +29,12 @@ class SuiProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeerI
 
 //    private val aptosInitCheckBox = JBCheckBox("Run 'aptos init'", false)
 //    private val aptosSettingsPanel = AptosSettingsPanel(aptosInitCheckBox.selected)
-
+    /**
+     * This field is used to store the [Runnable] passed to [getComponent] so that it can be called
+     * when the user changes the path to the Sui executable.
+     * This is needed because the [SuiSettingsPanel] does not have a callback for when the path changes.
+     * This field is set to null when the [SuiSettingsPanel] is disposed.
+     */
     private var checkValid: Runnable? = null
 
     override fun getSettings(): SuiProjectConfig {

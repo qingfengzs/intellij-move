@@ -79,6 +79,14 @@ class SuiProjectGenerator: DirectoryProjectGeneratorBase<SuiProjectConfig>(),
     override fun createStep(
         projectGenerator: DirectoryProjectGenerator<SuiProjectConfig>,
         callback: AbstractNewProjectStep.AbstractCallback<SuiProjectConfig>
-    ): AbstractActionWithPanel =
-        SuiProjectConfigStep(projectGenerator)
+    ): AbstractActionWithPanel {
+        val suiProjectConfigStep = SuiProjectConfigStep(projectGenerator)
+        suiProjectConfigStep.actionButton.addActionListener {
+
+        }
+        return suiProjectConfigStep
+
+    }
+
+
 }

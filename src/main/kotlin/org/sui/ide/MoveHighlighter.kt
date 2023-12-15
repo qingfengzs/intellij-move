@@ -36,6 +36,7 @@ class MvHighlighter : SyntaxHighlighterBase() {
             INTEGER_LITERAL -> MvColor.NUMBER
 
             in MOVE_KEYWORDS, BOOL_LITERAL -> MvColor.KEYWORD
+            MODULE -> MvColor.MODULE
             else -> null
         }
     }

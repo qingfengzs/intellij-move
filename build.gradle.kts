@@ -176,15 +176,15 @@ project(":") {
     tasks {
         generateLexer {
             sourceFile.set(file("src/main/grammars/MoveLexer.flex"))
-            targetDir.set("src/main/gen/org/move/lang")
+            targetDir.set("src/main/gen/org/sui")
             targetClass.set("_MoveLexer")
             purgeOldFiles.set(true)
         }
         generateParser {
             sourceFile.set(file("src/main/grammars/MoveParser.bnf"))
             targetRoot.set("src/main/gen")
-            pathToParser.set("/org/move/lang/MoveParser.java")
-            pathToPsiRoot.set("/org/move/lang/psi")
+            pathToParser.set("/org/sui/lang/MoveParser.java")
+            pathToPsiRoot.set("/org/sui/lang/psi")
             purgeOldFiles.set(true)
         }
         withType<KotlinCompile> {

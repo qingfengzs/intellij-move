@@ -14,3 +14,5 @@ class SuiProjectConfigStep(generator: DirectoryProjectGenerator<SuiProjectConfig
         generator,
         AbstractNewProjectStep.AbstractCallback()
     )
+
+
