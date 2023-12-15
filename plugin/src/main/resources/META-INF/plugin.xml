@@ -47,6 +47,10 @@
             <p>Configure custom commands in <strong>Edit Configurations</strong> in the toolbar.</p>
             <p>Add <strong>Sui Command</strong>, set name, command. Use the <strong>Run Button</strong> button to execute.</p>
             <p><img src="https://i.imgur.com/aBtgeiL.png" alt="Add Configuration"width="450" height="220"></p>
+            <p>You can also add another blockchain cli commands in the Configuration List.</p>
+            <p>Click the <strong>Move</strong> to add a new customer configuration.</p>
+            <p>Its configuration process is similar to Sui Command.</p>
+            <p><img src="https://i.imgur.com/iFKslai.png" alt="Add Configuration"width="450" height="220"></p>
             <p><strong>Note:</strong> Ensure the working directory is in the current project.</p>
             <p><img src="https://i.imgur.com/mQH5TV6.png" alt="Configuration Panel"width="450" height="220"></p>
 
