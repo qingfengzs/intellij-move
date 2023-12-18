@@ -11,6 +11,7 @@ import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.projectRoots.SdkTypeId
 import com.intellij.openapi.roots.ModifiableRootModel
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.util.Disposer
 import org.sui.cli.Consts
 import org.sui.cli.defaultMoveSettings
@@ -42,9 +43,7 @@ class MvModuleBuilder : ModuleBuilder() {
 
         val suiPath = configurationData?.suiExec?.pathOrNull()
         root.refresh(false, true)
-        val isValidSuiCli = ProjectManager.getInstance().defaultMoveSettings?.state?.isValidExec ?: false
-        // Just work if user "creates new project" over an existing one.
-        if (suiPath != null && isValidSuiCli && root.findChild(Consts.MANIFEST_FILE) == null) {
+        if (suiPath != null && root.findChild(Consts.MANIFEST_FILE) == null) {
             val suiCli = SuiCliExecutor(suiPath)
             val project = modifiableRootModel.project
             val packageName = project.name.replace(' ', '_')

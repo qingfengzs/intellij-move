@@ -15,8 +15,7 @@ import org.sui.cli.PluginApplicationDisposable
 import org.sui.cli.defaultMoveSettings
 import org.sui.cli.moveProjects
 import org.sui.cli.runConfigurations.addDefaultBuildRunConfiguration
-import org.sui.cli.settings.SuiSettingsPanel
-import org.sui.cli.settings.moveSettings
+import org.sui.cli.settings.*
 import org.sui.ide.MoveIcons
 import org.sui.ide.notifications.updateAllNotifications
 import org.sui.openapiext.computeWithCancelableProgress
@@ -80,12 +79,7 @@ class SuiProjectGenerator: DirectoryProjectGeneratorBase<SuiProjectConfig>(),
         projectGenerator: DirectoryProjectGenerator<SuiProjectConfig>,
         callback: AbstractNewProjectStep.AbstractCallback<SuiProjectConfig>
     ): AbstractActionWithPanel {
-        val suiProjectConfigStep = SuiProjectConfigStep(projectGenerator)
-        suiProjectConfigStep.actionButton.addActionListener {
-
-        }
-        return suiProjectConfigStep
-
+        return SuiProjectConfigStep(projectGenerator)
     }
 
 

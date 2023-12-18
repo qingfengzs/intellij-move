@@ -12,7 +12,7 @@ class MvModuleType : ModuleType<MvModuleBuilder>(ID) {
 
     override fun getDescription(): String = "Move module"
 
-    override fun getName(): String = "Move"
+    override fun getName(): String = "Sui"
 
     companion object {
         const val ID = "MOVE_MODULE"

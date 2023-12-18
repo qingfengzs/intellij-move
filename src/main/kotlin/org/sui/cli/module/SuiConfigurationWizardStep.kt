@@ -8,10 +8,13 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
+import org.apache.commons.lang3.StringUtils
 import org.sui.cli.moveProjects
 import org.sui.cli.settings.SuiSettingsPanel
+import org.sui.cli.settings.VersionLabel
 import org.sui.cli.settings.moveSettings
 import org.sui.openapiext.isFeatureEnabled
+import javax.naming.ConfigurationException
 import javax.swing.JComponent
 
 class SuiConfigurationWizardStep(
@@ -31,6 +34,14 @@ class SuiConfigurationWizardStep(
         }.withBorderIfNeeded()
 
     override fun disposeUIResources() = Disposer.dispose(suiSettingsPanel)
+
+    override fun validate(): Boolean {
+        val version = suiSettingsPanel.getVersionLable()
+        if (version != VersionLabel.INVALID_VERSION && StringUtils.isNotEmpty(version)) {
+            return true
+        }
+        throw ConfigurationException("sui cli is invalid")
+    }
 
     override fun updateDataModel() {
         val panelData = suiSettingsPanel.panelData
