@@ -6,8 +6,19 @@
 
     <description>
         <![CDATA[
-            <p>Sui Move language support for IntelliJ IDEA.</p>
-
+            <p>
+                <p>This plugin provides enhanced support for Sui Move, a language tailored for blockchain development. It bolsters coding efficiency and workflow with a suite of features:</p>
+                <ul>
+                  <li><strong>Efficient Syntax Highlighting:</strong> For improved code clarity and error reduction.</li>
+                  <li><strong>Advanced Code Formatting:</strong> To maintain a uniform code structure.</li>
+                  <li><strong>Go-to-Definition:</strong> For effortless code navigation.</li>
+                  <li><strong>Automatic Type Inference:</strong> For concise coding with smart type predictions.</li>
+                  <li><strong>Execute Custom Commands:</strong> Customizable to fit project-specific needs.</li>
+                  <li><strong>Quick Access Buttons:</strong> To expedite development tasks.</li>
+                  <li><strong>Seamless sui Binary Integration:</strong> For smooth interaction with Sui Move tools.</li>
+                </ul>
+                <p>The plugin also allows for environment customization through the Sui Cli Path and includes a dedicated ToolWindow for effective project management. Maintain optimal performance by keeping the plugin up to date.</p>
+            </p>
             <h2>What’s Sui Move language</h2>
             <p>Enhance development with a comprehensive plugin.</p>
             <p>Features are designed to boost coding efficiency and workflow.</p>
@@ -20,15 +31,12 @@
               <li>Quick Access Buttons: Accelerate your development process.</li>
               <li>Seamless <code>sui</code> Binary Integration: Integrates smoothly with Sui Move tools.</li>
             </ul>
-
             <p>Customize your environment with the Sui Cli Path and a dedicated ToolWindow for efficient project management.</p>
             <p>Stay compatible and up-to-date with the plugin for optimal performance.</p>
-
             <h2>Usage</h2>
             <h3>Set the Sui Cli Path</h3>
             <p>Go to <strong>Settings > Languages & Frameworks > Sui Move Language</strong>, select the sui cli path.</p>
             <p><img src="https://i.imgur.com/qmWYmIZ.png" alt="Select Sui Path" width="450" height="220"></p>
-
             <h3>Using the ToolWindow</h3>
             <p>The ToolWindow offers several functionalities:</p>
             <p><img src="https://i.imgur.com/agxvMEI.png" alt="ToolWindow" width="450" height="120"></p>
@@ -42,7 +50,6 @@
               <li><strong>Switch Network:</strong> Switch between networks, like development to test.</li>
               <p><img src="https://i.imgur.com/erEcSTv.png" alt="Switch Network"></p></li>
             </ul>
-
             <h3>Execute Custom Command</h3>
             <p>Configure custom commands in <strong>Edit Configurations</strong> in the toolbar.</p>
             <p>Add <strong>Sui Command</strong>, set name, command. Use the <strong>Run Button</strong> button to execute.</p>
@@ -53,7 +60,6 @@
             <p><img src="https://i.imgur.com/iFKslai.png" alt="Add Configuration"width="450" height="220"></p>
             <p><strong>Note:</strong> Ensure the working directory is in the current project.</p>
             <p><img src="https://i.imgur.com/mQH5TV6.png" alt="Configuration Panel"width="450" height="220"></p>
-
             <p>Issues or feature requests? Visit our GitHub <a href="https://github.com/movefuns/intellij-move">repository</a>.</p>
 
         ]]>
