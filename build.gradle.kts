@@ -13,7 +13,7 @@ fun prop(name: String): String =
 
 
 val platformVersion = prop("shortPlatformVersion")
-val codeVersion = "1.0.2"
+val codeVersion = "1.0.4"
 val pluginVersion = "$codeVersion.$platformVersion"
 val pluginGroup = "org.sui.move"
 val javaVersion = JavaVersion.VERSION_17

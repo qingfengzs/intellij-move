@@ -37,7 +37,7 @@
             <p>Click the <strong>Move</strong> to add a new customer configuration.</p>
             <p>Its configuration process is similar to Sui Command.</p>
             <p><strong>Note:</strong> Ensure the working directory is in the current project.</p>
-            <p>Issues or feature requests? Visit our GitHub <a href="https://github.com/movefuns/intellij-move">repository</a>.</p>
+            <p>Issues or feature requests? Visit our GitHub repository[https://github.com/movefuns/intellij-move]</a>.</p>
         ]]>
     </description>
 
