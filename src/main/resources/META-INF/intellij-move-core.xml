@@ -5,6 +5,7 @@
     <depends>org.toml.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="org.sui.cli.SuiProjectActivity"/>
         <fileType name="Move"
                   language="Sui Move"
                   extensions="move"

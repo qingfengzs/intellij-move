@@ -2,20 +2,12 @@ package org.sui.cli
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.startup.StartupManager
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.PlatformProjectOpenProcessor
 import com.intellij.projectImport.ProjectOpenProcessor
-import org.sui.cli.runConfigurations.addDefaultBuildRunConfiguration
 import org.sui.cli.settings.MoveProjectSettingsService
-import org.sui.cli.settings.moveSettings
 import org.sui.ide.MoveIcons
-import org.sui.ide.newProject.openFile
-import org.sui.ide.notifications.updateAllNotifications
-import org.sui.openapiext.contentRoots
-import org.sui.openapiext.suiBuildRunConfigurations
-import org.sui.openapiext.suiRunConfigurations
 import javax.swing.Icon
 
 class SuiProjectOpenProcessor : ProjectOpenProcessor() {
@@ -36,32 +28,7 @@ class SuiProjectOpenProcessor : ProjectOpenProcessor() {
             virtualFile,
             projectToClose,
             forceOpenInNewFrame
-        )?.also { it ->
-            StartupManager.getInstance(it).runAfterOpened {
-                // add default build configuration
-                if (it.suiBuildRunConfigurations().isEmpty()) {
-                    val isEmpty = it.suiRunConfigurations().isEmpty()
-                    it.addDefaultBuildRunConfiguration(isSelected = isEmpty)
-                }
-                // set default setting cli path
-                val defaultProjectSettings = ProjectManager.getInstance().defaultMoveSettings
-                it.moveSettings.modify {
-                    val suiPath = defaultProjectSettings?.state?.suiPath ?: ""
-                    it.suiPath = suiPath
-                }
-                // opens Move.toml file
-                val packageRoot = it.contentRoots.firstOrNull()
-                if (packageRoot != null) {
-                    val manifest = packageRoot.findChild(Consts.MANIFEST_FILE)
-                    if (manifest != null) {
-                        it.openFile(manifest)
-                    }
-                    updateAllNotifications(it)
-                }
-                // refresh all projects
-                it.moveProjects.refreshAllProjects()
-            }
-        }
+        )
     }
 }
 
