@@ -8,7 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
-import org.sui.cli.moveProjects
+import org.sui.cli.moveProjectsService
 import org.sui.cli.settings.MoveSettingsChangedEvent
 import org.sui.cli.settings.MoveSettingsListener
 import org.sui.cli.settings.PerProjectMoveConfigurable
@@ -46,8 +46,8 @@ class InvalidSuiBinaryNotification(
         if (isUnitTestMode) return null
         if (!file.isMoveOrManifest) return null
 
-        if (project.moveProjects.allProjects.isEmpty()) {
-            project.moveProjects.refreshAllProjects()
+        if (project.moveProjectsService.allProjects.isEmpty()) {
+            project.moveProjectsService.refreshAllProjects()
         }
 
         if (isNotificationDisabled(file)) return null

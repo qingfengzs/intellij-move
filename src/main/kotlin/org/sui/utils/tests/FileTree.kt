@@ -84,7 +84,7 @@ interface FileTreeBuilder {
     )
 
     fun git(repo: String, rev: String, builder: TreeBuilder = {}) {
-        val dirName = TomlDependency.Git.dirName(repo, rev)
+        val dirName = TomlDependency.Git.dirNameAptos(repo, rev)
         return dir(dirName, builder)
     }
 
@@ -188,7 +188,7 @@ class FileTree(val rootDirInfo: FilesystemEntry.Directory) {
 }
 
 class TestProject(
-    private val project: Project,
+    val project: Project,
     val rootDirectory: VirtualFile,
     private val filesWithCaret: List<String>,
     private val filesWithNamedElement: List<String>

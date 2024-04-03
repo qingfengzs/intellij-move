@@ -17,7 +17,7 @@ class MvTestFunctionIndex : StringStubIndexExtension<MvFunction>() {
 
     companion object {
         val KEY: StubIndexKey<String, MvFunction> =
-            StubIndexKey.createIndexKey("org.sui.lang.index.MvTestFunctionIndex")
+            StubIndexKey.createIndexKey("org.move.index.MvTestFunctionIndex")
 
 //        fun getTestFunction(
 //            project: Project,

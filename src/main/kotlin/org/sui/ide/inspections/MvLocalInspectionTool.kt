@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import org.sui.cli.moveProjects
+import org.sui.cli.moveProjectsService
 import org.sui.lang.MoveFile
 import org.sui.lang.core.psi.MvVisitor
 import org.sui.openapiext.common.isUnitTestMode
@@ -44,7 +44,7 @@ abstract class MvLocalInspectionTool : LocalInspectionTool() {
     private fun isApplicableTo(file: org.sui.lang.MoveFile): Boolean {
         if (isUnitTestMode) return true
         if (isSyntaxOnly) return true
-        return file.project.moveProjects.findMoveProject(file) != null
+        return file.project.moveProjectsService.findMoveProject(file) != null
     }
 }
 

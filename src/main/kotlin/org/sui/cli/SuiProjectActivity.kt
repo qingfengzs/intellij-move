@@ -35,6 +35,6 @@ class SuiProjectActivity : ProjectActivity {
             updateAllNotifications(project)
         }
         // refresh all projects
-        project.moveProjects.refreshAllProjects()
+        project.moveProjectsService.refreshAllProjects()
     }
 }

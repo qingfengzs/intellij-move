@@ -4,8 +4,8 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
-import org.sui.cli.runConfigurations.sui.SuiConfigurationType
-import org.sui.cli.runConfigurations.sui.any.AnyCommandConfiguration
+import org.sui.cli.runConfigurations.suimove.SuiConfigurationType
+import org.sui.cli.runConfigurations.suimove.any.AnyCommandConfiguration
 import org.sui.stdext.toPath
 
 private val LOG = logger<Project>()

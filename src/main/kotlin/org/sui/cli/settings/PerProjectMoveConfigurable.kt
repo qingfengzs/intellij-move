@@ -1,89 +1,128 @@
 package org.sui.cli.settings
 
-import com.intellij.openapi.options.BoundConfigurable
-import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
-import com.intellij.ui.EditorNotifications
-import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.ui.dsl.builder.panel
-import org.sui.cli.defaultMoveSettings
+import com.intellij.ui.components.JBRadioButton
+import com.intellij.ui.dsl.builder.*
+import org.sui.cli.settings.aptos.ChooseAptosCliPanel
+import org.sui.cli.settings.sui.ChooseSuiCliPanel
+import org.sui.openapiext.showSettings
 
-class PerProjectMoveConfigurable(val project: Project) : BoundConfigurable("Sui Move Language"),
-                                                         SearchableConfigurable {
-
-    override fun getId(): String = "org.sui.lang.settings"
+class PerProjectMoveConfigurable(val project: Project) :
+    BoundSearchableConfigurable(
+        displayName = "Sui Move Language",
+        helpTopic = "Move_language_settings",
+        _id = "org.sui.lang.settings"
+    ) {
 
     private val settingsState: MoveProjectSettingsService.State = project.moveSettings.state
 
-    private val suiSettingsPanel = SuiSettingsPanel(showDefaultProjectSettingsLink = !project.isDefault)
+    private val chooseAptosCliPanel = ChooseAptosCliPanel(versionUpdateListener = null)
+    private val chooseSuiCliPanel = ChooseSuiCliPanel()
 
     override fun createPanel(): DialogPanel {
         return panel {
-            suiSettingsPanel.attachTo(this)
+            group {
+                var aptosRadioButton: Cell<JBRadioButton>? = null
+                var suiRadioButton: Cell<JBRadioButton>? = null
+                buttonsGroup("Blockchain") {
+                    row {
+                        aptosRadioButton = radioButton("Aptos")
+                            .bindSelected(
+                                { settingsState.blockchain == Blockchain.APTOS },
+                                { settingsState.blockchain = Blockchain.APTOS },
+                            )
+                        suiRadioButton = radioButton("Sui")
+                            .bindSelected(
+                                { settingsState.blockchain == Blockchain.SUI },
+                                { settingsState.blockchain = Blockchain.SUI },
+                            )
+                    }
+                }
+                chooseAptosCliPanel.attachToLayout(this)
+                    .visibleIf(aptosRadioButton!!.selected)
+                chooseSuiCliPanel.attachToLayout(this)
+                    .visibleIf(suiRadioButton!!.selected)
+            }
             group {
                 row {
                     checkBox("Auto-fold specs in opened files")
                         .bindSelected(settingsState::foldSpecs)
                 }
-//                row {
-//                    checkBox("Disable telemetry for new Run Configurations")
-//                        .bindSelected(settingsState::disableTelemetry)
-//                }
-//                row {
-//                    checkBox("Enable debug mode")
-//                        .bindSelected(settingsState::debugMode)
-//                    comment(
-//                        "Enables some explicit crashes in the plugin code. Useful for the error reporting."
-//                    )
-//                }
-//                row {
-//                    checkBox("Skip fetching latest git dependencies for tests")
-//                        .bindSelected(settingsState::skipFetchLatestGitDeps)
-//                    comment(
-//                        "Adds --skip-fetch-latest-git-deps to the test runs."
-//                    )
-//                }
+                row {
+                    checkBox("Disable telemetry for new Run Configurations")
+                        .bindSelected(settingsState::disableTelemetry)
+                }
+                row {
+                    checkBox("Enable debug mode")
+                        .bindSelected(settingsState::debugMode)
+                    comment(
+                        "Enables some explicit crashes in the plugin code. Useful for the error reporting."
+                    )
+                }
+                row {
+                    checkBox("Skip fetching latest git dependencies for tests")
+                        .bindSelected(settingsState::skipFetchLatestGitDeps)
+                    comment(
+                        "Adds --skip-fetch-latest-git-deps to the test runs."
+                    )
+                }
+                row {
+                    checkBox("Dump storage to console on test failures")
+                        .bindSelected(settingsState::dumpStateOnTestFailure)
+                    comment(
+                        "Adds --dump to the test runs (aptos only)."
+                    )
+                }
+            }
+            if (!project.isDefault) {
+                row {
+                    link("Setdefaultprojectsettings") {
+                        ProjectManager.getInstance().defaultProject.showSettings<PerProjectMoveConfigurable>()
+                    }
+//.visible(true)
+                        .align(AlignX.RIGHT)
+                }
             }
         }
     }
 
     override fun disposeUIResources() {
-        super<BoundConfigurable>.disposeUIResources()
-        Disposer.dispose(suiSettingsPanel)
+        super.disposeUIResources()
+        Disposer.dispose(chooseAptosCliPanel)
+        Disposer.dispose(chooseSuiCliPanel)
     }
 
-    override fun reset() {
-        super<BoundConfigurable>.reset()
-        suiSettingsPanel.panelData =
-            SuiSettingsPanel.PanelData(SuiExec.fromSettingsFormat(settingsState.suiPath))
-    }
-
+    /// checks whether any settings are modified (should be fast)
     override fun isModified(): Boolean {
-        if (super<BoundConfigurable>.isModified()) return true
-        val panelData = suiSettingsPanel.panelData
-        return panelData.suiExec.pathToSettingsFormat() != settingsState.suiPath
+        // checks whether panel created in the createPanel() is modified, defined in DslConfigurableBase
+        if (super.isModified()) return true
+        val selectedAptosExec = chooseAptosCliPanel.selectedAptosExec
+        val selectedSui = chooseSuiCliPanel.getSuiCliPath()
+        return selectedAptosExec != settingsState.aptosExec()
+                || selectedSui != settingsState.suiPath
     }
 
-    /**
-     * This method is called when user clicks "Apply" button in settings dialog.
-     * It is also called on "OK" button click, but only if [isModified] returns true.
-     */
+    /// loads settings from configurable to swing form
+    override fun reset() {
+        chooseAptosCliPanel.selectedAptosExec = settingsState.aptosExec()
+        chooseSuiCliPanel.setSuiCliPath(settingsState.suiPath)
+        // resets panel created in createPanel(), see DslConfigurableBase
+        // should be invoked at the end
+        super.reset()
+    }
+
+    /// saves values from Swing form back to configurable (OK / Apply)
     override fun apply() {
+        // calls apply() for createPanel().value
         super.apply()
-        if (isModified()) {
-            val newSettingsState = settingsState.copy()
-            // update project settings
-            newSettingsState.suiPath = suiSettingsPanel.panelData.suiExec.pathToSettingsFormat()
-            newSettingsState.isValidExec = suiSettingsPanel.getVersionLable() != VersionLabel.INVALID_VERSION
-            project.moveSettings.updateStateWithoutNotification(newSettingsState)
-            // update default project settings
-            val defaultSetting = ProjectManager.getInstance().defaultMoveSettings
-            defaultSetting?.updateStateWithoutNotification(newSettingsState)
-            // update notifications
-            EditorNotifications.getInstance(project).updateAllNotifications()
-        }
+        project.moveSettings.state =
+            settingsState.copy(
+                aptosPath = chooseAptosCliPanel.selectedAptosExec.pathToSettingsFormat(),
+                suiPath = chooseSuiCliPanel.getSuiCliPath()
+            )
     }
 }

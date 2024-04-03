@@ -1,9 +1,9 @@
 package org.sui.cli.runConfigurations
 
-import org.sui.cli.moveProjects
-import org.sui.cli.runConfigurations.sui.CommandConfigurationHandler
-import org.sui.cli.runConfigurations.sui.run.TestCommandConfigurationHandler
-import org.sui.cli.runConfigurations.sui.view.ViewCommandConfigurationHandler
+import org.sui.cli.moveProjectsService
+import org.sui.cli.runConfigurations.suimove.CommandConfigurationHandler
+import org.sui.cli.runConfigurations.suimove.run.TestCommandConfigurationHandler
+import org.sui.cli.runConfigurations.suimove.view.ViewCommandConfigurationHandler
 import org.sui.utils.tests.MvProjectTestBase
 import org.sui.utils.tests.TreeBuilder
 
@@ -74,7 +74,7 @@ profiles:
     ) {
         testProject(builder)
 
-        val moveProject = project.moveProjects.allProjects.first()
+        val moveProject = project.moveProjectsService.allProjects.first()
         val (profile, functionCall) = handler.parseCommand(moveProject, command).unwrap()
 
         check(profile == expectedProfile) { "Unexpected profile $profile" }

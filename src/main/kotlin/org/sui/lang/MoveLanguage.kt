@@ -2,7 +2,7 @@ package org.sui.lang
 
 import com.intellij.lang.Language
 
-object MoveLanguage : Language("Sui Move") {
+object MoveLanguage : Language("Move") {
     override fun isCaseSensitive() = true
-    override fun getDisplayName() = "Sui Move"
+    override fun getDisplayName() = "Move"
 }

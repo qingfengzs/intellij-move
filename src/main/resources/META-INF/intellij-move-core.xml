@@ -17,13 +17,13 @@
 
         <!-- PSI managing -->
 
-        <projectService serviceInterface="org.sui.lang.core.psi.SuiMvPsiManager"
-                        serviceImplementation="org.sui.lang.core.psi.SuiMvPsiManagerImpl"/>
+        <projectService serviceInterface="org.sui.lang.core.psi.MvPsiManager"
+                        serviceImplementation="org.sui.lang.core.psi.MvPsiManagerImpl"/>
 
         <configurationType
                 implementation="org.sui.cli.runConfigurations.legacy.MoveConfigurationType"/>
         <configurationType
-                implementation="org.sui.cli.runConfigurations.sui.SuiConfigurationType"/>
+                implementation="org.sui.cli.runConfigurations.suimove.SuiConfigurationType"/>
         <!--        <runConfigurationProducer-->
         <!--                implementation="org.sui.cli.runConfigurations.producers.AnyCommandConfigurationProducer"/>-->
         <!--        <runConfigurationProducer-->

@@ -17,7 +17,7 @@ import org.sui.cli.MoveProject
 import org.sui.cli.SuiMoveProjectsService
 import org.sui.cli.SuiMoveProjectsService.MoveProjectsListener
 import org.sui.cli.hasMoveProject
-import org.sui.cli.moveProjects
+import org.sui.cli.moveProjectsService
 import javax.swing.JComponent
 
 class SuiToolWindowFactory : ToolWindowFactory, DumbAware {
@@ -25,7 +25,7 @@ class SuiToolWindowFactory : ToolWindowFactory, DumbAware {
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
 //        guessAndSetupRustProject(project)
-        project.moveProjects.refreshAllProjects()
+        project.moveProjectsService.refreshAllProjects()
 
         val toolwindowPanel = SuiToolWindowPanel(project)
         val tab = ContentFactory.getInstance()
@@ -119,7 +119,7 @@ class SuiToolWindow(private val project: Project) {
             })
         }
         invokeLater {
-            val moveProjects = project.moveProjects.allProjects.toList()
+            val moveProjects = project.moveProjectsService.allProjects.toList()
             projectStructure.reloadTreeModelAsync(moveProjects)
         }
     }

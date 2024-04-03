@@ -13,7 +13,7 @@ import com.intellij.platform.DirectoryProjectGeneratorBase
 import com.intellij.platform.ProjectGeneratorPeer
 import org.sui.cli.PluginApplicationDisposable
 import org.sui.cli.defaultMoveSettings
-import org.sui.cli.moveProjects
+import org.sui.cli.moveProjectsService
 import org.sui.cli.runConfigurations.addDefaultBuildRunConfiguration
 import org.sui.cli.settings.*
 import org.sui.ide.MoveIcons
@@ -72,7 +72,7 @@ class SuiProjectGenerator: DirectoryProjectGeneratorBase<SuiProjectConfig>(),
         project.openFile(manifestFile)
 
         updateAllNotifications(project)
-        project.moveProjects.refreshAllProjects()
+        project.moveProjectsService.refreshAllProjects()
     }
 
     override fun createStep(
