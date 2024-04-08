@@ -140,6 +140,10 @@
         EXISTS     = 'exists_kw'
         WHERE     = 'where_kw'
         IN     = 'in_kw'
+        ENUM_KW = 'enum_kw'
+        TYPE_KW = 'type_kw'
+        MATCH_KW = 'match_kw'
+        USE_FUN_KW = 'use fun'
     ]
 }
 
@@ -360,7 +364,7 @@ StructInner ::= 'public' Attr* StructInnerFirst IDENTIFIER TypeParameterList? Ab
     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
 }
 private NativeStructInnerFirst ::= native STRUCT_KW
-NativeStructInner ::= Attr* NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
+NativeStructInner ::= Attr* 'public' NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
 {
     pin = NativeStructInnerFirst
     elementType = Struct
@@ -534,6 +538,11 @@ UseAlias ::= as IDENTIFIER
     mixin = "org.sui.lang.core.psi.ext.MvUseAliasMixin"
 }
 
+UseFunDeclaration ::= USE_FUN_KW FunctionCall ';'
+FunctionCall ::= Expr '.' IDENTIFIER '(' FunctionArgs ')'
+FunctionArgs ::= Expr (',' Expr)*
+
+FunctionCallOld ::= IDENTIFIER '(' FunctionArgs ')'
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Types
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -561,6 +570,12 @@ TupleType ::= '(' Type ',' (Type ','?)* ')' { pin = 3 }
 
 LambdaType ::= '|' <<non_empty_comma_sep_items LambdaTypeParam>>? '|' Type? { pin = 1 }
 LambdaTypeParam ::= Type
+
+// enum
+EnumDeclaration ::= 'public'? ENUM_KW IDENTIFIER '{' EnumVariant* '}' ';'
+EnumVariant ::= IDENTIFIER EnumVariantBody? ','
+EnumVariantBody ::= '{' EnumField* '}' | '(' Type ')'
+EnumField ::= IDENTIFIER ':' Type ','
 
 TypeParameterList ::= '<' TypeParameter_with_recover* '>'
 {
@@ -1492,6 +1507,14 @@ TypeQuantBinding ::= BindingPat ':' Type {
     extends = QuantBinding
 }
 
+//IDENTIFIER ::= IDENTIFIER | '`' KEYWORD '`'
+// move 2024 new grammar rules
+// type
+TypeDeclaration ::= TYPE_KW IDENTIFIER '=' Type ';'
+//// match
+//MatchExpression ::= MATCH_KW Expr '{' MatchBranches '}'
+//MatchBranches ::= (MatchBranch ',')* MatchBranch?
+//MatchBranch ::= IDENTIFIER '=>' Expr
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Meta rules

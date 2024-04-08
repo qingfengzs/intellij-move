@@ -26,7 +26,7 @@ class MvLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
         }
     }
 
-    override fun getConfigurableDisplayName() = "Sui Move"
+    override fun getConfigurableDisplayName() = "Sui Move Language"
 
     override fun getCodeSample(settingsType: SettingsType): String =
         when (settingsType) {

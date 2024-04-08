@@ -198,7 +198,7 @@ class MvPsiFactory(val project: Project) {
 
     fun createNewline(): PsiElement = createWhitespace("\n")
 
-    inline fun <reified T : MvElement> createFromText(@Language("Move") code: CharSequence): T? {
+    inline fun <reified T : MvElement> createFromText(@Language("Sui Move") code: CharSequence): T? {
         val dummyFile = PsiFileFactory.getInstance(project)
             .createFileFromText(
                 "DUMMY.move",

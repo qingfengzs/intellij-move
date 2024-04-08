@@ -14,8 +14,8 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.content.ContentFactory
 import org.sui.cli.MoveProject
-import org.sui.cli.SuiMoveProjectsService
-import org.sui.cli.SuiMoveProjectsService.MoveProjectsListener
+import org.sui.cli.SuiMoveProjectsServiceBak
+import org.sui.cli.SuiMoveProjectsServiceBak.MoveProjectsListener
 import org.sui.cli.hasMoveProject
 import org.sui.cli.moveProjectsService
 import javax.swing.JComponent
@@ -25,7 +25,7 @@ class SuiToolWindowFactory : ToolWindowFactory, DumbAware {
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
 //        guessAndSetupRustProject(project)
-        project.moveProjectsService.refreshAllProjects()
+        project.moveProjectsService.scheduleProjectsRefresh("Aptos Tool Window opened")
 
         val toolwindowPanel = SuiToolWindowPanel(project)
         val tab = ContentFactory.getInstance()
@@ -112,7 +112,7 @@ class SuiToolWindow(private val project: Project) {
 
     init {
         with(project.messageBus.connect()) {
-            subscribe(SuiMoveProjectsService.SUI_MOVE_PROJECTS_TOPIC, MoveProjectsListener { _, projects ->
+            subscribe(SuiMoveProjectsServiceBak.SUI_MOVE_PROJECTS_TOPIC, MoveProjectsListener { _, projects ->
                 invokeLater {
                     projectStructure.reloadTreeModelAsync(projects.toList())
                 }

@@ -46,12 +46,12 @@ abstract class MvProjectTestBase : CodeInsightFixtureTestCase<ModuleFixtureBuild
         return TestCase.camelOrWordsToSnake(camelCase)
     }
 
-    fun testProject(@Language("Move") code: String): TestProject {
+    public fun testProject(@Language("Sui Move") code: String): TestProject {
         val fileTree = fileTreeFromText(code)
         return testProject(fileTree)
     }
 
-    fun testProject(builder: FileTreeBuilder.() -> Unit): TestProject {
+    public fun testProject(builder: FileTreeBuilder.() -> Unit): TestProject {
         val fileTree = fileTree(builder)
         return testProject(fileTree)
     }

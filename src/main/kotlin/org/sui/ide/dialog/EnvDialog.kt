@@ -8,7 +8,6 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
-import org.sui.cli.settings.suiExec
 import org.sui.common.NOTIFACATION_GROUP
 import org.sui.ide.actions.OpenSwitchEnvsDialogAction
 import java.awt.BorderLayout
@@ -64,8 +63,8 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
                 println("Process failed with error: ${output?.stderr}")
             }
         }
-        project.suiExec.toExecutor()
-            ?.simpleCommand(project, "client", listOf("switch", "--env", env), onProcessComplete)
+//        project.suiExec.toExecutor()
+//            ?.simpleCommand(project, "client", listOf("switch", "--env", env), onProcessComplete)
     }
 
     private fun showNotification(message: String) {

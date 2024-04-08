@@ -160,11 +160,11 @@ val Project.moveSettings: MoveProjectSettingsService get() = service()
 
 val Project.collapseSpecs: Boolean get() = this.moveSettings.state.foldSpecs
 
-val Project.aptosExec: AptosExec get() = AptosExec.fromSettingsFormat(this.moveSettings.state.aptosPath)
-val Project.suiExec: SuiExec get() = SuiExec.fromSettingsFormat(this.moveSettings.state.suiPath)
-val Project.blockchain: Blockchain get() = this.moveSettings.state.blockchain
-
 val Project.aptosExec: AptosExec get() = this.moveSettings.state.aptosExec()
+
+val Project.suiExec: AptosExec get() = this.moveSettings.state.aptosExec()
+
+val Project.blockchain: Blockchain get() = this.moveSettings.state.blockchain
 
 val Project.aptosPath: Path? get() = this.aptosExec.toPathOrNull()
 

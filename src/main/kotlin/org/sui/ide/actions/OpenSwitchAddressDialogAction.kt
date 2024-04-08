@@ -7,7 +7,6 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
-import org.sui.cli.settings.suiExec
 import org.sui.common.NOTIFACATION_GROUP
 import org.sui.ide.dialog.AddressDialog
 import org.sui.ide.utils.ChecCliPath
@@ -37,7 +36,7 @@ class OpenSwitchAddressDialogAction : AnAction() {
                     )
                 }
             }
-            project.suiExec.toExecutor()?.simpleCommand(project, "client", listOf("addresses"), onProcessComplete)
+//            project.suiExec.toExecutor()?.simpleCommand(project, "client", listOf("addresses"), onProcessComplete)
         }
     }
 

@@ -34,7 +34,7 @@ fun MvNamedElement.isVisibleInContext(refItemScopes: Set<NamedItemScope>): Boole
 
 
 private val ITEM_SCOPES_KEY =
-    Key.create<CachedValue<Set<NamedItemScope>>>("org.move.ITEM_SCOPES_KEY")
+    Key.create<CachedValue<Set<NamedItemScope>>>("org.sui.ITEM_SCOPES_KEY")
 
 val MvReferenceElement.refItemScopes: Set<NamedItemScope>
     get() {

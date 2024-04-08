@@ -1,6 +1,7 @@
 package org.sui.cli.toolwindow
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.runReadAction
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.tree.StructureTreeModel
 import com.intellij.ui.treeStructure.CachingSimpleNode
@@ -12,6 +13,8 @@ import org.sui.ide.MoveIcons
 import org.sui.lang.core.psi.MvFunction
 import org.sui.lang.core.psi.MvModule
 import org.sui.lang.core.psi.ext.entryFunctions
+import org.sui.lang.core.psi.ext.hasTestAttr
+import org.sui.lang.core.psi.ext.hasTestOnlyAttr
 import org.sui.lang.core.psi.ext.viewFunctions
 import org.sui.stdext.iterateMoveFiles
 import java.util.concurrent.CompletableFuture
@@ -48,7 +51,7 @@ class MoveProjectsTreeStructure(
             override fun toTestString() = "Root"
         }
 
-        open class Package(val movePackage: MovePackage, parent: SimpleNode) : MoveSimpleNode(parent) {
+        open class Package(private val movePackage: MovePackage, parent: SimpleNode) : MoveSimpleNode(parent) {
             init {
                 icon = MoveIcons.MOVE_LOGO
             }

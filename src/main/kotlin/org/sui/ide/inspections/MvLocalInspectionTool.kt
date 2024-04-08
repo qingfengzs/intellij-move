@@ -19,7 +19,7 @@ abstract class MvLocalInspectionTool : LocalInspectionTool() {
         session: LocalInspectionToolSession
     ): PsiElementVisitor {
         val file = session.file
-        return if (file is org.sui.lang.MoveFile && isApplicableTo(file)) {
+        return if (file is MoveFile && isApplicableTo(file)) {
             buildVisitor(holder, isOnTheFly)
         } else {
             PsiElementVisitor.EMPTY_VISITOR
@@ -41,10 +41,10 @@ abstract class MvLocalInspectionTool : LocalInspectionTool() {
      * - are included in module tree, i.e. have a crate root
      * - belong to a project with a configured and valid Rust toolchain
      */
-    private fun isApplicableTo(file: org.sui.lang.MoveFile): Boolean {
+    private fun isApplicableTo(file: MoveFile): Boolean {
         if (isUnitTestMode) return true
         if (isSyntaxOnly) return true
-        return file.project.moveProjectsService.findMoveProject(file) != null
+        return file.project.moveProjectsService.findMoveProjectForPsiElement(file) != null
     }
 }
 

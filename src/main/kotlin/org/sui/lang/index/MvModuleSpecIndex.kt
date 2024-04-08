@@ -15,7 +15,7 @@ class MvModuleSpecIndex : StringStubIndexExtension<MvModuleSpec>() {
 
     companion object {
         val KEY: StubIndexKey<String, MvModuleSpec> =
-            StubIndexKey.createIndexKey("org.move.index.ModuleSpecIndex")
+            StubIndexKey.createIndexKey("org.sui.index.ModuleSpecIndex")
 
         fun getElementsByModuleName(
             project: Project,

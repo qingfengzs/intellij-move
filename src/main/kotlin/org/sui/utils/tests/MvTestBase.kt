@@ -30,7 +30,7 @@ annotation class WithEnabledInspections(vararg val inspections: KClass<out Inspe
 @Inherited
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotationclassWithBlockchain(valblockchain:Blockchain)
+annotation class WithBlockchain(val blockchain: Blockchain)
 
 abstract class MvTestBase : BasePlatformTestCase(),
                             MvTestCase {
@@ -66,7 +66,7 @@ abstract class MvTestBase : BasePlatformTestCase(),
         return TestCase.camelOrWordsToSnake(camelCase)
     }
 
-    protected fun inlineFile(@Language("Move") code: String, name: String = "main.move"): InlineFile {
+    protected fun inlineFile(@Language("Sui Move") code: String, name: String = "main.move"): InlineFile {
         return InlineFile(myFixture, code, name)
     }
 

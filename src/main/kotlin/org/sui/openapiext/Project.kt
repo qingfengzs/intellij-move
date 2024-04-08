@@ -9,6 +9,7 @@ import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.sui.cli.runConfigurations.aptos.any.AnyCommandConfiguration
+import org.sui.cli.runConfigurations.sui.SuiCommandConfiguration
 import org.sui.openapiext.common.isHeadlessEnvironment
 
 val Project.runManager: RunManager get() = RunManager.getInstance(this)
@@ -25,8 +26,9 @@ fun Project.aptosCommandConfigurationsSettings(): List<RunnerAndConfigurationSet
     runManager.allSettings
         .filter { it.configuration is AnyCommandConfiguration }
 
-//fun Project.aptosBuildRunConfigurations(): List<MoveCommandConfiguration> =
-//    aptosCommandConfigurations().filter { it.command.startsWith("move compile") }
+fun Project.suiCommandConfigurationsSettings(): List<RunnerAndConfigurationSettings> =
+    runManager.allSettings
+        .filter { it.configuration is SuiCommandConfiguration }
 
 inline fun <reified T : Configurable> Project.showSettings() {
     ShowSettingsUtil.getInstance().showSettingsDialog(this, T::class.java)
