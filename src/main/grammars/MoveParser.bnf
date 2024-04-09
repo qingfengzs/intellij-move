@@ -143,9 +143,12 @@
         ENUM_KW = 'enum_kw'
         TYPE_KW = 'type_kw'
         MATCH_KW = 'match_kw'
-        USE_FUN_KW = 'use fun'
+        PUBLIC = 'public_kw'
+        PRIVATE = 'private_kw'
     ]
 }
+
+// USE_FUN_KW = 'use fun'
 
 // Naming convention:
 //
@@ -356,7 +359,7 @@ fake Struct ::= Attr* native? STRUCT_KW IDENTIFIER? TypeParameterList? Abilities
 }
 
 private StructInnerFirst ::= STRUCT_KW
-StructInner ::= 'public' Attr* StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
+StructInner ::= Attr* StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
                             StructBlock
 {
     pin = StructInnerFirst
@@ -364,7 +367,7 @@ StructInner ::= 'public' Attr* StructInnerFirst IDENTIFIER TypeParameterList? Ab
     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
 }
 private NativeStructInnerFirst ::= native STRUCT_KW
-NativeStructInner ::= Attr* 'public' NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
+NativeStructInner ::= Attr* NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
 {
     pin = NativeStructInnerFirst
     elementType = Struct
@@ -538,11 +541,11 @@ UseAlias ::= as IDENTIFIER
     mixin = "org.sui.lang.core.psi.ext.MvUseAliasMixin"
 }
 
-UseFunDeclaration ::= USE_FUN_KW FunctionCall ';'
-FunctionCall ::= Expr '.' IDENTIFIER '(' FunctionArgs ')'
-FunctionArgs ::= Expr (',' Expr)*
-
-FunctionCallOld ::= IDENTIFIER '(' FunctionArgs ')'
+//UseFunDeclaration ::= USE_FUN_KW FunctionCall ';'
+//FunctionCall ::= Expr '.' IDENTIFIER '(' FunctionArgs ')'
+//FunctionArgs ::= Expr (',' Expr)*
+//
+//FunctionCallOld ::= IDENTIFIER '(' FunctionArgs ')'
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Types
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -572,10 +575,10 @@ LambdaType ::= '|' <<non_empty_comma_sep_items LambdaTypeParam>>? '|' Type? { pi
 LambdaTypeParam ::= Type
 
 // enum
-EnumDeclaration ::= 'public'? ENUM_KW IDENTIFIER '{' EnumVariant* '}' ';'
-EnumVariant ::= IDENTIFIER EnumVariantBody? ','
-EnumVariantBody ::= '{' EnumField* '}' | '(' Type ')'
-EnumField ::= IDENTIFIER ':' Type ','
+//EnumDeclaration ::= 'public'? ENUM_KW IDENTIFIER '{' EnumVariant* '}' ';'
+//EnumVariant ::= IDENTIFIER EnumVariantBody? ','
+//EnumVariantBody ::= '{' EnumField* '}' | '(' Type ')'
+//EnumField ::= IDENTIFIER ':' Type ','
 
 TypeParameterList ::= '<' TypeParameter_with_recover* '>'
 {
@@ -1510,7 +1513,7 @@ TypeQuantBinding ::= BindingPat ':' Type {
 //IDENTIFIER ::= IDENTIFIER | '`' KEYWORD '`'
 // move 2024 new grammar rules
 // type
-TypeDeclaration ::= TYPE_KW IDENTIFIER '=' Type ';'
+//TypeDeclaration ::= TYPE_KW IDENTIFIER '=' Type ';'
 //// match
 //MatchExpression ::= MATCH_KW Expr '{' MatchBranches '}'
 //MatchBranches ::= (MatchBranch ',')* MatchBranch?

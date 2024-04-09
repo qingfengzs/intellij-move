@@ -77,7 +77,7 @@
         <lang.formatter language="Sui Move"
                         implementationClass="org.sui.ide.formatter.MvFormattingModelBuilder"/>
         <langCodeStyleSettingsProvider
-                implementation="org.sui.ide.formatter.MvLanguageCodeStyleSettingsProvider"/>
+                implementation="org.sui.ide.formatter.settings.MvLanguageCodeStyleSettingsProvider"/>
 
         <lang.foldingBuilder language="Sui Move" implementationClass="org.sui.ide.folding.MvFoldingBuilder"/>
 
