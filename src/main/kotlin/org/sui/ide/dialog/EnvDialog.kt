@@ -1,10 +1,10 @@
 package org.sui.ide.dialog
 
-import com.intellij.execution.process.ProcessOutput
+import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.util.ExecUtil
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
@@ -26,7 +26,7 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
         val tableModel = DefaultTableModel(arrayOf("alias", "rpc", "ws"), 0)
         val table = JBTable(tableModel)
 
-        data.netList.forEach { net ->
+        data.networks.forEach { net ->
             tableModel.addRow(arrayOf(net.alias, net.rpc, net.ws))
         }
         table.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
@@ -53,18 +53,8 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
     }
 
     private fun executeCommand(env: String) {
-        val project = ProjectManager.getInstance().defaultProject
-
-        val onProcessComplete: (ProcessOutput?) -> Unit = { output ->
-            if (output != null && output.exitCode == 0) {
-                println("Process executed successfully with output: ${output.stdout}")
-                showNotification(env)
-            } else {
-                println("Process failed with error: ${output?.stderr}")
-            }
-        }
-//        project.suiExec.toExecutor()
-//            ?.simpleCommand(project, "client", listOf("switch", "--env", env), onProcessComplete)
+        val commandLine = GeneralCommandLine("sui", "client", "switch", "--address", env)
+        ExecUtil.execAndGetOutput(commandLine)
     }
 
     private fun showNotification(message: String) {

@@ -1,10 +1,10 @@
 package org.sui.ide.dialog
 
-import com.intellij.execution.process.ProcessOutput
+import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.util.ExecUtil
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
@@ -52,21 +52,9 @@ class AddressDialog(var data: List<String>) : DialogWrapper(true) {
         return arrayOf()
     }
 
-
     private fun executeCommand(address: String) {
-        // 获取project 对象
-        val project = ProjectManager.getInstance().defaultProject
-
-        val onProcessComplete: (ProcessOutput?) -> Unit = { output ->
-            if (output != null && output.exitCode == 0) {
-                println("Process executed successfully with output: ${output.stdout}")
-                showNotification(address)
-            } else {
-                println("Process failed with error: ${output?.stderr}")
-            }
-        }
-//        project.suiExec.toExecutor()
-//            ?.simpleCommand(project, "client", listOf("switch", "--address", address), onProcessComplete)
+        val commandLine = GeneralCommandLine("sui", "client", "switch", "--address", address)
+        ExecUtil.execAndGetOutput(commandLine)
     }
 
     private fun showNotification(message: String) {
