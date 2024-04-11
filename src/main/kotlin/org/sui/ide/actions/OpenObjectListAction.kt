@@ -1,36 +1,41 @@
 package org.sui.ide.actions
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.ProcessOutput
 import com.intellij.execution.util.ExecUtil
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
-import org.sui.ide.dialog.AddressDialog
+import org.sui.ide.dialog.ObjectDialog
 
-class OpenSwitchAddressDialogAction : AnAction() {
+class OpenObjectListAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
 
-        val commandLine = GeneralCommandLine("sui", "client", "addresses", "--json")
+        val commandLine = GeneralCommandLine("sui", "client", "objects", "--json")
         val processOutput: ProcessOutput = ExecUtil.execAndGetOutput(commandLine)
 
         val addressesJson = processOutput.stdout + processOutput.stderr
-        val data = extractAddressData(addressesJson)
-        val addressList = data.addresses
+        val extractData = extractData(addressesJson)
         ApplicationManager.getApplication().invokeLater {
-            AddressDialog(addressList).show()
+            ObjectDialog(extractData).show()
         }
     }
 
-    data class AddressData(
-        val activeAddress: String,
-        val addresses: List<List<String>>
+    data class SuiObject(
+        val objectId: String,
+        val version: String,
+        val digest: String,
+        val type: String
     )
 
-    fun extractAddressData(s: String): AddressData {
+    fun extractData(s: String): List<SuiObject> {
         val gson = Gson()
-        return gson.fromJson(s, AddressData::class.java)
+        val type = object : TypeToken<List<Map<String, SuiObject>>>() {}.type
+        val jsonList: List<Map<String, SuiObject>> = gson.fromJson(s, type)
+
+        return jsonList.mapNotNull { it["data"] }
     }
 }
 

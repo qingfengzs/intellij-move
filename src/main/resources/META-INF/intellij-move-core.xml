@@ -377,11 +377,17 @@
                 text="Open Envs Dialog"
                 class="org.sui.ide.actions.OpenSwitchEnvsDialogAction"
                 icon="AllIcons.Actions.DiffWithClipboard"/>
+        <action id="Sui.OpenObjectDialog"
+                description="Open objects dialog"
+                text="Open Objects Dialog"
+                class="org.sui.ide.actions.OpenObjectListAction"
+                icon="AllIcons.Actions.GroupByPrefix"/>
         <group id="Move.Sui">
             <reference id="Sui.RefreshAllProjects"/>
             <reference id="Sui.GetActiveAddress"/>
             <reference id="Sui.OpenAddressDialog"/>
             <reference id="Sui.OpenEnvsDialog"/>
+            <reference id="Sui.OpenObjectDialog"/>
         </group>
     </actions>
 </idea-plugin>

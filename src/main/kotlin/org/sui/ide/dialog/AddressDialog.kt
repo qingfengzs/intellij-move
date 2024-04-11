@@ -15,7 +15,7 @@ import javax.swing.*
 import javax.swing.table.DefaultTableModel
 
 
-class AddressDialog(var data: List<String>) : DialogWrapper(true) {
+class AddressDialog(var data: List<List<String>>) : DialogWrapper(true) {
     init {
         init()
         title = "Click Address To Switch"
@@ -27,7 +27,7 @@ class AddressDialog(var data: List<String>) : DialogWrapper(true) {
         val table = JBTable(tableModel)
 
         data.forEach { address ->
-            tableModel.addRow(arrayOf(address))
+            tableModel.addRow(arrayOf(address[1]))
         }
         table.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
 

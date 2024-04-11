@@ -14,8 +14,7 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.content.ContentFactory
 import org.sui.cli.MoveProject
-import org.sui.cli.SuiMoveProjectsServiceBak
-import org.sui.cli.SuiMoveProjectsServiceBak.MoveProjectsListener
+import org.sui.cli.MoveProjectsService
 import org.sui.cli.hasMoveProject
 import org.sui.cli.moveProjectsService
 import javax.swing.JComponent
@@ -24,9 +23,7 @@ class SuiToolWindowFactory : ToolWindowFactory, DumbAware {
     private val lock: Any = Any()
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-//        guessAndSetupRustProject(project)
         project.moveProjectsService.scheduleProjectsRefresh("Aptos Tool Window opened")
-
         val toolwindowPanel = SuiToolWindowPanel(project)
         val tab = ContentFactory.getInstance()
             .createContent(toolwindowPanel, "", false)
@@ -58,23 +55,6 @@ private class SuiToolWindowPanel(project: Project) : SimpleToolWindowPanel(true,
         toolbar = suiTab.toolbar.component
         suiTab.toolbar.targetComponent = this
         setContent(suiTab.content)
-//        val onProcessComplete: (ProcessOutput?) -> Unit = { output ->
-//            if (output != null && output.exitCode == 0) {
-//                println("Process executed successfully with output: ${output.stdout}")
-//                val addresses = output.stdout
-//                val addressPattern = "0x[a-fA-F0-9]{64}".toRegex()
-//                val addressList = addressPattern.findAll(addresses).map { it.value }.toSet().toList()
-//
-//                val button = JButton("Open Dialog")
-//                button.addActionListener {
-//                    AddressDialog(addressList).show()
-//                }
-//                suiTab.toolbar.component.add(button)
-//            } else {
-//                println("Process failed with error: ${output?.stderr}")
-//            }
-//        }
-//        project.suiExec.toExecutor()?.simpleCommand(project, "client",listOf("addresses"),onProcessComplete)
     }
 
     override fun getData(dataId: String): Any? =
@@ -94,9 +74,7 @@ class SuiToolWindow(private val project: Project) {
             actionManager.getAction("Move.Sui") as DefaultActionGroup,
             true
         )
-
     }
-
 
     private val projectTree = MoveProjectsTree()
     private val projectStructure = MoveProjectsTreeStructure(projectTree, project)
@@ -111,8 +89,15 @@ class SuiToolWindow(private val project: Project) {
     val content: JComponent = ScrollPaneFactory.createScrollPane(projectTree, 0)
 
     init {
+//        with(project.messageBus.connect()) {
+//            subscribe(SuiMoveProjectsServiceBak.SUI_MOVE_PROJECTS_TOPIC, MoveProjectsListener { _, projects ->
+//                invokeLater {
+//                    projectStructure.reloadTreeModelAsync(projects.toList())
+//                }
+//            })
+//        }
         with(project.messageBus.connect()) {
-            subscribe(SuiMoveProjectsServiceBak.SUI_MOVE_PROJECTS_TOPIC, MoveProjectsListener { _, projects ->
+            subscribe(MoveProjectsService.MOVE_PROJECTS_TOPIC, MoveProjectsService.MoveProjectsListener { _, projects ->
                 invokeLater {
                     projectStructure.reloadTreeModelAsync(projects.toList())
                 }

@@ -53,7 +53,7 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
     }
 
     private fun executeCommand(env: String) {
-        val commandLine = GeneralCommandLine("sui", "client", "switch", "--address", env)
+        val commandLine = GeneralCommandLine("sui", "client", "switch", "--env", env)
         ExecUtil.execAndGetOutput(commandLine)
     }
 

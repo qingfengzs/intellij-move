@@ -20,7 +20,7 @@ class GetActiveAddressAction : AnAction() {
         val exitCode = processOutput.exitCode
         val output = processOutput.stdout + processOutput.stderr
         val notificationType = if (exitCode == 0) NotificationType.INFORMATION else NotificationType.ERROR
-        val notification = Notification("Command Runner", "Command Output", output, notificationType)
+        val notification = Notification("Command Runner", "Active Address", output, notificationType)
         Notifications.Bus.notify(notification, project)
     }
 }
