@@ -10,8 +10,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.Disposer
 import com.intellij.platform.GeneratorPeerImpl
-import com.intellij.ui.components.JBRadioButton
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.panel
 import org.sui.cli.runConfigurations.InitProjectCli
 import org.sui.cli.settings.Blockchain
 import org.sui.cli.settings.aptos.ChooseAptosCliPanel
@@ -39,11 +38,8 @@ class MoveProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeer
                 Blockchain.APTOS -> {
                     InitProjectCli.Aptos(this.chooseAptosCliPanel.selectedAptosExec)
                 }
-
                 Blockchain.SUI -> {
-                    val suiPath = this.chooseSuiCliPanel.getSuiCliPath().toPathOrNull()
-                        ?: error("Should be validated separately")
-                    InitProjectCli.Sui(suiPath)
+                    InitProjectCli.Sui(this.chooseSuiCliPanel.selectedSuiExec)
                 }
             }
         return MoveProjectConfig(blockchain, initCli)
@@ -56,29 +52,28 @@ class MoveProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeer
 
     override fun getComponent(): JComponent {
         return panel {
-            var aptosRadioButton: Cell<JBRadioButton>? = null
-            var suiRadioButton: Cell<JBRadioButton>? = null
+//            var aptosRadioButton: Cell<JBRadioButton>? = null
+//            var suiRadioButton: Cell<JBRadioButton>? = null
 
-            buttonsGroup("Blockchain") {
-                row {
-                    aptosRadioButton = radioButton("Aptos", Blockchain.APTOS)
-                        .actionListener { _, _ ->
-                            blockchain = Blockchain.APTOS
-                            checkValid?.run()
-                        }
-                    suiRadioButton = radioButton("Sui", Blockchain.SUI)
-                        .actionListener { _, _ ->
-                            blockchain = Blockchain.SUI
-                            checkValid?.run()
-                        }
-                }
-            }
-                .bind({ blockchain }, { blockchain = it })
-
-            chooseAptosCliPanel.attachToLayout(this)
-                .visibleIf(aptosRadioButton!!.selected)
+//            buttonsGroup("Blockchain") {
+//                row {
+//                    aptosRadioButton = radioButton("Aptos", Blockchain.APTOS)
+//                        .actionListener { _, _ ->
+//                            blockchain = Blockchain.APTOS
+//                            checkValid?.run()
+//                        }
+//                    suiRadioButton = radioButton("Sui", Blockchain.SUI)
+//                        .actionListener { _, _ ->
+//                            blockchain = Blockchain.SUI
+//                            checkValid?.run()
+//                        }
+//                }
+//            }
+//                .bind({ blockchain }, { blockchain = it })
+//
+//            chooseAptosCliPanel.attachToLayout(this)
+//                .visibleIf(aptosRadioButton!!.selected)
             chooseSuiCliPanel.attachToLayout(this)
-                .visibleIf(suiRadioButton!!.selected)
         }
     }
 

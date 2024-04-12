@@ -5,11 +5,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.sui.cli.Consts
 import org.sui.cli.settings.aptos.AptosExec
+import org.sui.cli.settings.sui.SuiExec
 import org.sui.openapiext.*
 import org.sui.openapiext.common.isUnitTestMode
 import org.sui.stdext.RsResult
 import org.sui.stdext.unwrapOrElse
-import java.nio.file.Path
 
 sealed class InitProjectCli {
     abstract fun init(
@@ -50,7 +50,7 @@ sealed class InitProjectCli {
         }
     }
 
-    data class Sui(val cliLocation: Path) : InitProjectCli() {
+    data class Sui(val suiExec: SuiExec) : InitProjectCli() {
         override fun init(
             project: Project,
             parentDisposable: Disposable,
@@ -68,7 +68,8 @@ sealed class InitProjectCli {
                 ),
                 workingDirectory = project.rootPath
             )
-            commandLine.toGeneralCommandLine(this.cliLocation)
+            val suiPath = this.suiExec.toPathOrNull() ?: error("unreachable")
+            commandLine.toGeneralCommandLine(suiPath)
                 .execute(parentDisposable)
                 .unwrapOrElse { return RsResult.Err(it) }
             fullyRefreshDirectory(rootDirectory)

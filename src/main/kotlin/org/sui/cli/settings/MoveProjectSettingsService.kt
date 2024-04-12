@@ -12,10 +12,10 @@ import com.intellij.util.xmlb.XmlSerializer
 import org.jdom.Element
 import org.jetbrains.annotations.TestOnly
 import org.sui.cli.settings.aptos.AptosExec
+import org.sui.cli.settings.sui.SuiExec
 import org.sui.openapiext.debugInProduction
 import org.sui.stdext.exists
 import org.sui.stdext.isExecutableFile
-import org.sui.stdext.toPathOrNull
 import java.nio.file.Path
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
@@ -53,10 +53,9 @@ class MoveProjectSettingsService(private val project: Project) : PersistentState
 
     // default values for settings
     data class State(
-        //nullnotMac->Bundled,nullandMac->Local(""),notnull->Local(value)
         var blockchain: Blockchain = Blockchain.SUI,
         var aptosPath: String? = if (AptosExec.isBundledSupportedForThePlatform()) null else "",
-        var suiPath: String = "",
+        var suiPath: String? = if (SuiExec.isBundledSupportedForThePlatform()) null else "",
         var foldSpecs: Boolean = false,
         var disableTelemetry: Boolean = true,
         var debugMode: Boolean = false,
@@ -69,6 +68,13 @@ class MoveProjectSettingsService(private val project: Project) : PersistentState
             return when (path) {
                 null -> AptosExec.Bundled
                 else -> AptosExec.LocalPath(path)
+            }
+        }
+        fun suiExec(): SuiExec {
+            val path = suiPath
+            return when (path) {
+                null -> SuiExec.Bundled
+                else -> SuiExec.LocalPath(path)
             }
         }
     }
@@ -168,7 +174,7 @@ val Project.blockchain: Blockchain get() = this.moveSettings.state.blockchain
 
 val Project.aptosPath: Path? get() = this.aptosExec.toPathOrNull()
 
-val Project.suiPath: Path? get() = this.moveSettings.state.suiPath.toPathOrNull()
+val Project.suiPath: Path? get() = this.suiExec.toPathOrNull()
 
 fun Path?.isValidExecutable(): Boolean {
     return this != null

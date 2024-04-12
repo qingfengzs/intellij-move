@@ -60,7 +60,7 @@ class MoveProjectGenerator : DirectoryProjectGeneratorBase<MoveProjectConfig>(),
                 }
 
                 is InitProjectCli.Sui -> {
-                    it.suiPath = projectCli.cliLocation.toString()
+                    it.suiPath = projectCli.suiExec.pathToSettingsFormat()
                 }
             }
         }

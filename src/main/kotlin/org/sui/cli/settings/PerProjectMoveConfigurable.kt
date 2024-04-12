@@ -5,9 +5,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
-import com.intellij.ui.components.JBRadioButton
-import com.intellij.ui.dsl.builder.*
-import org.sui.cli.settings.aptos.ChooseAptosCliPanel
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.panel
 import org.sui.cli.settings.sui.ChooseSuiCliPanel
 import org.sui.openapiext.showSettings
 
@@ -20,32 +20,31 @@ class PerProjectMoveConfigurable(val project: Project) :
 
     private val settingsState: MoveProjectSettingsService.State = project.moveSettings.state
 
-    private val chooseAptosCliPanel = ChooseAptosCliPanel(versionUpdateListener = null)
+    //    private val chooseAptosCliPanel = ChooseAptosCliPanel(versionUpdateListener = null)
     private val chooseSuiCliPanel = ChooseSuiCliPanel()
 
     override fun createPanel(): DialogPanel {
         return panel {
             group {
-                var aptosRadioButton: Cell<JBRadioButton>? = null
-                var suiRadioButton: Cell<JBRadioButton>? = null
-                buttonsGroup("Blockchain") {
-                    row {
-                        aptosRadioButton = radioButton("Aptos")
-                            .bindSelected(
-                                { settingsState.blockchain == Blockchain.APTOS },
-                                { settingsState.blockchain = Blockchain.APTOS },
-                            )
-                        suiRadioButton = radioButton("Sui")
-                            .bindSelected(
-                                { settingsState.blockchain == Blockchain.SUI },
-                                { settingsState.blockchain = Blockchain.SUI },
-                            )
-                    }
-                }
-                chooseAptosCliPanel.attachToLayout(this)
-                    .visibleIf(aptosRadioButton!!.selected)
+//                var aptosRadioButton: Cell<JBRadioButton>? = null
+//                var suiRadioButton: Cell<JBRadioButton>? = null
+//                buttonsGroup("Blockchain") {
+//                    row {
+//                        aptosRadioButton = radioButton("Aptos")
+//                            .bindSelected(
+//                                { settingsState.blockchain == Blockchain.APTOS },
+//                                { settingsState.blockchain = Blockchain.APTOS },
+//                            )
+//                        suiRadioButton = radioButton("Sui")
+//                            .bindSelected(
+//                                { settingsState.blockchain == Blockchain.SUI },
+//                                { settingsState.blockchain = Blockchain.SUI },
+//                            )
+//                    }
+//                }
+//                chooseAptosCliPanel.attachToLayout(this)
+//                    .visibleIf(aptosRadioButton!!.selected)
                 chooseSuiCliPanel.attachToLayout(this)
-                    .visibleIf(suiRadioButton!!.selected)
             }
             group {
                 row {
@@ -70,13 +69,13 @@ class PerProjectMoveConfigurable(val project: Project) :
                         "Adds --skip-fetch-latest-git-deps to the test runs."
                     )
                 }
-                row {
-                    checkBox("Dump storage to console on test failures")
-                        .bindSelected(settingsState::dumpStateOnTestFailure)
-                    comment(
-                        "Adds --dump to the test runs (aptos only)."
-                    )
-                }
+//                row {
+//                    checkBox("Dump storage to console on test failures")
+//                        .bindSelected(settingsState::dumpStateOnTestFailure)
+//                    comment(
+//                        "Adds --dump to the test runs (aptos only)."
+//                    )
+//                }
             }
             if (!project.isDefault) {
                 row {
@@ -92,7 +91,7 @@ class PerProjectMoveConfigurable(val project: Project) :
 
     override fun disposeUIResources() {
         super.disposeUIResources()
-        Disposer.dispose(chooseAptosCliPanel)
+//        Disposer.dispose(chooseAptosCliPanel)
         Disposer.dispose(chooseSuiCliPanel)
     }
 
@@ -100,16 +99,14 @@ class PerProjectMoveConfigurable(val project: Project) :
     override fun isModified(): Boolean {
         // checks whether panel created in the createPanel() is modified, defined in DslConfigurableBase
         if (super.isModified()) return true
-        val selectedAptosExec = chooseAptosCliPanel.selectedAptosExec
-        val selectedSui = chooseSuiCliPanel.getSuiCliPath()
-        return selectedAptosExec != settingsState.aptosExec()
-                || selectedSui != settingsState.suiPath
+        val selectedSui = chooseSuiCliPanel.selectedSuiExec
+        return selectedSui != settingsState.suiExec()
     }
 
     /// loads settings from configurable to swing form
     override fun reset() {
-        chooseAptosCliPanel.selectedAptosExec = settingsState.aptosExec()
-        chooseSuiCliPanel.setSuiCliPath(settingsState.suiPath)
+//        chooseAptosCliPanel.selectedAptosExec = settingsState.aptosExec()
+        chooseSuiCliPanel.selectedSuiExec = settingsState.suiExec()
         // resets panel created in createPanel(), see DslConfigurableBase
         // should be invoked at the end
         super.reset()
@@ -121,7 +118,7 @@ class PerProjectMoveConfigurable(val project: Project) :
         super.apply()
         project.moveSettings.state =
             settingsState.copy(
-                aptosPath = chooseAptosCliPanel.selectedAptosExec.pathToSettingsFormat(),
+//                aptosPath = chooseAptosCliPanel.selectedAptosExec.pathToSettingsFormat(),
                 suiPath = chooseSuiCliPanel.getSuiCliPath()
             )
     }
