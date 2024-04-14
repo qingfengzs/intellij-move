@@ -245,7 +245,7 @@ private ModuleItem ::= !('}' | <<eof>>) ModuleItem_item
     recoverWhile = Item_recover
 }
 // top-level recovery
-private Item_first ::= use | public | native | fun | CONST_KW | STRUCT_KW | spec | friend | Attr | entry | inline
+private Item_first ::= use | public | native | fun | CONST_KW | STRUCT_KW |ENUM_KW| spec | friend | Attr | entry | inline
 private Item_recover ::= !('}' | <<eof>> | Item_first)
 
 private ModuleItem_item ::= UseStmt
@@ -374,6 +374,8 @@ NativeStructInner ::= Attr* NativeStructInnerFirst IDENTIFIER TypeParameterList?
     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
 }
 private StructItem ::= StructInner | NativeStructInner
+
+// EnumDef ::= ENUM_KW IDENTIFIER '{' <<comma_separated_list IDENTIFIER>> '}' { pin = 1 }
 
 fake Function ::= Attr* native? FunctionVisibilityModifier? entry? inline?
                     fun? IDENTIFIER? TypeParameterList? FunctionParameterList?
@@ -1535,3 +1537,5 @@ private lt_eqeq_gt ::= <<lteqeqgtImpl>>
 private dotdot ::= <<dotdotImpl>>
 
 private meta non_empty_comma_sep_items ::= <<param>> ( ',' <<param>> )* ','?
+private meta comma_separated_list ::= <<param>> ( ',' <<param>> )* ','?
+private meta list_element ::= !'>' <<param>> (',' | &'>') { pin = 2 }

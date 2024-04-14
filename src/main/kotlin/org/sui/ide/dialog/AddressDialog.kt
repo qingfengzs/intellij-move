@@ -16,6 +16,9 @@ import javax.swing.table.DefaultTableModel
 
 
 class AddressDialog(var data: List<List<String>>) : DialogWrapper(true) {
+    val NOTIFICATION_TITLE = "Active Address"
+    val SWITCH_SUCCESS_MSG = "switch success"
+
     init {
         init()
         title = "Click Address To Switch"
@@ -35,7 +38,7 @@ class AddressDialog(var data: List<List<String>>) : DialogWrapper(true) {
         button.addActionListener {
             val row = table.selectedRow
             if (row >= 0) {
-                executeCommand(tableModel.getValueAt(row, 0).toString())
+                switchAddressAndNotify(tableModel.getValueAt(row, 0).toString())
             }
             dispose()
         }
@@ -52,20 +55,15 @@ class AddressDialog(var data: List<List<String>>) : DialogWrapper(true) {
         return arrayOf()
     }
 
-    private fun executeCommand(address: String) {
+    fun switchAddressAndNotify(address: String) {
         val commandLine = GeneralCommandLine("sui", "client", "switch", "--address", address)
-        ExecUtil.execAndGetOutput(commandLine)
+        val output = ExecUtil.execAndGetOutput(commandLine)
+        val notificationType = if (output.exitCode == 0) NotificationType.INFORMATION else NotificationType.ERROR
+        displayNotification(NOTIFICATION_TITLE, SWITCH_SUCCESS_MSG, notificationType)
     }
 
-    private fun showNotification(message: String) {
-        // 显示通知
-        Notifications.Bus.notify(
-            Notification(
-                NOTIFACATION_GROUP,
-                "Switch Address",
-                message,
-                NotificationType.INFORMATION
-            )
-        )
+    private fun displayNotification(title: String, message: String, type: NotificationType) {
+        val notification = Notification(NOTIFACATION_GROUP, title, message, type)
+        Notifications.Bus.notify(notification)
     }
 }

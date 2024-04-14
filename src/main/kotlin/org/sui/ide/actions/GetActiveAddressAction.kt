@@ -8,6 +8,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import org.sui.common.NOTIFACATION_GROUP
 
 @Suppress("DEPRECATION")
 class GetActiveAddressAction : AnAction() {
@@ -20,7 +21,7 @@ class GetActiveAddressAction : AnAction() {
         val exitCode = processOutput.exitCode
         val output = processOutput.stdout + processOutput.stderr
         val notificationType = if (exitCode == 0) NotificationType.INFORMATION else NotificationType.ERROR
-        val notification = Notification("Command Runner", "Active Address", output, notificationType)
+        val notification = Notification(NOTIFACATION_GROUP, "Active Address", output, notificationType)
         Notifications.Bus.notify(notification, project)
     }
 }

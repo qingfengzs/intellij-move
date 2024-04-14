@@ -16,6 +16,10 @@ import javax.swing.*
 import javax.swing.table.DefaultTableModel
 
 class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true) {
+
+    private val BUTTON_TEXT = "Switch"
+    private val SWITCH_ENV_TITLE = "Switch Env"
+
     init {
         init()
         title = "Click Env To Switch"
@@ -24,21 +28,9 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
     override fun createCenterPanel(): JComponent {
         val panel = JPanel()
         val tableModel = DefaultTableModel(arrayOf("alias", "rpc", "ws"), 0)
-        val table = JBTable(tableModel)
+        val table = setUpTable(tableModel)
 
-        data.networks.forEach { net ->
-            tableModel.addRow(arrayOf(net.alias, net.rpc, net.ws))
-        }
-        table.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
-
-        val button = JButton("Switch")
-        button.addActionListener {
-            val row = table.selectedRow
-            if (row >= 0) {
-                executeCommand(tableModel.getValueAt(row, 0).toString())
-            }
-            dispose()
-        }
+        val button = setUpButton(tableModel, table)
 
         val scrollPane = JBScrollPane(table)
         scrollPane.preferredSize = Dimension(550, 150)
@@ -48,6 +40,27 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
         return panel
     }
 
+    private fun setUpTable(tableModel: DefaultTableModel): JBTable {
+        val table = JBTable(tableModel)
+        data.networks.forEach { net ->
+            tableModel.addRow(arrayOf(net.alias, net.rpc, net.ws))
+        }
+        table.selectionModel.selectionMode = ListSelectionModel.SINGLE_SELECTION
+        return table
+    }
+
+    private fun setUpButton(tableModel: DefaultTableModel, table: JBTable): JButton {
+        val button = JButton(BUTTON_TEXT)
+        button.addActionListener {
+            val row = table.selectedRow
+            if (row >= 0) {
+                executeCommand(tableModel.getValueAt(row, 0).toString())
+            }
+            dispose()
+        }
+        return button
+    }
+
     override fun createActions(): Array<Action> {
         return arrayOf()
     }
@@ -55,9 +68,17 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
     private fun executeCommand(env: String) {
         val commandLine = GeneralCommandLine("sui", "client", "switch", "--env", env)
         ExecUtil.execAndGetOutput(commandLine)
+        showNotification("Env switched successfully")
     }
 
     private fun showNotification(message: String) {
-        Notifications.Bus.notify(Notification(NOTIFACATION_GROUP, "Switch Env", message, NotificationType.INFORMATION))
+        Notifications.Bus.notify(
+            Notification(
+                NOTIFACATION_GROUP,
+                SWITCH_ENV_TITLE,
+                message,
+                NotificationType.INFORMATION
+            )
+        )
     }
 }
