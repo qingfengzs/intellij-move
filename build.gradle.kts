@@ -3,7 +3,6 @@ import org.jetbrains.intellij.tasks.RunPluginVerifierTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
-val JB_PUB_TOKEN = "perm:TW92ZV9GdW5z.OTItOTgzNQ==.1uGwoqvUEqLb2z3rtOSQtxTtn8TnkG\n"
 val publishingToken = System.getenv("JB_PUB_TOKEN") ?: null
 // set by default in Github Actions
 val isCI = System.getenv("CI") != null
