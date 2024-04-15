@@ -2,11 +2,11 @@ package org.sui.stdext
 
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.util.io.isDirectory
 import java.nio.file.Files
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.isDirectory
 
 private val LOG = Logger.getInstance("#org.sui.stdext")
 
