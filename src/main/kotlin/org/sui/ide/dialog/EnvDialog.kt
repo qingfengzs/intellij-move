@@ -5,6 +5,7 @@ import com.intellij.execution.util.ExecUtil
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
@@ -18,11 +19,11 @@ import javax.swing.table.DefaultTableModel
 class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true) {
 
     private val BUTTON_TEXT = "Switch"
-    private val SWITCH_ENV_TITLE = "Switch Env"
+    private val SWITCH_ENV_TITLE = "Switch Network Environment"
 
     init {
         init()
-        title = "Click Env To Switch"
+        title = "Click Environment To Switch"
     }
 
     override fun createCenterPanel(): JComponent {
@@ -66,9 +67,11 @@ class EnvDialog(var data: OpenSwitchEnvsDialogAction.Envs) : DialogWrapper(true)
     }
 
     private fun executeCommand(env: String) {
-        val commandLine = GeneralCommandLine("sui", "client", "switch", "--env", env)
-        ExecUtil.execAndGetOutput(commandLine)
-        showNotification("Env switched successfully")
+        ApplicationManager.getApplication().executeOnPooledThread {
+            val commandLine = GeneralCommandLine("sui", "client", "switch", "--env", env)
+            ExecUtil.execAndGetOutput(commandLine)
+            showNotification("network environment switched successfully")
+        }
     }
 
     private fun showNotification(message: String) {

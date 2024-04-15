@@ -5,6 +5,7 @@ import com.intellij.execution.util.ExecUtil
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
@@ -17,7 +18,7 @@ import javax.swing.table.DefaultTableModel
 
 class AddressDialog(var data: List<List<String>>) : DialogWrapper(true) {
     val NOTIFICATION_TITLE = "Active Address"
-    val SWITCH_SUCCESS_MSG = "switch success"
+    val SWITCH_SUCCESS_MSG = "active address switched successfully"
 
     init {
         init()
@@ -56,10 +57,12 @@ class AddressDialog(var data: List<List<String>>) : DialogWrapper(true) {
     }
 
     fun switchAddressAndNotify(address: String) {
-        val commandLine = GeneralCommandLine("sui", "client", "switch", "--address", address)
-        val output = ExecUtil.execAndGetOutput(commandLine)
-        val notificationType = if (output.exitCode == 0) NotificationType.INFORMATION else NotificationType.ERROR
-        displayNotification(NOTIFICATION_TITLE, SWITCH_SUCCESS_MSG, notificationType)
+        ApplicationManager.getApplication().executeOnPooledThread {
+            val commandLine = GeneralCommandLine("sui", "client", "switch", "--address", address)
+            val output = ExecUtil.execAndGetOutput(commandLine)
+            val notificationType = if (output.exitCode == 0) NotificationType.INFORMATION else NotificationType.ERROR
+            SwingUtilities.invokeLater { displayNotification(NOTIFICATION_TITLE, SWITCH_SUCCESS_MSG, notificationType) }
+        }
     }
 
     private fun displayNotification(title: String, message: String, type: NotificationType) {

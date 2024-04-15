@@ -19,7 +19,7 @@ class MoveCommandConfiguration(
 ) : LocatableConfigurationBase<RunProfileState>(project, factory, "Move"),
     RunConfigurationWithSuppressedDefaultDebugAction {
 
-    var command: String = "move compile"
+    var command: String = "move build"
     var workingDirectory: Path? = if (!project.isDefault) {
         project.moveProjectsService.allProjects.firstOrNull()?.contentRootPath
     } else {

@@ -21,16 +21,16 @@
 
         <configurationType
                 implementation="org.sui.cli.runConfigurations.legacy.MoveConfigurationType"/>
-        <configurationType
-                implementation="org.sui.cli.runConfigurations.aptos.AptosConfigurationType"/>
+        <!--        <configurationType-->
+        <!--                implementation="org.sui.cli.runConfigurations.aptos.AptosConfigurationType"/>-->
         <configurationType
                 implementation="org.sui.cli.runConfigurations.sui.SuiConfigurationType"/>
-        <runConfigurationProducer
-                implementation="org.sui.cli.runConfigurations.producers.aptos.AptosTestCommandConfigurationProducer"/>
-        <runConfigurationProducer
-                implementation="org.sui.cli.runConfigurations.producers.aptos.RunCommandConfigurationProducer"/>
-        <runConfigurationProducer
-                implementation="org.sui.cli.runConfigurations.producers.aptos.ViewCommandConfigurationProducer"/>
+        <!--        <runConfigurationProducer-->
+        <!--                implementation="org.sui.cli.runConfigurations.producers.aptos.AptosTestCommandConfigurationProducer"/>-->
+        <!--        <runConfigurationProducer-->
+        <!--                implementation="org.sui.cli.runConfigurations.producers.aptos.RunCommandConfigurationProducer"/>-->
+        <!--        <runConfigurationProducer-->
+        <!--                implementation="org.sui.cli.runConfigurations.producers.aptos.ViewCommandConfigurationProducer"/>-->
         <runConfigurationProducer
                 implementation="org.sui.cli.runConfigurations.producers.sui.SuiTestCommandConfigurationProducer"/>
         <runLineMarkerContributor language="Sui Move"

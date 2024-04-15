@@ -1,5 +1,6 @@
 package org.sui.cli.runConfigurations.sui
 
+import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.configurations.SimpleConfigurationType
 import com.intellij.openapi.project.Project
@@ -18,4 +19,9 @@ class SuiConfigurationType :
         return SuiCommandConfiguration(project, this)
     }
 
+    companion object {
+        fun getInstance(): SuiConfigurationType {
+            return ConfigurationTypeUtil.findConfigurationType(SuiConfigurationType::class.java)
+        }
+    }
 }

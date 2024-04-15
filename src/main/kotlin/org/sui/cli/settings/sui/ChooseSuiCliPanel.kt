@@ -2,13 +2,11 @@ package org.sui.cli.settings.sui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.bindText
-import org.sui.cli.settings.MoveProjectSettingsService
 import org.sui.cli.settings.VersionLabel
 import org.sui.openapiext.pathField
 import org.sui.stdext.toPathOrNull
@@ -23,11 +21,11 @@ class ChooseSuiCliPanel(
             this,
             "Choose Sui CLI",
             onTextChanged = { text ->
-                if ("" != text && "null" != text) {
+//                if ("" != text && "null" != text) {
                     val exec = SuiExec.LocalPath(text)
                     _suiExec = exec
-                    _suiCliPath.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
-                }
+                exec.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
+//                }
             })
 
     private val versionLabel = VersionLabel(this, versionUpdateListener)
@@ -37,11 +35,9 @@ class ChooseSuiCliPanel(
     var selectedSuiExec: SuiExec
         get() = _suiExec
         set(suiExec) {
-            if (null != suiExec.execPath) {
-                this._suiExec = suiExec
-                localPathField.text = suiExec.execPath
-                suiExec.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
-            }
+            this._suiExec = suiExec
+            localPathField.text = suiExec.execPath
+            suiExec.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
         }
 
     private lateinit var _suiCliPath: String
@@ -52,18 +48,16 @@ class ChooseSuiCliPanel(
 
     fun attachToLayout(layout: Panel): Row {
         val panel = this
-        if (!panel::_suiCliPath.isInitialized) {
-            val defaultProjectSettings =
-                ProjectManager.getInstance().defaultProject.getService(MoveProjectSettingsService::class.java)
-            panel._suiCliPath = defaultProjectSettings.state.suiPath.toString()
+        if (!panel::_suiExec.isInitialized) {
+            panel._suiExec = SuiExec.default()
         }
         val resultRow = with(layout) {
             group("Sui CLI") {
                 row {
                     cell(localPathField)
                         .bindText(
-                            { _suiCliPath },
-                            { _suiCliPath = it }
+                            { _suiExec.toPathOrNull()?.toString() ?: "" },
+                            { _suiExec = SuiExec.LocalPath(localPathField.toString()) }
                         )
                         .onChanged {
                             localPathField.text.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
@@ -73,7 +67,7 @@ class ChooseSuiCliPanel(
                 row("--version :") { cell(versionLabel) }
             }
         }
-        _suiCliPath.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
+        _suiExec.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
         return resultRow
     }
 

@@ -11,6 +11,7 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import org.sui.common.NOTIFACATION_GROUP
 import org.sui.ide.dialog.ObjectDialog
@@ -20,13 +21,17 @@ class OpenObjectListAction : AnAction() {
 
         val project = e.project ?: return
         val commandLine = GeneralCommandLine("sui", "client", "objects", "--json")
-        val processOutput: ProcessOutput = ExecUtil.execAndGetOutput(commandLine)
 
-        val addressesJson = processOutput.stdout + processOutput.stderr
-        val extractData = extractData(addressesJson, project)
-        ApplicationManager.getApplication().invokeLater {
-            ObjectDialog(extractData).show()
+        val task = Runnable {
+            val processOutput: ProcessOutput = ExecUtil.execAndGetOutput(commandLine)
+
+            val addressesJson = processOutput.stdout + processOutput.stderr
+            val extractData = extractData(addressesJson, project)
+            ApplicationManager.getApplication().invokeLater {
+                ObjectDialog(extractData).show()
+            }
         }
+        ProgressManager.getInstance().runProcessWithProgressSynchronously(task, "Processing", false, project)
     }
 
     data class SuiObject(

@@ -11,15 +11,16 @@ import org.sui.ide.dialog.AddressDialog
 
 class OpenSwitchAddressDialogAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
+        ApplicationManager.getApplication().executeOnPooledThread {
+            val commandLine = GeneralCommandLine("sui", "client", "addresses", "--json")
+            val processOutput: ProcessOutput = ExecUtil.execAndGetOutput(commandLine)
 
-        val commandLine = GeneralCommandLine("sui", "client", "addresses", "--json")
-        val processOutput: ProcessOutput = ExecUtil.execAndGetOutput(commandLine)
-
-        val addressesJson = processOutput.stdout + processOutput.stderr
-        val data = extractAddressData(addressesJson)
-        val addressList = data.addresses
-        ApplicationManager.getApplication().invokeLater {
-            AddressDialog(addressList).show()
+            val addressesJson = processOutput.stdout + processOutput.stderr
+            val data = extractAddressData(addressesJson)
+            val addressList = data.addresses
+            ApplicationManager.getApplication().invokeLater {
+                AddressDialog(addressList).show()
+            }
         }
     }
 

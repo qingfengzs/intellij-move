@@ -12,19 +12,21 @@ import org.sui.ide.dialog.EnvDialog
 
 class OpenSwitchEnvsDialogAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val commandLine = GeneralCommandLine("sui", "client", "envs", "--json")
-        val processOutput: ProcessOutput = ExecUtil.execAndGetOutput(commandLine)
+        ApplicationManager.getApplication().executeOnPooledThread {
+            val commandLine = GeneralCommandLine("sui", "client", "envs", "--json")
+            val processOutput: ProcessOutput = ExecUtil.execAndGetOutput(commandLine)
 
-        val outputJson = processOutput.stdout + processOutput.stderr
+            val outputJson = processOutput.stdout + processOutput.stderr
 
-        val gson = Gson()
-        val type = object : TypeToken<List<Any>>() {}.type
-        val data = gson.fromJson<List<Any>>(outputJson, type)
-        val networks = gson.fromJson<List<NetEnv>>(gson.toJson(data[0]), object : TypeToken<List<NetEnv>>() {}.type)
-        val activeNetwork = data[1] as String
-        val networkList = Envs(activeNetwork, networks)
-        ApplicationManager.getApplication().invokeLater {
-            EnvDialog(networkList).show()
+            val gson = Gson()
+            val type = object : TypeToken<List<Any>>() {}.type
+            val data = gson.fromJson<List<Any>>(outputJson, type)
+            val networks = gson.fromJson<List<NetEnv>>(gson.toJson(data[0]), object : TypeToken<List<NetEnv>>() {}.type)
+            val activeNetwork = data[1] as String
+            val networkList = Envs(activeNetwork, networks)
+            ApplicationManager.getApplication().invokeLater {
+                EnvDialog(networkList).show()
+            }
         }
     }
 

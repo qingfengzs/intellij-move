@@ -118,8 +118,14 @@ class PerProjectMoveConfigurable(val project: Project) :
         super.apply()
         project.moveSettings.state =
             settingsState.copy(
-//                aptosPath = chooseAptosCliPanel.selectedAptosExec.pathToSettingsFormat(),
-                suiPath = chooseSuiCliPanel.getSuiCliPath()
+                suiPath = chooseSuiCliPanel.selectedSuiExec.pathToSettingsFormat()
             )
+        // set default
+        val defaultProjectSettings =
+            ProjectManager.getInstance().defaultProject.getService(MoveProjectSettingsService::class.java)
+        defaultProjectSettings.state = defaultProjectSettings.state.apply {
+            suiPath = chooseSuiCliPanel.selectedSuiExec.pathToSettingsFormat()
+        }
+
     }
 }
