@@ -308,6 +308,9 @@ object MoveParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun postKeyword(b: PsiBuilder, level: Int): Boolean = contextualKeyword(b, "post", POST)
 
+//    @JvmStatic
+//    fun mutKeyword(b: PsiBuilder, level: Int): Boolean = contextualKeyword(b, "mut", MUT)
+
     @JvmStatic
     fun localKeyword(b: PsiBuilder, level: Int): Boolean = contextualKeyword(b, "local", LOCAL)
 

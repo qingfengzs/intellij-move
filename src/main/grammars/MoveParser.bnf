@@ -251,6 +251,7 @@ private Item_recover ::= !('}' | <<eof>> | Item_first)
 private ModuleItem_item ::= UseStmt
                             | FriendDecl
                             | StructItem
+                            | EnumItem
                             | FunctionItem
                             | SpecFunctionItem
                             | Const
@@ -343,39 +344,83 @@ SpecInlineFunctionStmt ::= SpecInlineFunctionInner
         "org.sui.lang.core.psi.MslOnlyElement"
     ]
 }
+private PublicKeyword ::= 'public'
 
-fake Struct ::= Attr* native? STRUCT_KW IDENTIFIER? TypeParameterList? AbilitiesList?
-                        (';' | StructBlock)?
-{
-    implements = [
-        "org.sui.lang.core.psi.MvQualNamedElement"
-        "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
-        "org.sui.lang.core.psi.MvTypeParametersOwner"
-        "org.sui.lang.core.psi.MvNameIdentifierOwner"
-    ]
-    mixin = "org.sui.lang.core.psi.ext.MvStructMixin"
-    stubClass = "org.sui.lang.core.stubs.MvStructStub"
-    elementTypeFactory = "org.sui.lang.core.stubs.StubsKt.factory"
+ fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameterList? AbilitiesList?
+                         (';' | StructBlock)?
+ {
+     implements = [
+         "org.sui.lang.core.psi.MvQualNamedElement"
+         "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
+         "org.sui.lang.core.psi.MvTypeParametersOwner"
+         "org.sui.lang.core.psi.MvNameIdentifierOwner"
+     ]
+     mixin = "org.sui.lang.core.psi.ext.MvStructMixin"
+     stubClass = "org.sui.lang.core.stubs.MvStructStub"
+     elementTypeFactory = "org.sui.lang.core.stubs.StubsKt.factory"
+ }
+
+ private StructInnerFirst ::= STRUCT_KW
+ StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
+                             StructBlock
+ {
+     pin = StructInnerFirst
+     elementType = Struct
+     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
+ }
+ private NativeStructInnerFirst ::= native STRUCT_KW
+ NativeStructInner ::= Attr* PublicKeyword NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
+ {
+     pin = StructInnerFirst
+     elementType = Struct
+     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
+ }
+ private StructItem ::= StructInner | NativeStructInner
+
+
+//WhereClause ::= where <<comma_separated_list WherePred>>? {
+//  extends = "org.sui.lang.core.psi.ext.RsStubbedElementImpl<?>"
+//  stubClass = "org.sui.lang.core.stubs.RsPlaceholderStub<?>"
+//  elementTypeFactory = "org.sui.lang.core.stubs.StubImplementationsKt.factory"
+//}
+
+fake EnumItem ::= 'public' enum IDENTIFIER TypeParameterList? EnumBody {
+   pin = "enum"
+   name = ""
+   implements = [
+            "org.sui.lang.core.psi.MvQualNamedElement"
+            "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
+            "org.sui.lang.core.psi.MvTypeParametersOwner"
+            "org.sui.lang.core.psi.MvNameIdentifierOwner"
+        ]
+   extends = "org.sui.lang.core.psi.ext.RsStubbedElementImpl<?>"
+   mixin = "org.sui.lang.core.psi.ext.RsEnumItemImplMixin"
+   stubClass = "org.sui.lang.core.stubs.RsEnumItemStub"
+   elementTypeFactory = "org.sui.lang.core.stubs.StubImplementationsKt.factory"
+ }
+
+ EnumBody ::= '{' [ <<comma_separated_list EnumVariant>> ] '}' {
+   pin = 1
+   extends = "org.sui.lang.core.psi.ext.RsStubbedElementImpl<?>"
+   stubClass = "org.sui.lang.core.stubs.RsPlaceholderStub<?>"
+   elementTypeFactory = "org.sui.lang.core.stubs.StubImplementationsKt.factory"
+ }
+
+EnumVariant ::= IDENTIFIER VariantArgs? {
+  pin = 2
+  hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
+  implements = [ "org.sui.lang.core.psi.ext.RsQualifiedNamedElement"
+                 "org.sui.lang.core.psi.ext.RsNameIdentifierOwner"
+                 "org.sui.lang.core.psi.ext.RsOuterAttributeOwner"
+                 "org.sui.lang.core.psi.ext.RsFieldsOwner"
+                 "org.sui.lang.core.psi.ext.RsVisibilityOwner" ]
+  extends = "org.sui.lang.core.psi.ext.RsStubbedElementImpl<?>"
+  mixin = "org.sui.lang.core.psi.ext.RsEnumVariantImplMixin"
+  stubClass = "org.sui.lang.core.stubs.RsEnumVariantStub"
+  elementTypeFactory = "org.rust.lang.core.stubs.StubImplementationsKt.factory"
 }
 
-private StructInnerFirst ::= STRUCT_KW
-StructInner ::= Attr* StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
-                            StructBlock
-{
-    pin = StructInnerFirst
-    elementType = Struct
-    hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
-}
-private NativeStructInnerFirst ::= native STRUCT_KW
-NativeStructInner ::= Attr* NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
-{
-    pin = NativeStructInnerFirst
-    elementType = Struct
-    hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
-}
-private StructItem ::= StructInner | NativeStructInner
-
-// EnumDef ::= ENUM_KW IDENTIFIER '{' <<comma_separated_list IDENTIFIER>> '}' { pin = 1 }
+private VariantArgs ::= [StructPat | TuplePat]
 
 fake Function ::= Attr* native? FunctionVisibilityModifier? entry? inline?
                     fun? IDENTIFIER? TypeParameterList? FunctionParameterList?
@@ -683,17 +728,17 @@ private SpecExprStmt_items ::= AssumeSpecExpr | AssertSpecExpr | AbortsIfSpecExp
                 | EmitsSpecExpr
 
 private post ::= <<postKeyword>>
-fake LetStmt ::= let post? Pat? TypeAnnotation? Initializer? ';'?
+fake LetStmt ::= let post? Pat? 'mut'? TypeAnnotation? Initializer? ';'?
 {
     implements = ["org.sui.lang.core.psi.MvTypeAnnotationOwner"]
 }
 
-LetMoveStmt ::= let Pat TypeAnnotation? Initializer? ';'
+LetMoveStmt ::= let 'mut'? Pat TypeAnnotation? Initializer? ';'
 {
     pin = 1
     elementType = LetStmt
 }
-LetMslStmt ::= (let post?) Pat TypeAnnotation? Initializer? ';'
+LetMslStmt ::= (let post? ) 'mut'? Pat TypeAnnotation? Initializer? ';'
 {
     pin = 1
     elementType = LetStmt
@@ -1511,15 +1556,6 @@ TypeQuantBinding ::= BindingPat ':' Type {
     pin = 2
     extends = QuantBinding
 }
-
-//IDENTIFIER ::= IDENTIFIER | '`' KEYWORD '`'
-// move 2024 new grammar rules
-// type
-//TypeDeclaration ::= TYPE_KW IDENTIFIER '=' Type ';'
-//// match
-//MatchExpression ::= MATCH_KW Expr '{' MatchBranches '}'
-//MatchBranches ::= (MatchBranch ',')* MatchBranch?
-//MatchBranch ::= IDENTIFIER '=>' Expr
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Meta rules
