@@ -280,15 +280,6 @@ class MvStructStub(
     }
 }
 
-class MvEnumStub(
-    parent: StubElement<*>,
-    elementType: IStubElementType<*, *>,
-    override val flags: Int,
-    override val name: String?
-) : MvAttributeOwnerStubBase<MvEnum>(parent, elementType), MvNamedStub {
-    // 在这里添加你需要的方法和属性
-}
-
 class MvSchemaStub(
     parent: StubElement<*>?,
     elementType: IStubElementType<*, *>,

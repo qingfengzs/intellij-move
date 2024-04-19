@@ -383,43 +383,35 @@ private PublicKeyword ::= 'public'
 //  stubClass = "org.sui.lang.core.stubs.RsPlaceholderStub<?>"
 //  elementTypeFactory = "org.sui.lang.core.stubs.StubImplementationsKt.factory"
 //}
-
+//
 fake EnumItem ::= 'public' enum IDENTIFIER TypeParameterList? EnumBody {
    pin = "enum"
-   name = ""
    implements = [
             "org.sui.lang.core.psi.MvQualNamedElement"
             "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
             "org.sui.lang.core.psi.MvTypeParametersOwner"
             "org.sui.lang.core.psi.MvNameIdentifierOwner"
         ]
-   extends = "org.sui.lang.core.psi.ext.RsStubbedElementImpl<?>"
-   mixin = "org.sui.lang.core.psi.ext.RsEnumItemImplMixin"
-   stubClass = "org.sui.lang.core.stubs.RsEnumItemStub"
-   elementTypeFactory = "org.sui.lang.core.stubs.StubImplementationsKt.factory"
+     mixin = "org.sui.lang.core.psi.ext.MvStructMixin"
+     stubClass = "org.sui.lang.core.stubs.MvStructStub"
+     elementTypeFactory = "org.sui.lang.core.stubs.StubsKt.factory"
  }
 
  EnumBody ::= '{' [ <<comma_separated_list EnumVariant>> ] '}' {
    pin = 1
-   extends = "org.sui.lang.core.psi.ext.RsStubbedElementImpl<?>"
-   stubClass = "org.sui.lang.core.stubs.RsPlaceholderStub<?>"
-   elementTypeFactory = "org.sui.lang.core.stubs.StubImplementationsKt.factory"
+   recoverWhile = EnumVariant_recover
  }
 
 EnumVariant ::= IDENTIFIER VariantArgs? {
   pin = 2
   hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
-  implements = [ "org.sui.lang.core.psi.ext.RsQualifiedNamedElement"
-                 "org.sui.lang.core.psi.ext.RsNameIdentifierOwner"
-                 "org.sui.lang.core.psi.ext.RsOuterAttributeOwner"
-                 "org.sui.lang.core.psi.ext.RsFieldsOwner"
-                 "org.sui.lang.core.psi.ext.RsVisibilityOwner" ]
-  extends = "org.sui.lang.core.psi.ext.RsStubbedElementImpl<?>"
-  mixin = "org.sui.lang.core.psi.ext.RsEnumVariantImplMixin"
-  stubClass = "org.sui.lang.core.stubs.RsEnumVariantStub"
-  elementTypeFactory = "org.rust.lang.core.stubs.StubImplementationsKt.factory"
+  implements = [
+    "org.sui.lang.core.psi.MvQualNamedElement"
+    "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
+    "org.sui.lang.core.psi.MvNameIdentifierOwner"
+  ]
 }
-
+private EnumVariant_recover ::= !('}' | IDENTIFIER)
 private VariantArgs ::= [StructPat | TuplePat]
 
 fake Function ::= Attr* native? FunctionVisibilityModifier? entry? inline?
@@ -620,12 +612,6 @@ TupleType ::= '(' Type ',' (Type ','?)* ')' { pin = 3 }
 
 LambdaType ::= '|' <<non_empty_comma_sep_items LambdaTypeParam>>? '|' Type? { pin = 1 }
 LambdaTypeParam ::= Type
-
-// enum
-//EnumDeclaration ::= 'public'? ENUM_KW IDENTIFIER '{' EnumVariant* '}' ';'
-//EnumVariant ::= IDENTIFIER EnumVariantBody? ','
-//EnumVariantBody ::= '{' EnumField* '}' | '(' Type ')'
-//EnumField ::= IDENTIFIER ':' Type ','
 
 TypeParameterList ::= '<' TypeParameter_with_recover* '>'
 {
