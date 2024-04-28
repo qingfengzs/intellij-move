@@ -124,6 +124,7 @@ class MvErrorAnnotator : MvAnnotatorBase() {
                 }
             }
 
+            // TODO support move 2024
             override fun visitCallExpr(callExpr: MvCallExpr) {
                 val msl = callExpr.path.isMslScope
                 if (msl) return
@@ -227,6 +228,7 @@ class MvErrorAnnotator : MvAnnotatorBase() {
                     moveHolder, nameElement, o.fieldNames.toSet(), struct
                 )
             }
+
         }
         element.accept(visitor)
     }

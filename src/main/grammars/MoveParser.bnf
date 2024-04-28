@@ -377,23 +377,27 @@ private PublicKeyword ::= 'public'
  }
  private StructItem ::= StructInner | NativeStructInner
 
+ private EnumItem ::= EnumInner
 
-//WhereClause ::= where <<comma_separated_list WherePred>>? {
-//  extends = "org.sui.lang.core.psi.ext.RsStubbedElementImpl<?>"
-//  stubClass = "org.sui.lang.core.stubs.RsPlaceholderStub<?>"
-//  elementTypeFactory = "org.sui.lang.core.stubs.StubImplementationsKt.factory"
-//}
-//
-fake EnumItem ::= 'public' enum IDENTIFIER TypeParameterList? EnumBody {
+ private EnumInnerFirst ::= ENUM_KW
+
+ EnumInner ::= PublicKeyword? EnumInnerFirst IDENTIFIER TypeParameterList?
+                              (';' | EnumBody)?
+ {
+     pin = EnumInnerFirst
+     elementType = Enum
+     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
+ }
+
+fake Enum ::= 'public' enum IDENTIFIER TypeParameterList? EnumBody {
    pin = "enum"
    implements = [
             "org.sui.lang.core.psi.MvQualNamedElement"
-            "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
             "org.sui.lang.core.psi.MvTypeParametersOwner"
             "org.sui.lang.core.psi.MvNameIdentifierOwner"
         ]
-     mixin = "org.sui.lang.core.psi.ext.MvStructMixin"
-     stubClass = "org.sui.lang.core.stubs.MvStructStub"
+     mixin = "org.sui.lang.core.psi.ext.MvEnumMixin"
+     stubClass = "org.sui.lang.core.stubs.MvEnumStub"
      elementTypeFactory = "org.sui.lang.core.stubs.StubsKt.factory"
  }
 
@@ -402,14 +406,9 @@ fake EnumItem ::= 'public' enum IDENTIFIER TypeParameterList? EnumBody {
    recoverWhile = EnumVariant_recover
  }
 
-EnumVariant ::= IDENTIFIER VariantArgs? {
+private EnumVariant ::= IDENTIFIER VariantArgs? {
   pin = 2
   hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
-  implements = [
-    "org.sui.lang.core.psi.MvQualNamedElement"
-    "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
-    "org.sui.lang.core.psi.MvNameIdentifierOwner"
-  ]
 }
 private EnumVariant_recover ::= !('}' | IDENTIFIER)
 private VariantArgs ::= [StructPat | TuplePat]
