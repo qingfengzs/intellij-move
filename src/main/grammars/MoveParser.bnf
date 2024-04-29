@@ -346,48 +346,48 @@ SpecInlineFunctionStmt ::= SpecInlineFunctionInner
 }
 private PublicKeyword ::= 'public'
 
- fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameterList? AbilitiesList?
-                         (';' | StructBlock)?
- {
-     implements = [
-         "org.sui.lang.core.psi.MvQualNamedElement"
-         "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
-         "org.sui.lang.core.psi.MvTypeParametersOwner"
-         "org.sui.lang.core.psi.MvNameIdentifierOwner"
-     ]
-     mixin = "org.sui.lang.core.psi.ext.MvStructMixin"
-     stubClass = "org.sui.lang.core.stubs.MvStructStub"
-     elementTypeFactory = "org.sui.lang.core.stubs.StubsKt.factory"
- }
+fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameterList? AbilitiesList?
+                     (';' | StructBlock)?
+{
+ implements = [
+     "org.sui.lang.core.psi.MvQualNamedElement"
+     "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner"
+     "org.sui.lang.core.psi.MvTypeParametersOwner"
+     "org.sui.lang.core.psi.MvNameIdentifierOwner"
+ ]
+ mixin = "org.sui.lang.core.psi.ext.MvStructMixin"
+ stubClass = "org.sui.lang.core.stubs.MvStructStub"
+ elementTypeFactory = "org.sui.lang.core.stubs.StubsKt.factory"
+}
 
- private StructInnerFirst ::= STRUCT_KW
- StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
-                             StructBlock
- {
-     pin = StructInnerFirst
-     elementType = Struct
-     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
- }
- private NativeStructInnerFirst ::= native STRUCT_KW
- NativeStructInner ::= Attr* PublicKeyword NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
- {
-     pin = StructInnerFirst
-     elementType = Struct
-     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
- }
- private StructItem ::= StructInner | NativeStructInner
+private StructInnerFirst ::= STRUCT_KW
+StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
+                         StructBlock
+{
+ pin = StructInnerFirst
+ elementType = Struct
+ hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
+}
+private NativeStructInnerFirst ::= native STRUCT_KW
+NativeStructInner ::= Attr* PublicKeyword NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
+{
+ pin = StructInnerFirst
+ elementType = Struct
+ hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
+}
+private StructItem ::= StructInner | NativeStructInner
 
- private EnumItem ::= EnumInner
+private EnumItem ::= EnumInner
 
- private EnumInnerFirst ::= ENUM_KW
+private EnumInnerFirst ::= ENUM_KW
 
- EnumInner ::= PublicKeyword? EnumInnerFirst IDENTIFIER TypeParameterList?
-                              (';' | EnumBody)?
- {
-     pin = EnumInnerFirst
-     elementType = Enum
-     hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
- }
+EnumInner ::= PublicKeyword? EnumInnerFirst IDENTIFIER TypeParameterList?
+                          (';' | EnumBody)?
+{
+ pin = EnumInnerFirst
+ elementType = Enum
+ hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
+}
 
 fake Enum ::= 'public' enum IDENTIFIER TypeParameterList? EnumBody {
    pin = "enum"
