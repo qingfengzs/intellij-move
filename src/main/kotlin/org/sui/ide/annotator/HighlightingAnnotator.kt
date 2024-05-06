@@ -18,7 +18,8 @@ val SPEC_INTEGER_TYPE_IDENTIFIERS = INTEGER_TYPE_IDENTIFIERS + setOf("num")
 val SPEC_ONLY_PRIMITIVE_TYPES = setOf("num")
 val PRIMITIVE_TYPE_IDENTIFIERS = INTEGER_TYPE_IDENTIFIERS + setOf("bool")
 val PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS = setOf("address", "signer")
-val BUILTIN_TYPE_IDENTIFIERS = PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS + setOf("vector")
+val BUILTIN_TYPE_IDENTIFIERS =
+    PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS + setOf("vector", "option", "UID", "ID", "Option", "TxContext")
 
 val GLOBAL_STORAGE_ACCESS_FUNCTIONS =
     setOf("move_from", "borrow_global", "borrow_global_mut", "exists", "freeze")
