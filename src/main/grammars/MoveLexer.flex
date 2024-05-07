@@ -47,7 +47,7 @@ import static org.sui.lang.MoveParserDefinition.*;
 %unicode
 
 %s IN_BLOCK_COMMENT
-
+%s IN_LIFETIME_OR_CHAR
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Whitespaces
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,5 +176,8 @@ IDENTIFIER=[_a-zA-Z][_a-zA-Z0-9]*
  }
   [^]     { }
 }
-
+<IN_LIFETIME_OR_CHAR> {
+  \'{IDENTIFIER}                        { yybegin(YYINITIAL); return QUOTE_IDENTIFIER; }
+  <<EOF>>                               { yybegin(YYINITIAL); return BAD_CHARACTER; }
+}
 [^] { return BAD_CHARACTER; }

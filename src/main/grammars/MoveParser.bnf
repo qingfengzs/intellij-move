@@ -471,7 +471,7 @@ private FunctionParameter_with_recover ::= !(')' | '{' | ';') FunctionParameter 
     pin = 1
     recoverWhile = FunctionParameter_recover
 }
-private FunctionParameter_recover ::= !(')' | '{' | ';' | IDENTIFIER)
+private FunctionParameter_recover ::= !(')' | '{' | ';' | IDENTIFIER | mut)
 
 FunctionParameter ::= BindingPat TypeAnnotation {
     pin = 1
@@ -661,7 +661,7 @@ Pat ::= TuplePat
 
 WildPat ::= '_'
 
-BindingPat ::= IDENTIFIER {
+BindingPat ::= mut? IDENTIFIER {
     implements = [
         "org.sui.lang.core.psi.MvMandatoryNameIdentifierOwner"
     ]
@@ -718,12 +718,12 @@ fake LetStmt ::= let post? Pat? 'mut'? TypeAnnotation? Initializer? ';'?
     implements = ["org.sui.lang.core.psi.MvTypeAnnotationOwner"]
 }
 
-LetMoveStmt ::= let 'mut'? Pat TypeAnnotation? Initializer? ';'
+LetMoveStmt ::= let mut? Pat TypeAnnotation? Initializer? ';'
 {
     pin = 1
     elementType = LetStmt
 }
-LetMslStmt ::= (let post? ) 'mut'? Pat TypeAnnotation? Initializer? ';'
+LetMslStmt ::= (let post? ) mut? Pat TypeAnnotation? Initializer? ';'
 {
     pin = 1
     elementType = LetStmt
@@ -1000,6 +1000,7 @@ private ConditionBody ::= Expr { recoverWhile = "ConditionBody_recover" }
 private ConditionBody_recover ::= !')'
 
 ElseBlock ::= else AnyBlock { pin = 1 }
+LabelDecl ::= QUOTE_IDENTIFIER ':'
 
 LoopExpr ::= loop AnyBlock {
     pin = 1
@@ -1023,11 +1024,16 @@ Initializer ::= '=' Expr { pin = 1 }
 BorrowExpr ::= '&' mut? Expr
 
 DotExpr ::= Expr DotExpr_field
+
 // Do not inline this rule, it breaks expression parsing
-private DotExpr_field ::= '.' (!'.') StructDotField {
+private DotExpr_field ::= '.' (!'.') MethodOrField {
     pin = 2
     consumeTokenMethod = "consumeTokenFast"
 }
+private MethodOrField ::= () (MethodCall | StructDotField) { pin = 1}
+
+MethodCall ::= IDENTIFIER TypeArgumentList? ValueArgumentList
+
 StructDotField ::= !(<<VECTOR_IDENTIFIER>> ('[' | '<')) IDENTIFIER !('(' | '::' | '!' | '{')
 {
     implements = ["org.sui.lang.core.resolve.ref.MvMandatoryReferenceElement"]
