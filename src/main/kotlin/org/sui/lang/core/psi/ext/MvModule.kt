@@ -66,6 +66,10 @@ fun MvModule.testFunctions(): List<MvFunction> =
     getProjectPsiDependentCache(this) {
         it.allFunctions().filter { f -> f.hasTestAttr }
     }
+fun builtinFqModuleRef(text: String, project: Project): MvSpecFunction {
+    val trimmedText = text.trimIndent()
+    return project.psiFactory.specFunction(trimmedText, moduleName = "builtin_spec_functions")
+}
 
 fun MvModule.builtinFunctions(): List<MvFunction> {
     return getProjectPsiDependentCache(this) {
@@ -140,6 +144,10 @@ fun MvModule.structs(): List<MvStruct> {
 }
 
 fun MvModule.schemas(): List<MvSchema> = moduleBlock?.schemaList.orEmpty()
+
+fun MvModule.builtinModules(): List<MvModule> {
+    return listOf()
+}
 
 fun MvModule.builtinSpecFunctions(): List<MvSpecFunction> {
     return getProjectPsiDependentCache(this) {

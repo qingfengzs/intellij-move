@@ -92,7 +92,7 @@
         EQ_EQ_GT        = '==>'
         LT_EQ_EQ_GT     = '<==>'
         DOT_DOT     = '..'
-
+        BACKTICK = '`'
         ADDRESS     = 'address_kw'
         HAS     = 'has_kw'
         ENTRY     = 'entry_kw'
@@ -149,8 +149,6 @@
     ]
 }
 
-// USE_FUN_KW = 'use fun'
-
 // Naming convention:
 //
 //   * tokens are lowercase: for, if, identifier
@@ -195,7 +193,7 @@ private ScriptItem ::= !('}' | <<eof>>) ScriptItem_item
     recoverWhile = ScriptItem_recover
 }
 // top-level recovery
-private ScriptItemFirst ::= use | CONST_KW | fun
+private ScriptItemFirst ::= use | CONST_KW | fun | UseFunFirst
 private ScriptItem_recover ::= !('}' | <<eof>> | ScriptItemFirst)
 
 private ScriptItem_item ::= UseStmt | Const | FunctionInner
@@ -246,10 +244,11 @@ private ModuleItem ::= !('}' | <<eof>>) ModuleItem_item
     recoverWhile = Item_recover
 }
 // top-level recovery
-private Item_first ::= use | public | native | fun | CONST_KW | STRUCT_KW |ENUM_KW| spec | friend | Attr | entry | inline
+private Item_first ::= use | public | native | fun | CONST_KW | STRUCT_KW |ENUM_KW| spec | friend | Attr | entry | inline | UseFunFirst
 private Item_recover ::= !('}' | <<eof>> | Item_first)
 
-private ModuleItem_item ::= UseStmt
+private ModuleItem_item ::= PublicUseFun
+                            | UseStmt
                             | FriendDecl
                             | StructItem
                             | EnumItem
@@ -414,6 +413,12 @@ private EnumVariant ::= IDENTIFIER VariantArgs? {
 private EnumVariant_recover ::= !('}' | IDENTIFIER)
 private VariantArgs ::= [StructPat | TuplePat]
 
+UseFunFirst::= 'use fun'
+// public use fun sui::pay::split_vec as Coin.split_vec;
+PublicUseFun ::= 'public'? UseFunFirst Path? IDENTIFIER? 'as' IDENTIFIER '.' IDENTIFIER ';'{
+    pin=2
+}
+
 fake Function ::= Attr* native? FunctionVisibilityModifier? entry? inline?
                     fun? IDENTIFIER? TypeParameterList? FunctionParameterList?
                         ReturnType? AcquiresType?
@@ -458,6 +463,7 @@ private FunctionSignatureInner ::= IDENTIFIER TypeParameterList?
 }
 private FunctionSignatureInner_recover ::= !('{' | '}' | ';' | <<eof>> | Item_first)
 
+
 private friend ::= <<friendKeyword>>
 private package::= <<packageKeyword>>
 private for ::= <<forKeyword>>
@@ -465,7 +471,7 @@ private for ::= <<forKeyword>>
 private FunctionModifierSetInner ::= <<functionModifierSet FunctionVisibilityModifier>>
 private NativeFunctionModifierSetInner ::= <<nativeFunctionModifierSet FunctionVisibilityModifier>>
 
-FunctionVisibilityModifier ::= public ('(' (SCRIPT_KW | package) ')')?
+FunctionVisibilityModifier ::= public ('(' (SCRIPT_KW | package | friend) ')')?
 
 FunctionParameterList ::= '(' FunctionParameter_with_recover* ')' { pin = 1 }
 private FunctionParameter_with_recover ::= !(')' | '{' | ';') FunctionParameter (',' | &')')
