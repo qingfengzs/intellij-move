@@ -10,6 +10,7 @@ import org.sui.lang.core.resolve.ref.Visibility
 import org.sui.lang.core.types.address
 import org.sui.lang.index.MvNamedElementIndex
 import org.sui.lang.moveProject
+import org.sui.lang.preLoadTypes
 import org.sui.lang.toNioPathOrNull
 import org.sui.stdext.wrapWithList
 
@@ -215,6 +216,70 @@ fun processFQModuleRef(
 
             true
         }
+}
+
+fun processPreLoadType(
+    element: MvPathType,
+    processor: MatchingProcessor<MvStruct>,
+) {
+    val moveProj = element.moveProject ?: return
+    val contextScopeInfo = ContextScopeInfo(
+        letStmtScope = element.letStmtScope,
+        refItemScopes = element.itemScopes,
+    )
+    val moduleProcessor = MatchingProcessor {
+        if (!contextScopeInfo.matches(it.element)) {
+            return@MatchingProcessor false
+        }
+        val entry = ScopeItem(it.name, it.element as MvStruct)
+        processor.match(entry)
+    }
+    var stopped = false
+    moveProj.processMoveFiles { moveFile ->
+        stopped = processPreLoadType(moveFile, moduleProcessor)
+        !stopped
+    }
+}
+
+fun processPreLoadType(file: MoveFile, moduleProcessor: MatchingProcessor<MvNamedElement>): Boolean {
+    if (listOf("transfer.move", "object.move", "option.move", "vector.move", "tx_context.move").contains(file.name)) {
+        for (type in file.preLoadTypes()) {
+            if (moduleProcessor.match(type)) return true
+        }
+    }
+    return false
+}
+
+fun processModuleRef(
+    moduleRef: MvModuleRef,
+    processor: MatchingProcessor<MvModule>,
+) {
+    val moveProj = moduleRef.moveProject ?: return
+    val contextScopeInfo = ContextScopeInfo(
+        letStmtScope = moduleRef.letStmtScope,
+        refItemScopes = moduleRef.refItemScopes,
+    )
+    val moduleProcessor = MatchingProcessor {
+        if (!contextScopeInfo.matches(it.element)) {
+            return@MatchingProcessor false
+        }
+        val entry = ScopeItem(it.name, it.element as MvModule)
+        processor.match(entry)
+    }
+    var stopped = false
+    moveProj.processMoveFiles { moveFile ->
+        stopped = processPreLoadModules(moveFile, moduleProcessor)
+        !stopped
+    }
+}
+
+fun processPreLoadModules(file: MoveFile, moduleProcessor: MatchingProcessor<MvNamedElement>): Boolean {
+    if (listOf("transfer.move", "object.move", "option.move", "vector.move", "tx_context.move").contains(file.name)) {
+        for (module in file.preModules()) {
+            if (moduleProcessor.match(module)) return true
+        }
+    }
+    return false
 }
 
 fun walkUpThroughScopes(

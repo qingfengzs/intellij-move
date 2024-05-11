@@ -78,6 +78,21 @@ class MoveFile(fileViewProvider: FileViewProvider) : MoveFileBase(fileViewProvid
     }
 
     fun moduleSpecs(): List<MvModuleSpec> = this.childrenOfType()
+
+    fun preModules(): Sequence<MvModule> {
+        return getProjectPsiDependentCache(this) { it ->
+            it.childrenOfType<MvModule>()
+                .chain(it.childrenOfType<MvAddressDef>().flatMap { a -> a.modules() })
+                .filter {
+                    it.addressRef?.namedAddress?.text == "sui" && setOf(
+                        "transfer",
+                        "object",
+                        "tx_context"
+                    ).contains(it.name)
+                            || it.addressRef?.namedAddress?.text == "std" && setOf("vector", "option").contains(it.name)
+                }
+        }
+    }
 }
 
 val VirtualFile.isMoveFile: Boolean get() = fileType == MoveFileType
@@ -94,3 +109,21 @@ fun MoveFile.isTempFile(): Boolean =
 
 inline fun <reified T : PsiElement> PsiFile.elementAtOffset(offset: Int): T? =
     this.findElementAt(offset)?.ancestorOrSelf<T>()
+
+fun MoveFile.preLoadTypes(): List<MvStruct> {
+    val projectPsiDependentCache = getProjectPsiDependentCache(this) { it ->
+        it.childrenOfType<MvModule>()
+            .chain(it.childrenOfType<MvAddressDef>().flatMap { a -> a.modules() })
+            .filter {
+                it.addressRef?.namedAddress?.text == "sui" && setOf("object", "tx_context").contains(it.name)
+                        || it.addressRef?.namedAddress?.text == "std" && setOf("option").contains(it.name)
+            }
+    }
+
+    var result = mutableListOf<MvStruct>()
+    for (module in projectPsiDependentCache) {
+        module.moduleBlock?.structList?.filter { listOf("ID", "UID", "TxContext").contains(it.name) }
+            ?.let { result.addAll(it) }
+    }
+    return result.toList()
+}

@@ -146,7 +146,18 @@ fun MvModule.structs(): List<MvStruct> {
 fun MvModule.schemas(): List<MvSchema> = moduleBlock?.schemaList.orEmpty()
 
 fun MvModule.builtinModules(): List<MvModule> {
-    return listOf()
+    return getProjectPsiDependentCache(this) {
+        val project = it.project
+        listOf(
+            builtinModule("transfer", project),
+            builtinModule("object", project),
+        )
+    }
+}
+
+fun builtinModule(text: String, project: Project): MvModule {
+    val trimmedText = text.trimIndent()
+    return project.psiFactory.specModule(trimmedText)
 }
 
 fun MvModule.builtinSpecFunctions(): List<MvSpecFunction> {

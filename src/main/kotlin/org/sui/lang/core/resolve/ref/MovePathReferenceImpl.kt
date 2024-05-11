@@ -1,10 +1,7 @@
 package org.sui.lang.core.resolve.ref
 
 import org.sui.lang.core.psi.*
-import org.sui.lang.core.psi.ext.isSelf
-import org.sui.lang.core.psi.ext.isUpdateFieldArg2
-import org.sui.lang.core.psi.ext.itemUseSpeck
-import org.sui.lang.core.psi.ext.namespaces
+import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.resolve.*
 
 class MvPathReferenceImpl(
@@ -43,6 +40,33 @@ class MvPathReferenceImpl(
                     contextScopeInfo
                 )
             }
+
+            var resolved: MvModule? = null
+            var preLoadResolved: MutableList<MvNamedElement> = mutableListOf()
+            // process preload Type
+            if (element is MvPathType) {
+                processPreLoadType(element as MvPathType) {
+                    if (it.name == element.identifierName) {
+                        preLoadResolved.add(it.element)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+            if (preLoadResolved.isNotEmpty()) return preLoadResolved.toList()
+
+            // process preload module
+            processModuleRef(moduleRef) {
+                if (it.name == moduleRef.referenceName) {
+                    resolved = it.element
+                    true
+                } else {
+                    false
+                }
+            }
+            if (resolved != null) return resolveModuleItem(resolved!!, refName, pathNamespaces, vs, contextScopeInfo)
+
             val useSpeckFQModuleRef = resolveIntoFQModuleRefInUseSpeck(moduleRef) ?: return emptyList()
             val useSpeckModule =
                 useSpeckFQModuleRef.reference?.resolve() as? MvModule ?: return emptyList()
