@@ -7,6 +7,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import org.sui.ide.MoveIcons
+import org.sui.ide.annotator.PRELOAD_STD_MODULES
+import org.sui.ide.annotator.PRELOAD_SUI_MODULES
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.resolve.ref.Visibility
 import org.sui.lang.core.stubs.MvFunctionStub
@@ -252,6 +254,11 @@ fun MvModule.allModuleSpecBlocks(): List<MvModuleSpecBlock> {
     return this.allModuleSpecs().mapNotNull { it.moduleSpecBlock }
 }
 
+fun MvModule.isPreload(): Boolean {
+    return this.addressRef?.namedAddress?.text == "sui" && PRELOAD_STD_MODULES.contains(this.name)
+            || this.addressRef?.namedAddress?.text == "std" && PRELOAD_SUI_MODULES.contains(this.name)
+}
+
 abstract class MvModuleMixin : MvStubbedNamedElementImpl<MvModuleStub>,
                                MvModule {
 
@@ -282,4 +289,5 @@ abstract class MvModuleMixin : MvStubbedNamedElementImpl<MvModuleStub>,
             val address = this.address(moveProject) ?: Address.Value("0x0")
             return ItemQualName(this, address, null, moduleName)
         }
+
 }

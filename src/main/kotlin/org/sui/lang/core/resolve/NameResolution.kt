@@ -10,7 +10,7 @@ import org.sui.lang.core.resolve.ref.Visibility
 import org.sui.lang.core.types.address
 import org.sui.lang.index.MvNamedElementIndex
 import org.sui.lang.moveProject
-import org.sui.lang.preLoadTypes
+import org.sui.lang.preLoadItems
 import org.sui.lang.toNioPathOrNull
 import org.sui.stdext.wrapWithList
 
@@ -218,8 +218,8 @@ fun processFQModuleRef(
         }
 }
 
-fun processPreLoadType(
-    element: MvPathType,
+fun processPreLoadModuleItem(
+    element: MvPath,
     processor: MatchingProcessor<MvStruct>,
 ) {
     val moveProj = element.moveProject ?: return
@@ -236,17 +236,17 @@ fun processPreLoadType(
     }
     var stopped = false
     moveProj.processMoveFiles { moveFile ->
-        stopped = processPreLoadType(moveFile, moduleProcessor)
+        stopped = processPreLoadModuleItem(moveFile, moduleProcessor)
         !stopped
     }
 }
 
-fun processPreLoadType(file: MoveFile, moduleProcessor: MatchingProcessor<MvNamedElement>): Boolean {
-    if (listOf("transfer.move", "object.move", "option.move", "vector.move", "tx_context.move").contains(file.name)) {
-        for (type in file.preLoadTypes()) {
-            if (moduleProcessor.match(type)) return true
+fun processPreLoadModuleItem(file: MoveFile, moduleProcessor: MatchingProcessor<MvNamedElement>): Boolean {
+//    if (listOf("transfer.move", "object.move", "option.move", "vector.move", "tx_context.move").contains(file.name)) {
+    for (item in file.preLoadItems()) {
+        if (moduleProcessor.match(item)) return true
         }
-    }
+//    }
     return false
 }
 
@@ -275,7 +275,7 @@ fun processModuleRef(
 
 fun processPreLoadModules(file: MoveFile, moduleProcessor: MatchingProcessor<MvNamedElement>): Boolean {
     if (listOf("transfer.move", "object.move", "option.move", "vector.move", "tx_context.move").contains(file.name)) {
-        for (module in file.preModules()) {
+        for (module in file.preloadModules()) {
             if (moduleProcessor.match(module)) return true
         }
     }

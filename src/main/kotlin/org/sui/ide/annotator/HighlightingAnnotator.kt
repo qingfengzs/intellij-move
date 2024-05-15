@@ -37,6 +37,10 @@ val HAS_DROP_ABILITY_TYPES = INTEGER_TYPE_IDENTIFIERS + PRIMITIVE_BUILTIN_TYPE_I
     "address", "signer", "vector", "Option", "String", "TypeName"
 )
 
+val PRELOAD_STD_MODULES = setOf("vector", "option")
+val PRELOAD_SUI_MODULES = setOf("transfer", "object", "tx_context")
+val PRELOAD_MODULE_ITEMS = setOf("UID", "ID", "TxContext")
+
 class HighlightingAnnotator : MvAnnotatorBase() {
     override fun annotateInternal(element: PsiElement, holder: AnnotationHolder) {
         val color = when {

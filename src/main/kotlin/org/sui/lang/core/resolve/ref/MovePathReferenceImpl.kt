@@ -42,20 +42,6 @@ class MvPathReferenceImpl(
             }
 
             var resolved: MvModule? = null
-            var preLoadResolved: MutableList<MvNamedElement> = mutableListOf()
-            // process preload Type
-            if (element is MvPathType) {
-                processPreLoadType(element as MvPathType) {
-                    if (it.name == element.identifierName) {
-                        preLoadResolved.add(it.element)
-                        true
-                    } else {
-                        false
-                    }
-                }
-            }
-            if (preLoadResolved.isNotEmpty()) return preLoadResolved.toList()
-
             // process preload module
             processModuleRef(moduleRef) {
                 if (it.name == moduleRef.referenceName) {
@@ -75,6 +61,25 @@ class MvPathReferenceImpl(
             // if it's NAME
             // special case second argument of update_field function in specs
             if (element.isUpdateFieldArg2) return emptyList()
+
+            // process preload module item
+            val preLoadResolved: MutableList<MvNamedElement> = mutableListOf()
+            if (element.parent?.parent is MvTypeAnnotation && listOf(
+                    "UID",
+                    "ID",
+                    "TxContext"
+                ).contains(element.identifierName)
+            ) {
+                processPreLoadModuleItem(element) {
+                    if (it.name == element.identifierName) {
+                        preLoadResolved.add(it.element)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+            if (preLoadResolved.isNotEmpty()) return preLoadResolved.toList()
 
             // try local names
             val item = resolveLocalItem(element, pathNamespaces).firstOrNull() ?: return emptyList()

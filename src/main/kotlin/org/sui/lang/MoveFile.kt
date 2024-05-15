@@ -14,9 +14,7 @@ import org.sui.cli.Consts
 import org.sui.cli.MoveProject
 import org.sui.cli.moveProjectsService
 import org.sui.lang.core.psi.*
-import org.sui.lang.core.psi.ext.ancestorOrSelf
-import org.sui.lang.core.psi.ext.childrenOfType
-import org.sui.lang.core.psi.ext.modules
+import org.sui.lang.core.psi.ext.*
 import org.sui.openapiext.resolveAbsPath
 import org.sui.openapiext.toPsiFile
 import org.sui.stdext.chain
@@ -79,17 +77,12 @@ class MoveFile(fileViewProvider: FileViewProvider) : MoveFileBase(fileViewProvid
 
     fun moduleSpecs(): List<MvModuleSpec> = this.childrenOfType()
 
-    fun preModules(): Sequence<MvModule> {
+    fun preloadModules(): Sequence<MvModule> {
         return getProjectPsiDependentCache(this) { it ->
             it.childrenOfType<MvModule>()
                 .chain(it.childrenOfType<MvAddressDef>().flatMap { a -> a.modules() })
                 .filter {
-                    it.addressRef?.namedAddress?.text == "sui" && setOf(
-                        "transfer",
-                        "object",
-                        "tx_context"
-                    ).contains(it.name)
-                            || it.addressRef?.namedAddress?.text == "std" && setOf("vector", "option").contains(it.name)
+                    it.isPreload()
                 }
         }
     }
@@ -110,20 +103,17 @@ fun MoveFile.isTempFile(): Boolean =
 inline fun <reified T : PsiElement> PsiFile.elementAtOffset(offset: Int): T? =
     this.findElementAt(offset)?.ancestorOrSelf<T>()
 
-fun MoveFile.preLoadTypes(): List<MvStruct> {
-    val projectPsiDependentCache = getProjectPsiDependentCache(this) { it ->
-        it.childrenOfType<MvModule>()
-            .chain(it.childrenOfType<MvAddressDef>().flatMap { a -> a.modules() })
-            .filter {
-                it.addressRef?.namedAddress?.text == "sui" && setOf("object", "tx_context").contains(it.name)
-                        || it.addressRef?.namedAddress?.text == "std" && setOf("option").contains(it.name)
-            }
-    }
+fun MoveFile.preLoadItems(): List<MvStruct> {
+    if (this.fileType != MoveFileType) return emptyList()
 
-    var result = mutableListOf<MvStruct>()
-    for (module in projectPsiDependentCache) {
-        module.moduleBlock?.structList?.filter { listOf("ID", "UID", "TxContext").contains(it.name) }
-            ?.let { result.addAll(it) }
+    val resultList = mutableListOf<MvStruct>()
+    this.preloadModules().forEach {
+        if (it.isPreload() && it.name == "transfer") {
+            resultList.add(it.structs().filter { it.name == "TxContext" }.first())
+        }
+        if (it.isPreload() && it.name == "object") {
+            resultList.add(it.structs().filter { it.name == "ID" || it.name == "UID" }.first())
+        }
     }
-    return result.toList()
+    return resultList
 }
