@@ -104,15 +104,16 @@ inline fun <reified T : PsiElement> PsiFile.elementAtOffset(offset: Int): T? =
     this.findElementAt(offset)?.ancestorOrSelf<T>()
 
 fun MoveFile.preLoadItems(): List<MvStruct> {
+    println("file name:" + this.name)
     if (this.fileType != MoveFileType) return emptyList()
-
     val resultList = mutableListOf<MvStruct>()
-    this.preloadModules().forEach {
-        if (it.isPreload() && it.name == "transfer") {
-            resultList.add(it.structs().filter { it.name == "TxContext" }.first())
+    this.modules().forEach { mvModule ->
+        if (mvModule.isPreload() && mvModule.identifier?.text == "tx_context") {
+            mvModule.structs().filter { it.identifier?.text == "TxContext" }.let { resultList.addAll(it) }
         }
-        if (it.isPreload() && it.name == "object") {
-            resultList.add(it.structs().filter { it.name == "ID" || it.name == "UID" }.first())
+        if (mvModule.isPreload() && mvModule.identifier?.text == "object") {
+            mvModule.structs().filter { it.identifier?.text == "ID" || it.identifier?.text == "UID" }
+                .let { resultList.addAll(it) }
         }
     }
     return resultList

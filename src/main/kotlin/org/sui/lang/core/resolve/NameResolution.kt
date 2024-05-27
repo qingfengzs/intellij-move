@@ -236,17 +236,19 @@ fun processPreLoadModuleItem(
     }
     var stopped = false
     moveProj.processMoveFiles { moveFile ->
-        stopped = processPreLoadModuleItem(moveFile, moduleProcessor)
-        !stopped
+        if (moveFile.name == "object.move" || moveFile.name == "tx_context.move") {
+            stopped = processPreLoadModuleItem(moveFile, moduleProcessor)
+            !stopped
+        } else {
+            true
+        }
     }
 }
 
 fun processPreLoadModuleItem(file: MoveFile, moduleProcessor: MatchingProcessor<MvNamedElement>): Boolean {
-//    if (listOf("transfer.move", "object.move", "option.move", "vector.move", "tx_context.move").contains(file.name)) {
     for (item in file.preLoadItems()) {
         if (moduleProcessor.match(item)) return true
-        }
-//    }
+    }
     return false
 }
 

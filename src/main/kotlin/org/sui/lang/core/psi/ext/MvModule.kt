@@ -255,8 +255,8 @@ fun MvModule.allModuleSpecBlocks(): List<MvModuleSpecBlock> {
 }
 
 fun MvModule.isPreload(): Boolean {
-    return this.addressRef?.namedAddress?.text == "sui" && PRELOAD_STD_MODULES.contains(this.name)
-            || this.addressRef?.namedAddress?.text == "std" && PRELOAD_SUI_MODULES.contains(this.name)
+    return this.addressRef?.namedAddress?.text == "sui" && PRELOAD_SUI_MODULES.contains(this.identifier?.text)
+            || this.addressRef?.namedAddress?.text == "std" && PRELOAD_STD_MODULES.contains(this.identifier?.text)
 }
 
 abstract class MvModuleMixin : MvStubbedNamedElementImpl<MvModuleStub>,
