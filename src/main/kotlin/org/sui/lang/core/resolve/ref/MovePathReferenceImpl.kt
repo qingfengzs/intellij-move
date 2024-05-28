@@ -64,7 +64,7 @@ class MvPathReferenceImpl(
 
             // process preload module item
             val preLoadResolved: MutableList<MvNamedElement> = mutableListOf()
-            if (element.parent?.parent is MvTypeAnnotation && listOf(
+            if ((element.parent?.parent is MvTypeAnnotation || element.parent?.parent is MvRefType) && listOf(
                     "UID",
                     "ID",
                     "TxContext"

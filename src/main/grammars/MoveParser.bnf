@@ -415,8 +415,8 @@ private VariantArgs ::= [StructPat | TuplePat]
 
 UseFunFirst::= 'use fun'
 // public use fun sui::pay::split_vec as Coin.split_vec;
-PublicUseFun ::= 'public'? UseFunFirst Path? IDENTIFIER? 'as' IDENTIFIER '.' IDENTIFIER ';'{
-    pin=2
+PublicUseFun ::= 'public'? 'use' 'fun' Path? 'as' IDENTIFIER'.'IDENTIFIER ';' {
+    pin=3
 }
 
 fake Function ::= Attr* native? FunctionVisibilityModifier? entry? inline?
@@ -570,7 +570,7 @@ private MultiItemUse_member_with_recovery ::= !('}' | ';' | <<eof>>) UseItem
     pin = 1
 }
 
-UseItem ::= IDENTIFIER UseAlias?
+UseItem ::= IDENTIFIER UseAlias? | ModuleRef
 {
     pin = 1
     name = "item name"

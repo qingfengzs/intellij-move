@@ -97,7 +97,6 @@ fun resolveModuleItem(
     contextScopeInfo: ContextScopeInfo,
 ): List<MvNamedElement> {
     val resolved = mutableListOf<MvNamedElement>()
-    println(module.name)
     processModuleItems(module, namespaces, visibilities, contextScopeInfo) {
         if (it.name == name) {
             resolved.add(it.element)

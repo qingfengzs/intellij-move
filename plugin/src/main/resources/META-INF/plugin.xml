@@ -11,7 +11,8 @@
                   <li>syntax highlighting.</li>
                   <li>struct declarations.</li>
                   <li>new keywords.</li>
-                  <li>other grammars are being adapted.</li>
+                  <li>preload item.</li>
+                  <li>other grammars are being adapted(Method syntax,Positional fields,Loop labels).</li>
                 </ul>
 
                 <p>This plugin provides enhanced support for Sui Move, a language tailored for blockchain development. It bolsters coding efficiency and workflow with a suite of features:</p>

@@ -104,7 +104,6 @@ inline fun <reified T : PsiElement> PsiFile.elementAtOffset(offset: Int): T? =
     this.findElementAt(offset)?.ancestorOrSelf<T>()
 
 fun MoveFile.preLoadItems(): List<MvStruct> {
-    println("file name:" + this.name)
     if (this.fileType != MoveFileType) return emptyList()
     val resultList = mutableListOf<MvStruct>()
     this.modules().forEach { mvModule ->
