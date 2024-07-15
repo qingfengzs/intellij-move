@@ -41,10 +41,6 @@ fun IndexSink.indexStructStub(stub: MvStructStub) {
     indexNamedStub(stub)
 }
 
-fun IndexSink.indexEnumStub(stub: MvEnumStub) {
-    indexNamedStub(stub)
-}
-
 fun IndexSink.indexSchemaStub(stub: MvSchemaStub) {
     indexNamedStub(stub)
 }

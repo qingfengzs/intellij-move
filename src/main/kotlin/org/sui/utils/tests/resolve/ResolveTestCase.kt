@@ -9,9 +9,9 @@ import org.sui.utils.tests.base.findElementWithDataAndOffsetInEditor
 
 abstract class ResolveTestCase : MvTestBase() {
     protected fun checkByCode(
-        @Language("Move") code: String,
+        @Language("Sui Move") code: String,
     ) {
-        inlineFile(code, "main.move")
+//        InlineFile(code, "main.move")
 
         val (refElement, data, offset) = myFixture.findElementWithDataAndOffsetInEditor<MvReferenceElement>("^")
 

@@ -12,7 +12,7 @@ import static org.sui.lang.MoveParserDefinition.*;
 
 %{
     /**
-        * Dedicated storage for starting position of some previously successful
+        * Dedicated storage for the starting position of some previously successful
         * match
     */
     private int zzPostponedMarkedPos = -1;
@@ -119,7 +119,6 @@ IDENTIFIER=[_a-zA-Z][_a-zA-Z0-9]* | `type`
       "|"        { return OR; }
       "@"        { return AT; }
       "#"        { return HASH; }
-      "`"        { return BACKTICK;}
 
       // keywords
       "script"         { return SCRIPT_KW; }

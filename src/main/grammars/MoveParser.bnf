@@ -34,6 +34,10 @@
 
     generateTokenAccessors=true
 
+    parserImports=[
+      'static org.move.lang.core.MoveParserUtil.PathParsingMode.*'
+    ]
+
     tokens = [
         WHITESPACE='regexp:[ \n\t\r\f]'
 
@@ -92,7 +96,7 @@
         EQ_EQ_GT        = '==>'
         LT_EQ_EQ_GT     = '<==>'
         DOT_DOT     = '..'
-        BACKTICK = '`'
+
         ADDRESS     = 'address_kw'
         HAS     = 'has_kw'
         ENTRY     = 'entry_kw'
@@ -100,6 +104,10 @@
         FRIEND     = 'friend_kw'
         PACKAGE     = 'package_kw'
         FOR     = 'for_kw'
+
+        READS     = 'reads_kw'
+        WRITES     = 'writes_kw'
+        PURE     = 'pure_kw'
 
         SCRIPT_KW     = 'script_kw'
         MODULE_KW     = 'module'
@@ -203,6 +211,10 @@ private has ::= <<hasKeyword>>
 private entry ::= <<entryKeyword>>
 private inline ::= <<inlineKeyword>>
 private schema ::= <<schemaKeyword>>
+
+private reads ::= <<readsKeyword>>
+private writes ::= <<writesKeyword>>
+private pure ::= <<pureKeyword>>
 
 AddressDef ::= address AddressRef AddressBlock {
     pin = 1
@@ -346,8 +358,11 @@ SpecInlineFunctionStmt ::= SpecInlineFunctionInner
 }
 private PublicKeyword ::= 'public'
 
+//private LastAbilitiesList ::= (AbilitiesList? ';')
 fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameterList? AbilitiesList?
                      (';' | StructBlock)?
+//fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameterList?
+//                      (AbilitiesList? (';' | StructBlock)?) | ((StructBlock)? AbilitiesList? ';'?)
 {
  implements = [
      "org.sui.lang.core.psi.MvQualNamedElement"
@@ -363,6 +378,8 @@ fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameter
 private StructInnerFirst ::= STRUCT_KW
 StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
                          StructBlock
+//StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList?
+//                    (AbilitiesList? (';' | StructBlock)?) | ((StructBlock)? AbilitiesList? ';'?)
 {
  pin = StructInnerFirst
  elementType = Struct
@@ -371,11 +388,15 @@ StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterLi
 private NativeStructInnerFirst ::= native STRUCT_KW
 NativeStructInner ::= Attr* PublicKeyword NativeStructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList? ';'
 {
- pin = StructInnerFirst
+ pin = NativeStructInnerFirst
  elementType = Struct
  hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
 }
 private StructItem ::= StructInner | NativeStructInner
+
+// 新增的规则
+//StructBlock ::= '{' StructField* '}' | '(' StructField* ')'
+//StructField ::= IDENTIFIER ':' Type | Type
 
 private EnumItem ::= EnumInner
 
@@ -414,14 +435,13 @@ private EnumVariant_recover ::= !('}' | IDENTIFIER)
 private VariantArgs ::= [StructPat | TuplePat]
 
 UseFunFirst::= 'use fun'
-// public use fun sui::pay::split_vec as Coin.split_vec;
 PublicUseFun ::= 'public'? 'use' 'fun' Path? 'as' IDENTIFIER'.'IDENTIFIER ';' {
     pin=3
 }
 
-fake Function ::= Attr* native? FunctionVisibilityModifier? entry? inline?
+fake Function ::= Attr* native? VisibilityModifier? entry? inline?
                     fun? IDENTIFIER? TypeParameterList? FunctionParameterList?
-                        ReturnType? AcquiresType?
+                        ReturnType? (ResourceAccessItemList | AcquiresType)?
                         (';' | CodeBlock)?
 {
     implements = [
@@ -457,7 +477,8 @@ NativeFunctionInner ::= Attr* NativeFunctionModifierSetInner fun FunctionSignatu
 private FunctionItem ::= NativeFunctionInner | FunctionInner
 
 private FunctionSignatureInner ::= IDENTIFIER TypeParameterList?
-                                    FunctionParameterList ReturnType? AcquiresType?
+                                    FunctionParameterList ReturnType?
+                                    (ResourceAccessItemList | AcquiresType)?
 {
     recoverWhile = "FunctionSignatureInner_recover"
 }
@@ -467,11 +488,10 @@ private FunctionSignatureInner_recover ::= !('{' | '}' | ';' | <<eof>> | Item_fi
 private friend ::= <<friendKeyword>>
 private package::= <<packageKeyword>>
 private for ::= <<forKeyword>>
+private FunctionModifierSetInner ::= <<functionModifierSet VisibilityModifier>>
+private NativeFunctionModifierSetInner ::= <<nativeFunctionModifierSet VisibilityModifier>>
 
-private FunctionModifierSetInner ::= <<functionModifierSet FunctionVisibilityModifier>>
-private NativeFunctionModifierSetInner ::= <<nativeFunctionModifierSet FunctionVisibilityModifier>>
-
-FunctionVisibilityModifier ::= public ('(' (SCRIPT_KW | package | friend) ')')?
+VisibilityModifier ::= public ('(' (SCRIPT_KW | package | friend) ')')?
 
 FunctionParameterList ::= '(' FunctionParameter_with_recover* ')' { pin = 1 }
 private FunctionParameter_with_recover ::= !(')' | '{' | ';') FunctionParameter (',' | &')')
@@ -497,8 +517,23 @@ private ReturnTypeItem_with_recover ::= Type
     pin = 1
     recoverWhile = ReturnTypeItem_recover
 }
-private ReturnTypeItem_recover ::= !( '{' | ';' | acquires )
+private ReturnTypeItem_recover ::= !( '{' | ';' | acquires | reads | writes | pure | '!' )
 
+ResourceAccessItemList::=<<isResourceAccessEnabled>>ResourceAccessItem*
+ResourceAccessItem::=pure|(('!')?(acquires|reads|writes)AccessSpecifierList)
+
+AccessSpecifierList ::= <<non_empty_comma_sep_items AccessSpecifier>>
+AccessSpecifier::=<<pathMode'WILDCARD'Path>>AddressSpecifier?
+
+AddressSpecifier::='('AddressSpecifierArg')'{pin=1}
+AddressSpecifierArg::='*'
+|AddressSpecifierLit
+|<<pathMode'VALUE'(Path'('AddressSpecifierCallParam')')>>
+|IDENTIFIER
+AddressSpecifierLit::=DIEM_ADDRESS|INTEGER_LITERAL
+
+AddressSpecifierCallParam::=AddressSpecifierParamPath
+AddressSpecifierParamPath ::= LocalPathIdent { elementType = Path }
 // acquires T, Record
 AcquiresType ::= acquires AcquiresType_items { pin = 1 }
 private AcquiresType_items ::= <<non_empty_comma_sep_items PathType>>
@@ -512,7 +547,6 @@ Ability ::= copy | IDENTIFIER
 {
     name = "ability"
 }
-
 StructBlock ::= '{' StructField_with_recover* '}' { pin = 1 }
 private StructField_with_recover ::= !'}' StructField (',' | &'}')
 {
@@ -587,11 +621,6 @@ UseAlias ::= as IDENTIFIER
     mixin = "org.sui.lang.core.psi.ext.MvUseAliasMixin"
 }
 
-//UseFunDeclaration ::= USE_FUN_KW FunctionCall ';'
-//FunctionCall ::= Expr '.' IDENTIFIER '(' FunctionArgs ')'
-//FunctionArgs ::= Expr (',' Expr)*
-//
-//FunctionCallOld ::= IDENTIFIER '(' FunctionArgs ')'
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Types
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -654,9 +683,15 @@ private TypeParamBound_items ::= Ability ( '+' Ability )*
 }
 private TypeParamBound_items_recover ::= !('>' | ',')
 
-TypeArgumentList ::= '<' <<non_empty_comma_sep_items (TypeArgument &(','|'>'))>>? '>' {
+TypeArgumentList ::= TypeArgumentListImpl {
     name = "type arguments"
 }
+ColonTypeArgumentList ::= &'::' TypeArgumentListImpl { elementType = TypeArgumentList }
+
+//private TypeArgumentListImpl ::= '::'? '<' !'=' TypeArgumentImpl* '>' { pin = 3 }
+//private TypeArgumentImpl ::= !'>' TypeArgument (',' | &'>') { pin = 2 }
+private TypeArgumentListImpl ::= '::'? '<' !'=' <<non_empty_comma_sep_items ( TypeArgument &(',' | '>') )>>? '>'
+
 TypeArgument ::= Type
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -988,7 +1023,11 @@ AddressLit ::= '@' AddressRef { pin = 1 }
 
 CallExpr ::= (Path &'(') ValueArgumentList {
     pin = 1
-    implements = ["org.sui.lang.core.psi.PathExpr"]
+    implements = [
+        "org.sui.lang.core.psi.PathExpr"
+        "org.sui.lang.core.psi.ext.MvCallable"
+        "org.sui.lang.core.psi.MvAcquireTypesOwner"
+    ]
 }
 ValueArgumentList ::= '(' ValueArgumentList_items? ')' {
     pin = 1
@@ -1008,7 +1047,6 @@ private ConditionBody ::= Expr { recoverWhile = "ConditionBody_recover" }
 private ConditionBody_recover ::= !')'
 
 ElseBlock ::= else AnyBlock { pin = 1 }
-LabelDecl ::= QUOTE_IDENTIFIER ':'
 
 LoopExpr ::= loop AnyBlock {
     pin = 1
@@ -1031,24 +1069,36 @@ Initializer ::= '=' Expr { pin = 1 }
 
 BorrowExpr ::= '&' mut? Expr
 
-DotExpr ::= Expr DotExpr_field
+DotExpr ::= Expr DotExpr_inner
 
 // Do not inline this rule, it breaks expression parsing
-private DotExpr_field ::= '.' (!'.') MethodOrField {
+private DotExpr_inner ::= '.' !('.' | VectorStart) (MethodCall | StructDotField) {
     pin = 2
     consumeTokenMethod = "consumeTokenFast"
 }
-private MethodOrField ::= () (MethodCall | StructDotField) { pin = 1}
 
-MethodCall ::= IDENTIFIER TypeArgumentList? ValueArgumentList
+private VectorStart ::= (<<VECTOR_IDENTIFIER>> ('[' | '<'))
 
-StructDotField ::= !(<<VECTOR_IDENTIFIER>> ('[' | '<')) IDENTIFIER !('(' | '::' | '!' | '{')
+StructDotField ::= IDENTIFIER !('(' | '::' | '!' | '{')
 {
-    implements = ["org.sui.lang.core.resolve.ref.MvMandatoryReferenceElement"]
+    implements = ["org.sui.lang.core.psi.ext.MvMethodOrField"]
     mixin = "org.sui.lang.core.psi.ext.MvStructDotFieldMixin"
+}
+MethodCall ::= IDENTIFIER ColonTypeArgumentList? ValueArgumentList
+{
+    implements = [
+        "org.sui.lang.core.psi.ext.MvMethodOrField"
+        "org.sui.lang.core.psi.ext.MvMethodOrPath"
+        "org.sui.lang.core.psi.ext.MvCallable"
+        "org.sui.lang.core.psi.MvAcquireTypesOwner"
+    ]
+    mixin = "org.sui.lang.core.psi.ext.MvMethodCallMixin"
 }
 
 IndexExpr ::= Expr IndexArg
+{
+    implements = [ "org.sui.lang.core.psi.MvAcquireTypesOwner" ]
+}
 // Do not inline this rule, it breaks expression parsing
 private IndexArg ::= '[' Expr ']'
 
@@ -1058,27 +1108,32 @@ RefExpr ::= Path !'{' {
 
 Path ::= (ModulePathIdent | FQModulePathIdent | LocalPathIdent) TypeArgumentList?
 {
-    implements = ["org.sui.lang.core.resolve.ref.MvPathReferenceElement"]
+    implements = [
+        "org.sui.lang.core.resolve.ref.MvPathReferenceElement"
+        "org.sui.lang.core.psi.ext.MvMethodOrPath"
+    ]
     mixin = "org.sui.lang.core.psi.ext.MvPathMixin"
 }
 
-private LocalPathIdent ::= IDENTIFIER
-private ModulePathIdent ::= ModuleRef ('::' !(IDENTIFIER '::')) IDENTIFIER
+private LocalPathIdent ::= PATH_MODE_IDENTIFIER
+private ModulePathIdent ::= ModuleRef ('::' !(PATH_MODE_IDENTIFIER '::')) PATH_MODE_IDENTIFIER
 {
     pin = 2
 }
-private FQModulePathIdent ::= FQModuleRef '::' IDENTIFIER
+private FQModulePathIdent ::= FQModuleRef '::' PATH_MODE_IDENTIFIER
 {
     pin = 1
 }
+private PATH_MODE_IDENTIFIER ::= (<<isPathMode 'VALUE' >> IDENTIFIER)
+                                | (<<isPathMode 'WILDCARD' >> ('*' | IDENTIFIER))
 
-ModuleRef ::= IDENTIFIER | FQModuleRef
+ModuleRef ::= PATH_MODE_IDENTIFIER | FQModuleRef
 {
     implements = ["org.sui.lang.core.resolve.ref.MvReferenceElement"]
     mixin = "org.sui.lang.core.psi.ext.MvModuleRefMixin"
 }
 
-FQModuleRef ::= AddressRef '::' IDENTIFIER
+FQModuleRef ::= AddressRef '::' PATH_MODE_IDENTIFIER
 {
     pin = 2
     extends = ModuleRef
@@ -1101,7 +1156,10 @@ NamedAddress ::= IDENTIFIER
 }
 
 /// Macros
-AssertBangExpr ::= <<ASSERT_IDENTIFIER>> '!' ValueArgumentList { pin = 2 }
+AssertBangExpr ::= <<ASSERT_IDENTIFIER>> '!' ValueArgumentList {
+    pin = 2
+    implements = [ "org.sui.lang.core.psi.ext.MvCallable" ]
+}
 //AssertBangExpr ::= MacroIdent ValueArgumentList { pin = 1 }
 //MacroIdent ::= IDENTIFIER '!'
 
@@ -1573,4 +1631,4 @@ private dotdot ::= <<dotdotImpl>>
 
 private meta non_empty_comma_sep_items ::= <<param>> ( ',' <<param>> )* ','?
 private meta comma_separated_list ::= <<param>> ( ',' <<param>> )* ','?
-private meta list_element ::= !'>' <<param>> (',' | &'>') { pin = 2 }
+//private meta list_element ::= !'>' <<param>> (',' | &'>') { pin = 2 }

@@ -11,12 +11,8 @@ import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializer
 import org.jdom.Element
 import org.jetbrains.annotations.TestOnly
-import org.sui.cli.settings.aptos.AptosExec
 import org.sui.cli.settings.sui.SuiExec
 import org.sui.openapiext.debugInProduction
-import org.sui.stdext.exists
-import org.sui.stdext.isExecutableFile
-import java.nio.file.Path
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
@@ -54,7 +50,6 @@ class MoveProjectSettingsService(private val project: Project) : PersistentState
     // default values for settings
     data class State(
         var blockchain: Blockchain = Blockchain.SUI,
-        var aptosPath: String? = if (AptosExec.isBundledSupportedForThePlatform()) null else "",
         var suiPath: String? = if (SuiExec.isBundledSupportedForThePlatform()) null else "",
         var foldSpecs: Boolean = false,
         var disableTelemetry: Boolean = true,
@@ -63,13 +58,6 @@ class MoveProjectSettingsService(private val project: Project) : PersistentState
         var isValidExec: Boolean = false,
         var dumpStateOnTestFailure: Boolean = false,
     ) {
-        fun aptosExec(): AptosExec {
-            val path = aptosPath
-            return when (path) {
-                null -> AptosExec.Bundled
-                else -> AptosExec.LocalPath(path)
-            }
-        }
         fun suiExec(): SuiExec {
             val path = suiPath
             return when (path) {
@@ -162,43 +150,32 @@ class MoveProjectSettingsService(private val project: Project) : PersistentState
     }
 }
 
-val Project.moveSettings: MoveProjectSettingsService get() = service()
+//val Project.moveSettings: MoveProjectSettingsService get() = service()
 
-val Project.collapseSpecs: Boolean get() = this.moveSettings.state.foldSpecs
 
-val Project.aptosExec: AptosExec get() = this.moveSettings.state.aptosExec()
+//fun Path?.isValidExecutable(): Boolean {
+//    return this != null
+//            && this.toString().isNotBlank()
+//            && this.exists()
+//            && this.isExecutableFile()
+//}
 
-val Project.suiExec: AptosExec get() = this.moveSettings.state.aptosExec()
-
-val Project.blockchain: Blockchain get() = this.moveSettings.state.blockchain
-
-val Project.aptosPath: Path? get() = this.aptosExec.toPathOrNull()
-
-val Project.suiPath: Path? get() = this.suiExec.toPathOrNull()
-
-fun Path?.isValidExecutable(): Boolean {
-    return this != null
-            && this.toString().isNotBlank()
-            && this.exists()
-            && this.isExecutableFile()
-}
-
-val Project.isValidSuiExec: Boolean get() = this.moveSettings.state.isValidExec
-val Project.isDebugModeEnabled: Boolean get() = this.moveSettings.state.debugMode
-
-fun <T> Project.debugErrorOrFallback(message: String, fallback: T): T {
-    if (this.isDebugModeEnabled) {
-        error(message)
-    }
-    return fallback
-}
-
-fun <T> Project.debugErrorOrFallback(message: String, cause: Throwable?, fallback: () -> T): T {
-    if (this.isDebugModeEnabled) {
-        throw IllegalStateException(message, cause)
-    }
-    return fallback()
-}
+//val Project.isValidSuiExec: Boolean get() = this.moveSettings.state.isValidExec
+//val Project.isDebugModeEnabled: Boolean get() = this.moveSettings.state.debugMode
+//
+//fun <T> Project.debugErrorOrFallback(message: String, fallback: T): T {
+//    if (this.isDebugModeEnabled) {
+//        error(message)
+//    }
+//    return fallback
+//}
+//
+//fun <T> Project.debugErrorOrFallback(message: String, cause: Throwable?, fallback: () -> T): T {
+//    if (this.isDebugModeEnabled) {
+//        throw IllegalStateException(message, cause)
+//    }
+//    return fallback()
+//}
 
 val Project.skipFetchLatestGitDeps: Boolean
     get() =

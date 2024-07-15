@@ -3,6 +3,7 @@ package org.sui.ide.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.sui.cli.settings.moveSettings
 import org.sui.ide.colors.MvColor
 import org.sui.lang.MvElementTypes.HEX_INTEGER_LITERAL
 import org.sui.lang.MvElementTypes.IDENTIFIER
@@ -18,6 +19,7 @@ val SPEC_INTEGER_TYPE_IDENTIFIERS = INTEGER_TYPE_IDENTIFIERS + setOf("num")
 val SPEC_ONLY_PRIMITIVE_TYPES = setOf("num")
 val PRIMITIVE_TYPE_IDENTIFIERS = INTEGER_TYPE_IDENTIFIERS + setOf("bool")
 val PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS = setOf("address", "signer")
+val BUILTIN_TYPE_IDENTIFIERS = PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS + setOf("vector")
 
 val GLOBAL_STORAGE_ACCESS_FUNCTIONS =
     setOf("move_from", "borrow_global", "borrow_global_mut", "exists", "freeze")
@@ -28,7 +30,7 @@ val SPEC_BUILTIN_FUNCTIONS = setOf(
     "in_range", "update", "update_field", "old", "TRACE", "int2bv", "bv2int"
 )
 
-val BUILTIN_TYPE_IDENTIFIERS =
+val SUI_BUILTIN_TYPE_IDENTIFIERS =
     PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS + setOf(
         "transfer", "object", "tx_context", "vector", "option",
         "UID", "ID", "Option", "TxContext"
@@ -73,18 +75,20 @@ class HighlightingAnnotator : MvAnnotatorBase() {
         if (element is MvAbility) return MvColor.ABILITY
         if (element is MvTypeParameter) return MvColor.TYPE_PARAMETER
         if (element is MvItemSpecTypeParameter) return MvColor.TYPE_PARAMETER
-        if (element is MvModuleRef && element.isSelf) return MvColor.KEYWORD
+        if (element is MvModuleRef && element.isSelfModuleRef) return MvColor.KEYWORD
         if (element is MvUseItem && element.text == "Self") return MvColor.KEYWORD
         if (element is MvFunction)
             return when {
                 element.isInline -> MvColor.INLINE_FUNCTION
                 element.isView -> MvColor.VIEW_FUNCTION
                 element.isEntry -> MvColor.ENTRY_FUNCTION
+                element.selfParam != null -> MvColor.METHOD
                 else -> MvColor.FUNCTION
             }
         if (element is MvStruct) return MvColor.STRUCT
         if (element is MvStructField) return MvColor.FIELD
         if (element is MvStructDotField) return MvColor.FIELD
+        if (element is MvMethodCall) return MvColor.METHOD_CALL
         if (element is MvStructPatField) return MvColor.FIELD
         if (element is MvStructLitField) return MvColor.FIELD
         if (element is MvConst) return MvColor.CONSTANT
@@ -99,7 +103,12 @@ class HighlightingAnnotator : MvAnnotatorBase() {
     }
 
     private fun highlightBindingPat(bindingPat: MvBindingPat): MvColor {
-//        val msl = bindingPat.isMslLegacy()
+        val bindingOwner = bindingPat.parent
+        if (bindingPat.isReceiverStyleFunctionsEnabled &&
+            bindingOwner is MvFunctionParameter && bindingOwner.isSelfParam
+        ) {
+            return MvColor.SELF_PARAMETER
+        }
         val msl = bindingPat.isMslOnlyItem
         val itemTy = bindingPat.inference(msl)?.getPatType(bindingPat)
         return if (itemTy != null) {
@@ -150,8 +159,14 @@ class HighlightingAnnotator : MvAnnotatorBase() {
             is MvStructPat -> MvColor.STRUCT
             is MvRefExpr -> {
                 val item = path.reference?.resolve() ?: return null
-                if (item is MvConst) {
-                    MvColor.CONSTANT
+                when {
+                    item is MvConst -> MvColor.CONSTANT
+                    else -> {
+                        val itemParent = item.parent
+                        if (itemParent.isReceiverStyleFunctionsEnabled
+                            && itemParent is MvFunctionParameter && itemParent.isSelfParam
+                        ) {
+                            MvColor.SELF_PARAMETER
                 } else {
                     val msl = path.isMslScope
                     val itemTy = pathOwner.inference(msl)?.getExprType(pathOwner)
@@ -160,6 +175,8 @@ class HighlightingAnnotator : MvAnnotatorBase() {
                     } else {
                         MvColor.VARIABLE
                     }
+                }
+            }
                 }
             }
             else -> null
@@ -186,4 +203,8 @@ class HighlightingAnnotator : MvAnnotatorBase() {
             itemTy is TyStruct && itemTy.item.hasKey -> MvColor.KEY_OBJECT
             else -> MvColor.VARIABLE
         }
+
+    private val PsiElement.isReceiverStyleFunctionsEnabled
+        get() =
+            project.moveSettings.enableReceiverStyleFunctions
 }

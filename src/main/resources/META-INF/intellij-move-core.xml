@@ -1,11 +1,22 @@
 <idea-plugin>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
      on how to target different products -->
+    <resource-bundle>messages.MvBundle</resource-bundle>
+
     <depends>com.intellij.modules.platform</depends>
     <depends>org.toml.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileType name="Sui Move"
+
+        <fileType name="APTOS_BYTECODE"
+                  extensions="mv"
+                  implementationClass="org.sui.bytecode.AptosBytecodeFileType"
+                  fieldName="INSTANCE"/>
+        <filetype.decompiler filetype="APTOS_BYTECODE"
+                             implementationClass="org.sui.bytecode.AptosBytecodeDecompiler"/>
+        <editorNotificationProvider implementation="org.sui.bytecode.AptosBytecodeNotificationProvider"/>
+
+        <fileType name="Move"
                   language="Sui Move"
                   extensions="move"
                   implementationClass="org.sui.lang.MoveFileType"
@@ -19,19 +30,17 @@
                         serviceImplementation="org.sui.lang.core.psi.MvPsiManagerImpl"/>
 
         <configurationType
-                implementation="org.sui.cli.runConfigurations.legacy.MoveConfigurationType"/>
-        <!--        <configurationType-->
-        <!--                implementation="org.sui.cli.runConfigurations.aptos.AptosConfigurationType"/>-->
+                implementation="org.sui.cli.runConfigurations.aptos.AptosCommandConfigurationType"/>
         <configurationType
-                implementation="org.sui.cli.runConfigurations.sui.SuiConfigurationType"/>
+                implementation="org.sui.cli.runConfigurations.sui.SuiTransactionConfigurationType"/>
         <!--        <runConfigurationProducer-->
         <!--                implementation="org.sui.cli.runConfigurations.producers.aptos.AptosTestCommandConfigurationProducer"/>-->
         <!--        <runConfigurationProducer-->
         <!--                implementation="org.sui.cli.runConfigurations.producers.aptos.RunCommandConfigurationProducer"/>-->
         <!--        <runConfigurationProducer-->
         <!--                implementation="org.sui.cli.runConfigurations.producers.aptos.ViewCommandConfigurationProducer"/>-->
-        <runConfigurationProducer
-                implementation="org.sui.cli.runConfigurations.producers.sui.SuiTestCommandConfigurationProducer"/>
+        <!--        <runConfigurationProducer-->
+        <!--                implementation="org.sui.cli.runConfigurations.producers.sui.SuiTestCommandConfigurationProducer"/>-->
         <runLineMarkerContributor language="Sui Move"
                                   implementationClass="org.sui.ide.lineMarkers.CommandLineMarkerContributor"/>
 
@@ -128,6 +137,8 @@
         <annotator language="Sui Move"
                    implementationClass="org.sui.ide.annotator.HighlightingAnnotator"/>
 
+        <highlightingPassFactory implementation="org.sui.ide.annotator.RsHighlightingPassFactoryRegistrar"/>
+
         <annotator language="TOML"
                    implementationClass="org.sui.toml.MoveTomlErrorAnnotator"/>
 
@@ -170,6 +181,11 @@
                     anchor="right"
                     factoryClass="org.sui.cli.toolwindow.SuiToolWindowFactory"
                     icon="/icons/move_logo.svg"/>
+
+        <statusBarWidgetFactory id="moveExternalLinterWidget"
+                                implementation="org.sui.cli.externalLinter.RsExternalLinterWidgetFactory"
+                                order="first"/>
+
 
         <!--        <localInspection language="Sui Move" groupPath="Move" groupName="Naming"-->
         <!--                         displayName="Attempt to override a built-in function"-->
@@ -248,6 +264,21 @@
                          displayName="Redundant type cast"
                          enabledByDefault="true" level="WARNING"
                          implementationClass="org.sui.ide.inspections.RedundantTypeCastInspection"/>
+        <localInspection language="Sui Move" groupName="Move"
+                         displayName="Converttomethodcall"
+                         enabledByDefault="true" level="WEAKWARNING"
+                         implementationClass="org.sui.ide.inspections.ReplaceWithMethodCallInspection"/>
+        <localInspection language="Sui Move" groupName="Move"
+                         displayName="Converttoindexexpr"
+                         enabledByDefault="true" level="WEAKWARNING"
+                         implementationClass="org.sui.ide.inspections.compilerV2.ReplaceWithIndexExprInspection"/>
+
+        <!--cannotberunon-the-fly,thereforeenabled-->
+        <globalInspection language="Sui Move" groupName="Move"
+                          enabledByDefault="true" level="ERROR"
+                          implementationClass="org.sui.ide.inspections.MvExternalLinterInspection"
+                          displayName="Externallinter"/>
+
         <!-- Color Settings -->
         <colorSettingsPage implementation="org.sui.ide.colors.MvColorSettingsPage"/>
 
@@ -265,7 +296,7 @@
         <directoryProjectGenerator implementation="org.sui.ide.newProject.MoveProjectGenerator"/>
 
         <postStartupActivity
-                implementation="org.sui.ide.newProject.AlwaysRefreshProjectsAfterOpen"/>
+                implementation="org.sui.ide.newProject.projectActivity.AlwaysRefreshProjectsAfterOpen"/>
         <!--    <postStartupActivity-->
         <!--        implementation="org.sui.cli.openProject.OpenMoveTomlOnProjectCreationFile" />-->
         <!--     background = 5 seconds delayed  -->
@@ -273,15 +304,24 @@
         <!--        implementation="org.sui.cli.openProject.CreateDefaultCompileRunConfiguration" />-->
 
 
-        <projectConfigurable instance="org.sui.cli.settings.PerProjectMoveConfigurable"
+        <projectConfigurable instance="org.sui.cli.settings.PerProjectSuiConfigurable"
                              displayName="Sui Move Language"
                              groupId="language"
                              id="language.sui.move"/>
+        <!--<projectService serviceInterface="org.sui.utils.SuiProjectRootService"
+                        serviceImplementation="org.sui.utils.SuiProjectRootServiceImpl"
+                        testServiceImplementation="org.sui.utils.TestSuiProjectRootServiceImpl"/>-->
+
+        <projectConfigurable instance="org.sui.cli.externalLinter.MvExternalLinterConfigurable"
+                             parentId="language.move"
+                             id="language.move.compiler.check"
+                             displayName="ExternalLinters"/>
+
         <projectService serviceInterface="org.sui.utils.SuiProjectRootService"
                         serviceImplementation="org.sui.utils.SuiProjectRootServiceImpl"
-                        testServiceImplementation="org.sui.utils.TestSuiProjectRootServiceImpl"/>
+                        testServiceImplementation="org.sui.utils.TestProjectRootServiceImpl"/>
 
-        <projectService serviceImplementation="org.sui.cli.MoveProjectsService"/>
+        <!--        <projectService serviceImplementation="org.sui.cli.MoveProjectsService"/>-->
         <!--        <projectService serviceImplementation="org.sui.cli.packages.MovePackageService"/>-->
 
         <!--        <projectService serviceInterface="com.intellij.openapi.externalSystem.autoimport.ExternalSystemProjectTracker"-->
@@ -292,12 +332,14 @@
         <additionalLibraryRootsProvider implementation="org.sui.cli.BuildLibraryRootsProvider"/>
 
         <!--        <applicationService serviceImplementation="org.sui.openapiext.OpenSSLInfoService"/>-->
-        <additionalLibraryRootsProvider
-                implementation="org.sui.cli.BuildLibraryRootsProvider"/>
+        <!--<additionalLibraryRootsProvider
+                implementation="org.sui.cli.BuildLibraryRootsProvider"/>-->
         <!-- Notifications -->
         <notificationGroup id="Sui Move Language" displayType="BALLOON"/>
-        <!--        <editorNotificationProvider-->
-        <!--                implementation="org.sui.ide.notifications.InvalidBinaryNotification"/>-->
+
+        <notificationGroup id="Move Compile Log" displayType="NONE"/>
+        <editorNotificationProvider
+                implementation="org.sui.ide.notifications.InvalidBlockchainCliConfiguration"/>
         <editorNotificationProvider
                 implementation="org.sui.ide.notifications.NoMoveProjectDetectedNotificationProvider"/>
 
@@ -337,12 +379,46 @@
             <category>Move</category>
         </intentionAction>
         <errorHandler implementation="org.sui.cli.sentryReporter.SentryErrorReporter"/>
+
+        <registryKey key="org.sui.debug.enabled"
+                     defaultValue="false"
+                     restartRequired="false"
+                     description="EnabledebugmodeforMove"/>
+        <registryKey key="org.sui.external.linter.max.duration"
+                     defaultValue="3000"
+                     restartRequired="false"
+                     description="Shownotificationwarningiftheexternallinterisrunninglongerthanthesetvalue(ms)"/>
+        <registryKey key="org.move.sui.bundled.force.supported"
+                     defaultValue="false"
+                     restartRequired="false"
+                     description="Force-enablesupportforpre-compiledbundledAptosCLI(imitatenon-MacOS)"/>
+        <registryKey key="org.move.aptos.bundled.force.unsupported"
+                     defaultValue="false"
+                     restartRequired="false"
+                     description="Force-disablesupportforpre-compiledbundledAptosCLI(imitateMacOS)"/>
+        <registryKey key="org.move.aptos.bundled.force.supported"
+                     defaultValue="false"
+                     restartRequired="false"
+                     description="Force-enablesupportforpre-compiledbundledAptosCLI(imitatenon-MacOS)"/>
+        <registryKey key="org.move.sui.bundled.force.unsupported"
+                     defaultValue="false"
+                     restartRequired="false"
+                     description="Force-disablesupportforpre-compiledbundledAptosCLI(imitateMacOS)"/>
+
+        <!--        <advancedSetting-->
+        <!--                id="org.move.sui.test.tool.window"-->
+        <!--                default="false"-->
+        <!--                groupKey="advanced.setting.aptos.group"-->
+        <!--                descriptionKey="advanced.setting.org.sui.aptos.test.tool.window.description"-->
+        />
     </extensions>
 
     <projectListeners>
         <listener class="org.sui.ide.notifications.UpdateNotificationsOnSettingsChangeListener"
-                  topic="org.sui.cli.settings.MoveSettingsListener"
+                  topic="org.sui.cli.settings.MvProjectSettingsServiceBase$MoveSettingsListener"
                   activeInTestMode="false"/>
+        <listener class="org.sui.cli.externalLinter.RsExternalLinterWidgetUpdater"
+                  topic="org.sui.cli.MoveProjectsService$MoveProjectsListener"/>
     </projectListeners>
     <actions>
         <action id="Sui.NewMoveFile"
@@ -381,12 +457,43 @@
                 text="Open Objects Dialog"
                 class="org.sui.ide.actions.OpenObjectListAction"
                 icon="AllIcons.Actions.GroupByPrefix"/>
+        <action id="Move.DownloadAptos"
+                text="Download Aptos CLI"
+                description="Download aptos-cli executable from Github"
+                class="org.sui.ide.actions.DownloadAptosSDKAction"
+                icon="AllIcons.Actions.Download"/>
+
+        <action id="Move.RunExternalLinter"
+                class="org.sui.ide.actions.MvRunExternalLinterAction"
+                icon="/icons/externalLinter.svg">
+        </action>
+        <action id="Move.ShowSettings"
+                class="org.sui.ide.actions.MoveEditSettingsAction"
+                icon="AllIcons.General.Settings">
+        </action>
+        <action id="Move.FetchAptosPackage"
+                class="org.sui.bytecode.FetchAptosPackageAction"
+                icon="AllIcons.Actions.Download">
+        </action>
+
+        <action id="Move.DecompileAptosMvFile"
+                class="org.sui.bytecode.DecompileAptosMvFileAction">
+            <add-to-group group-id="ProjectViewPopupMenu"/>
+        </action>
         <group id="Move.Sui">
             <reference id="Sui.RefreshAllProjects"/>
             <reference id="Sui.GetActiveAddress"/>
             <reference id="Sui.OpenAddressDialog"/>
             <reference id="Sui.OpenEnvsDialog"/>
             <reference id="Sui.OpenObjectDialog"/>
+            <reference id="Move.RunExternalLinter"/>
+            <separator/>
+            <reference id="ExpandAll"/>
+            <reference id="CollapseAll"/>
+            <separator/>
+            <reference id="Move.FetchAptosPackage"/>
+            <separator/>
+            <reference id="Move.ShowSettings"/>
         </group>
     </actions>
 </idea-plugin>

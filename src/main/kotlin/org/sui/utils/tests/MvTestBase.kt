@@ -6,13 +6,17 @@
 package org.sui.utils.tests
 
 import com.intellij.codeInspection.InspectionProfileEntry
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.testFramework.UsefulTestCase
 import com.intellij.testFramework.enableInspectionTool
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.intellij.lang.annotations.Language
-import org.sui.cli.settings.Blockchain
 import org.sui.cli.settings.moveSettings
+import org.sui.ide.inspections.fixes.CompilerV2Feat
+import org.sui.ide.inspections.fixes.CompilerV2Feat.*
 import org.sui.utils.tests.base.MvTestCase
 import org.sui.utils.tests.base.TestCase
+import org.sui.utils.tests.base.findElementsWithDataAndOffsetInEditor
 import java.lang.annotation.Inherited
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -30,9 +34,26 @@ annotation class WithEnabledInspections(vararg val inspections: KClass<out Inspe
 @Inherited
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class WithBlockchain(val blockchain: Blockchain)
+annotation class CompilerV2Features(vararg val features: CompilerV2Feat)
 
-abstract class MvTestBase : BasePlatformTestCase(),
+fun UsefulTestCase.handleCompilerV2Annotations(project: Project) {
+    val enabledCompilerV2 = this.findAnnotationInstance<CompilerV2Features>()
+    if (enabledCompilerV2 != null) {
+        // triggers projects refresh
+        project.moveSettings.modifyTemporary(this.testRootDisposable) {
+            for (feature in enabledCompilerV2.features) {
+                when (feature) {
+                    RESOURCE_CONTROL -> it.enableResourceAccessControl = true
+                    RECEIVER_STYLE_FUNCTIONS -> it.enableReceiverStyleFunctions = true
+                    INDEXING -> it.enableIndexExpr = true
+                    PUBLIC_PACKAGE -> it.enablePublicPackage = true
+                }
+            }
+        }
+    }
+}
+
+abstract class MvTestBase : MvLightTestBase(),
                             MvTestCase {
     protected val fileName: String
         get() = "${getTestName(true)}.$testFileExtension"
@@ -43,15 +64,19 @@ abstract class MvTestBase : BasePlatformTestCase(),
 
         setupInspections()
 
-        val settingsState = project.moveSettings.state
-
-        val debugMode = this.findAnnotationInstance<DebugMode>()?.enabled ?: true
-        val blockchain = this.findAnnotationInstance<WithBlockchain>()?.blockchain ?: Blockchain.APTOS
-        // triggers projects refresh
-        project.moveSettings.state = settingsState.copy(
-            debugMode = debugMode,
-            blockchain = blockchain
-        )
+//        val isDebugMode = this.findAnnotationInstance<DebugMode>()?.enabled ?: true
+//        setRegistryKey("org.sui.debug.enabled", isDebugMode)
+//
+//        val isCompilerV2 = this.findAnnotationInstance<CompilerV2>() != null
+//        project.moveSettings.modifyTemporary(testRootDisposable) {
+//            it.isCompilerV2 = isCompilerV2
+//        }
+//
+//        val blockchain = this.findAnnotationInstance<WithBlockchain>()?.blockchain ?: Blockchain.APTOS
+//        // triggers projects refresh
+//        project.moveSettings.modify {
+//            it.blockchain = blockchain
+//        }
     }
 
     private fun setupInspections() {
@@ -70,12 +95,47 @@ abstract class MvTestBase : BasePlatformTestCase(),
         return InlineFile(myFixture, code, name)
     }
 
+    protected inline fun <reified T : PsiElement> findElementInEditor(marker: String = "^"): T =
+        findElementInEditor(T::class.java, marker)
+
+    protected fun <T : PsiElement> findElementInEditor(psiClass: Class<T>, marker: String): T {
+        val (element, data) = findElementWithDataAndOffsetInEditor(psiClass, marker)
+        check(data.isEmpty()) { "Did not expect marker data" }
+        return element
+    }
+
+    protected inline fun <reified T : PsiElement> findElementAndDataInEditor(marker: String = "^"): Pair<T, String> {
+        val (element, data) = findElementWithDataAndOffsetInEditor<T>(marker)
+        return element to data
+    }
+
+    protected inline fun <reified T : PsiElement> findElementAndOffsetInEditor(marker: String = "^"): Pair<T, Int> {
+        val (element, _, offset) = findElementWithDataAndOffsetInEditor<T>(marker)
+        return element to offset
+    }
+
+    protected inline fun <reified T : PsiElement> findElementWithDataAndOffsetInEditor(
+        marker: String = "^"
+    ): Triple<T, String, Int> {
+        return findElementWithDataAndOffsetInEditor(T::class.java, marker)
+    }
+
+    protected fun <T : PsiElement> findElementWithDataAndOffsetInEditor(
+        psiClass: Class<T>,
+        marker: String
+    ): Triple<T, String, Int> {
+        val elementsWithDataAndOffset = myFixture.findElementsWithDataAndOffsetInEditor(psiClass, marker)
+        check(elementsWithDataAndOffset.isNotEmpty()) { "No `$marker` marker:\n${myFixture.file.text}" }
+        check(elementsWithDataAndOffset.size <= 1) { "More than one `$marker` marker:\n${myFixture.file.text}" }
+        return elementsWithDataAndOffset.first()
+    }
+
     protected fun checkByText(
         @Language("Move") before: String,
         @Language("Move") after: String,
         action: () -> Unit,
     ) {
-        inlineFile(before)
+//        InlineFile(before)
         action()
         myFixture.checkResult(replaceCaretMarker(after))
     }

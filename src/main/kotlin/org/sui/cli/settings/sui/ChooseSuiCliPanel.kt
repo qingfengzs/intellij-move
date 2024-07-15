@@ -1,77 +1,218 @@
 package org.sui.cli.settings.sui
 
+import com.intellij.ide.DataManager
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SPEEDSEARCH
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.SystemInfo
+import com.intellij.openapi.util.registry.Registry
+import com.intellij.ui.components.DropDownLink
+import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.Row
-import com.intellij.ui.dsl.builder.bindText
+import com.intellij.ui.dsl.builder.actionListener
+import com.intellij.ui.layout.selected
+import org.sui.cli.sdks.sdksService
 import org.sui.cli.settings.VersionLabel
+import org.sui.cli.settings.isValidExecutable
+import org.sui.cli.settings.sui.SuiExecType.BUNDLED
+import org.sui.cli.settings.sui.SuiExecType.LOCAL
+import org.sui.ide.actions.DownloadAptosSDKAction
+import org.sui.ide.notifications.logOrShowBalloon
+import org.sui.openapiext.PluginPathManager
 import org.sui.openapiext.pathField
+import org.sui.stdext.blankToNull
 import org.sui.stdext.toPathOrNull
+import java.nio.file.Path
 
-class ChooseSuiCliPanel(
-    private val versionUpdateListener: (() -> Unit)? = null
-) : Disposable {
+enum class SuiExecType {
+    BUNDLED,
+    LOCAL;
+
+    companion object {
+        val isPreCompiledSupportedForThePlatform: Boolean
+            get() {
+                if (Registry.`is`("org.move.sui.bundled.force.supported", false)) {
+                    return true
+                }
+                if (Registry.`is`("org.move.sui.bundled.force.unsupported", false)) {
+                    return false
+                }
+                return !SystemInfo.isMac
+            }
+
+        fun bundledPath(): String? = PluginPathManager.bundledAptosCli
+
+        fun suiExecPath(execType: SuiExecType, localSuiPath: String?): Path? {
+            val pathCandidate =
+                when (execType) {
+                    BUNDLED -> bundledPath()?.toPathOrNull()
+                    LOCAL -> localSuiPath?.blankToNull()?.toPathOrNull()
+                }
+            return pathCandidate?.takeIf { it.isValidExecutable() }
+        }
+    }
+}
+
+class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
+
+    data class Data(
+        val suiExecType: SuiExecType,
+        val localAptosPath: String?
+    )
+
+    var data: Data
+        get() {
+            val execType = if (bundledRadioButton.isSelected) BUNDLED else LOCAL
+            val path = localPathField.text.blankToNull()
+            return Data(
+                suiExecType = execType,
+                localAptosPath = path
+            )
+        }
+        set(value) {
+            when (value.suiExecType) {
+                BUNDLED -> {
+                    bundledRadioButton.isSelected = true
+                    localRadioButton.isSelected = false
+                }
+
+                LOCAL -> {
+                    bundledRadioButton.isSelected = false
+                    localRadioButton.isSelected = true
+                }
+            }
+            localPathField.text = value.localAptosPath ?: ""
+            updateVersion()
+        }
 
     private val localPathField =
         pathField(
             FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor(),
             this,
-            "Choose Sui CLI",
-            onTextChanged = { text ->
-//                if ("" != text && "null" != text) {
-                    val exec = SuiExec.LocalPath(text)
-                    _suiExec = exec
-                exec.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
-//                }
+            "Choose Aptos CLI",
+            onTextChanged = { _ ->
+                updateVersion()
             })
-
     private val versionLabel = VersionLabel(this, versionUpdateListener)
 
-    private lateinit var _suiExec: SuiExec
+    private val bundledRadioButton = JBRadioButton("Bundled")
+    private val localRadioButton = JBRadioButton("Local")
 
-    var selectedSuiExec: SuiExec
-        get() = _suiExec
-        set(suiExec) {
-            this._suiExec = suiExec
-            localPathField.text = suiExec.execPath
-            suiExec.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
+    private val downloadPrecompiledBinaryAction = DownloadAptosSDKAction().also {
+        it.onFinish = { sdk ->
+            bundledRadioButton.isSelected = false
+            localRadioButton.isSelected = true
+            localPathField.text = sdk.targetFile.toString()
+            updateVersion()
+        }
+    }
+    private val popupActionGroup = DefaultActionGroup(
+        listOfNotNull(
+            if (SuiExecType.isPreCompiledSupportedForThePlatform) downloadPrecompiledBinaryAction else null
+        )
+    )
+    private val getAptosActionLink =
+        DropDownLink("Get Aptos") { dropDownLink ->
+            val dataContext = DataManager.getInstance().getDataContext(dropDownLink)
+            JBPopupFactory.getInstance().createActionGroupPopup(
+                null,
+                popupActionGroup,
+                dataContext,
+                SPEEDSEARCH,
+                false,
+                null,
+                -1,
+                { _ -> false },
+                null
+            )
         }
 
-    private lateinit var _suiCliPath: String
-
-    fun getSuiCliPath(): String {
-        return _suiCliPath
-    }
 
     fun attachToLayout(layout: Panel): Row {
-        val panel = this
-        if (!panel::_suiExec.isInitialized) {
-            panel._suiExec = SuiExec.default()
-        }
         val resultRow = with(layout) {
-            group("Sui CLI") {
-                row {
-                    cell(localPathField)
-                        .bindText(
-                            { _suiExec.toPathOrNull()?.toString() ?: "" },
-                            { _suiExec = SuiExec.LocalPath(localPathField.toString()) }
+            group("Aptos CLI") {
+                buttonsGroup {
+                    row {
+                        cell(bundledRadioButton)
+                            .enabled(SuiExecType.isPreCompiledSupportedForThePlatform)
+                            .actionListener { _, _ ->
+                                updateVersion()
+                            }
+                    }
+                    row {
+                        comment(
+                            "Bundled version is not available for MacOS. Refer to the " +
+                                    "<a href=\"https://aptos.dev/tools/aptos-cli/install-cli/install-cli-mac\">Official Aptos CLI docs</a> " +
+                                    "on how to install it on your platform."
                         )
-                        .onChanged {
-                            localPathField.text.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
+                            .visible(!SuiExecType.isPreCompiledSupportedForThePlatform)
+                    }
+                    row {
+                        cell(localRadioButton)
+                            .actionListener { _, _ ->
+                                updateVersion()
+                            }
+                        cell(localPathField)
+                            .enabledIf(localRadioButton.selected)
+                            .align(AlignX.FILL)
+                            .resizableColumn()
+                        if (popupActionGroup.childrenCount != 0) {
+                            cell(getAptosActionLink)
                         }
-                        .align(AlignX.FILL).resizableColumn()
+                    }
+                    row("--version :") { cell(versionLabel) }
+//                    row {
+//                        comment(
+//                            "Bundled version of the Aptos CLI can be outdated. Refer to the " +
+//                                    "<a href=\"https://aptos.dev/tools/aptos-cli/install-cli\">Official Aptos CLI docs</a> " +
+//                                    "on how to install and update new version for your platform."
+//                        )
+//                            .visible(AptosExecType.isPreCompiledSupportedForThePlatform)
+//                    }
                 }
-                row("--version :") { cell(versionLabel) }
             }
         }
-        _suiExec.toPathOrNull()?.let { versionLabel.updateAndNotifyListeners(it) }
+        updateVersion()
         return resultRow
+    }
+
+    private fun updateVersion() {
+        val aptosPath =
+            when {
+                bundledRadioButton.isSelected -> SuiExecType.bundledPath()
+                else -> localPathField.text
+            }?.toPathOrNull()
+        versionLabel.updateAndNotifyListeners(aptosPath)
+    }
+
+    fun updateAptosSdks(sdkPath: String) {
+        if (sdkPath == "") return
+
+        // do not save if the executable has no `--version`
+        if (versionLabel.isError()) return
+
+        // do not save if it's not an aptos
+        if ("aptos" !in versionLabel.text) return
+
+        val settingsService = sdksService()
+        if (sdkPath in settingsService.state.aptosSdkPaths) return
+
+        settingsService.state.aptosSdkPaths.add(sdkPath)
+
+        LOG.logOrShowBalloon("Aptos SDK saved: $sdkPath")
     }
 
     override fun dispose() {
         Disposer.dispose(localPathField)
+    }
+
+    companion object {
+        private val LOG = logger<ChooseSuiCliPanel>()
     }
 }

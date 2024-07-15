@@ -1,9 +1,9 @@
 package org.sui.utils.tests.completion
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.intellij.lang.annotations.Language
+import org.sui.utils.tests.MvLightTestBase
 
-abstract class CompletionTestCase : BasePlatformTestCase() {
+abstract class CompletionTestCase : MvLightTestBase() {
     lateinit var completionFixture: MvCompletionTestFixture
 
     override fun setUp() {

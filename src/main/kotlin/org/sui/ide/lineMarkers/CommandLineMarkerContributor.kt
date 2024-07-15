@@ -1,13 +1,13 @@
 package org.sui.ide.lineMarkers
 
+
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.psi.PsiElement
-import org.sui.cli.runConfigurations.producers.aptos.AptosTestCommandConfigurationProducer
-import org.sui.cli.runConfigurations.producers.aptos.RunCommandConfigurationProducer
-import org.sui.cli.runConfigurations.producers.aptos.ViewCommandConfigurationProducer
+import org.sui.cli.runConfigurations.producers.sui.RunCommandConfigurationProducer
 import org.sui.cli.runConfigurations.producers.sui.SuiTestCommandConfigurationProducer
+import org.sui.cli.runConfigurations.producers.sui.ViewCommandConfigurationProducer
 import org.sui.ide.MoveIcons
 import org.sui.lang.MvElementTypes.IDENTIFIER
 import org.sui.lang.core.psi.MvFunction
@@ -29,8 +29,7 @@ class CommandLineMarkerContributor : RunLineMarkerContributor() {
             when {
                 parent.hasTestAttr -> {
                     val config =
-                        AptosTestCommandConfigurationProducer().configFromLocation(parent, climbUp = false)
-                            ?: SuiTestCommandConfigurationProducer().configFromLocation(parent, climbUp = false)
+                        SuiTestCommandConfigurationProducer().configFromLocation(parent, climbUp = false)
                     if (config != null) {
                         return Info(
                             MoveIcons.RUN_TEST_ITEM,
@@ -63,8 +62,7 @@ class CommandLineMarkerContributor : RunLineMarkerContributor() {
         }
         if (parent is MvModule) {
             val testConfig =
-                AptosTestCommandConfigurationProducer().configFromLocation(parent, climbUp = false)
-                    ?: SuiTestCommandConfigurationProducer().configFromLocation(parent, climbUp = false)
+                SuiTestCommandConfigurationProducer().configFromLocation(parent, climbUp = false)
             if (testConfig != null) {
                 return Info(
                     MoveIcons.RUN_ALL_TESTS_IN_ITEM,
