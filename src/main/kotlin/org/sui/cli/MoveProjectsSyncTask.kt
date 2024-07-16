@@ -29,7 +29,7 @@ import com.intellij.openapi.util.NlsContexts
 import com.intellij.openapi.vfs.VirtualFile
 import org.sui.cli.MoveProject.UpdateStatus
 import org.sui.cli.manifest.MoveToml
-import org.sui.cli.settings.getAptosCli
+import org.sui.cli.settings.getSuiCli
 import org.sui.cli.settings.moveSettings
 import org.sui.lang.toNioPathOrNull
 import org.sui.lang.toTomlFile
@@ -49,7 +49,7 @@ class MoveProjectsSyncTask(
     parentDisposable: Disposable,
     private val future: CompletableFuture<List<MoveProject>>,
     private val reason: String?
-) : Task.Backgroundable(project, "Reloading Aptos packages", true), Disposable {
+) : Task.Backgroundable(project, "Reloading Sui packages", true), Disposable {
 
     init {
         Disposer.register(parentDisposable, this)
@@ -94,7 +94,7 @@ class MoveProjectsSyncTask(
         future.complete(refreshedProjects)
 
         val elapsed = System.currentTimeMillis() - before
-        LOG.logProjectsRefresh("finished Aptos projects Sync Task in $elapsed ms", reason)
+        LOG.logProjectsRefresh("finished Sui projects Sync Task in $elapsed ms", reason)
 
         Disposer.dispose(this)
     }
@@ -175,11 +175,11 @@ class MoveProjectsSyncTask(
             val listener = SyncProcessAdapter(childContext)
 
             val skipLatest = project.moveSettings.skipFetchLatestGitDeps
-            val aptos = project.getAptosCli(parentDisposable = this)
+            val sui = project.getSuiCli(parentDisposable = this)
             when {
-                aptos == null -> TaskResult.Err("Invalid Aptos CLI configuration")
+                sui == null -> TaskResult.Err("Invalid Sui CLI configuration")
                 else -> {
-                    aptos.fetchPackageDependencies(
+                    sui.fetchPackageDependencies(
                         project,
                         projectRoot,
                         skipLatest,
@@ -200,13 +200,13 @@ class MoveProjectsSyncTask(
             null,
             null,
             object : JComponent() {},
-            "Aptos"
+            "Sui"
         )
         buildContentDescriptor.isActivateToolWindowWhenFailed = true
         buildContentDescriptor.isActivateToolWindowWhenAdded = false
 //        buildContentDescriptor.isNavigateToError = project.rustSettings.autoShowErrorsInEditor
         val refreshAction = ActionManager.getInstance().getAction("Move.RefreshAllProjects")
-        val descriptor = DefaultBuildDescriptor(Any(), "Aptos", project.basePath!!, System.currentTimeMillis())
+        val descriptor = DefaultBuildDescriptor(Any(), "Sui", project.basePath!!, System.currentTimeMillis())
             .withContentDescriptor { buildContentDescriptor }
             .withRestartAction(refreshAction)
             .withRestartAction(StopAction(progress))

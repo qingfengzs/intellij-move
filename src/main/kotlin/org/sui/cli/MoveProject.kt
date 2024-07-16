@@ -119,7 +119,7 @@ data class MoveProject(
     val aptosConfigYaml: AptosConfigYaml? get() = this.currentPackage.aptosConfigYaml
     val suiConfigYaml: SuiConfigYaml? get() = this.currentPackage.suiConfigYaml
 
-    val profiles: Set<String> = this.aptosConfigYaml?.profiles.orEmpty()
+    val profiles: Set<String> = this.suiConfigYaml?.profiles.orEmpty()
 
     fun processMoveFiles(processFile: (MoveFile) -> Boolean) {
         val folders = sourceFolders()

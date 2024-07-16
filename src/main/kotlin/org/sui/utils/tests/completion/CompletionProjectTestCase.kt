@@ -13,7 +13,7 @@ class CompletionTestProjectFixture(
     val codeInsightFixture: CodeInsightTestFixture
 ) : BaseFixture() {
     //    protected fun doSingleCompletion(
-//        @Language("Move") before: String, @Language("Move") after: String
+//        @Language("Sui Move") before: String, @Language("Sui Move") after: String
 //    ) {
 //    }
     fun executeSoloCompletion() {
@@ -59,7 +59,7 @@ abstract class CompletionProjectTestCase : MvProjectTestBase() {
     }
 
     protected fun checkContainsCompletionsExact(
-        @Language("Move") code: String, expected: List<String>
+        @Language("Sui Move") code: String, expected: List<String>
     ) {
         val testProject = testProject(code.trimIndent())
         checkContainsCompletionsExact(testProject, expected)
@@ -93,7 +93,7 @@ abstract class CompletionProjectTestCase : MvProjectTestBase() {
     }
 
     protected fun doSingleCompletion(
-        @Language("Move") before: String, @Language("Move") after: String
+        @Language("Sui Move") before: String, @Language("Sui Move") after: String
     ) {
         testProject(before)
 
@@ -102,7 +102,7 @@ abstract class CompletionProjectTestCase : MvProjectTestBase() {
     }
 
     protected fun doSingleCompletion(
-        before: FileTreeBuilder.() -> Unit, @Language("Move") after: String
+        before: FileTreeBuilder.() -> Unit, @Language("Sui Move") after: String
     ) {
         testProject(before)
 //        completionFixture.codeInsightFixture.configureFromFileWithCaret(testProject)

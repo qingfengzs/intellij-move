@@ -1,6 +1,5 @@
 package org.sui.cli.settings
 
-import com.intellij.openapi.externalSystem.service.settings.ExternalSystemGroupConfigurable
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -27,23 +26,23 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
             chooseSuiCliPanel.attachToLayout(this)
 
             group {
-                row {
-                    checkBox("Fetch external packages on project reload")
-                        .bindSelected(state::fetchAptosDeps)
-                    link("Configure project reload schedule") {
-                        ProjectManager.getInstance().defaultProject.showSettingsDialog<ExternalSystemGroupConfigurable>()
-                    }
-                        .align(AlignX.RIGHT)
-                }
-                group("Compiler V2") {
-                    row {
-                        checkBox("Set Compiler V2 flags for CLI")
-                            .comment(
-                                "Adds `--compiler-version v2 --language-version 2.0` " +
-                                        "to all generated Aptos CLI commands"
-                            )
-                            .bindSelected(state::addCompilerV2CLIFlags)
-                    }
+//                row {
+//                    checkBox("Fetch external packages on project reload")
+//                        .bindSelected(state::fetchSuiDeps)
+//                    link("Configure project reload schedule") {
+//                        ProjectManager.getInstance().defaultProject.showSettingsDialog<ExternalSystemGroupConfigurable>()
+//                    }
+//                        .align(AlignX.RIGHT)
+//                }
+                group("Compiler 2024") {
+//                    row {
+//                        checkBox("Set Compiler V2 flags for CLI")
+//                            .comment(
+//                                "Adds `--compiler-version v2 --language-version 2.0` " +
+//                                        "to all generated Aptos CLI commands"
+//                            )
+//                            .bindSelected(state::addCompilerV2CLIFlags)
+//                    }
                     group("Language features") {
                         row {
                             checkBox("Receiver-Style functions")
@@ -83,7 +82,7 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
                     row {
                         checkBox("Disable telemetry for new Run Configurations")
                             .comment(
-                                "Adds APTOS_DISABLE_TELEMETRY=true to every generated Aptos command."
+                                "Adds SUI_DISABLE_TELEMETRY=true to every generated Sui command."
                             )
                             .bindSelected(state::disableTelemetry)
                     }
@@ -95,13 +94,13 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
                             .bindSelected(state::skipFetchLatestGitDeps)
 
                     }
-                    row {
-                        checkBox("Dump storage to console on test failures")
-                            .comment(
-                                "Adds --dump to generated test runs."
-                            )
-                            .bindSelected(state::dumpStateOnTestFailure)
-                    }
+//                    row {
+//                        checkBox("Dump storage to console on test failures")
+//                            .comment(
+//                                "Adds --dump to generated test runs."
+//                            )
+//                            .bindSelected(state::dumpStateOnTestFailure)
+//                    }
                 }
             }
 
@@ -119,11 +118,11 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
                 settings.modify {
                     it.suiExecType = chooseSuiCliPanel.data.suiExecType
 
-                    val localAptosSdkPath = chooseSuiCliPanel.data.localAptosPath
-                    if (localAptosSdkPath != null) {
-                        chooseSuiCliPanel.updateAptosSdks(localAptosSdkPath)
+                    val localSuiSdkPath = chooseSuiCliPanel.data.localSuiPath
+                    if (localSuiSdkPath != null) {
+                        chooseSuiCliPanel.updateSuiSdks(localSuiSdkPath)
                     }
-                    it.localAptosPath = localAptosSdkPath
+                    it.localSuiPath = localSuiSdkPath
 
                     it.disableTelemetry = state.disableTelemetry
                     it.skipFetchLatestGitDeps = state.skipFetchLatestGitDeps
@@ -134,6 +133,7 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
                     it.enablePublicPackage = state.enablePublicPackage
                     it.addCompilerV2CLIFlags = state.addCompilerV2CLIFlags
                     it.fetchAptosDeps = state.fetchAptosDeps
+                    it.fetchSuiDeps = state.fetchSuiDeps
                 }
             }
 
@@ -145,9 +145,9 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
 
             /// checks whether any settings are modified (should be fast)
             onIsModified {
-                val aptosPanelData = chooseSuiCliPanel.data
-                aptosPanelData.suiExecType != settings.suiExecType
-                        || aptosPanelData.localAptosPath != settings.localAptosPath
+                val suiPanelData = chooseSuiCliPanel.data
+                suiPanelData.suiExecType != settings.suiExecType
+                        || suiPanelData.localSuiPath != settings.localSuiPath
             }
         }
     }

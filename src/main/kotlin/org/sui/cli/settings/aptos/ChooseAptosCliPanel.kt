@@ -22,7 +22,7 @@ import org.sui.cli.settings.VersionLabel
 import org.sui.cli.settings.aptos.AptosExecType.BUNDLED
 import org.sui.cli.settings.aptos.AptosExecType.LOCAL
 import org.sui.cli.settings.isValidExecutable
-import org.sui.ide.actions.DownloadAptosSDKAction
+import org.sui.ide.actions.DownloadSuiSDKAction
 import org.sui.ide.notifications.logOrShowBalloon
 import org.sui.openapiext.PluginPathManager
 import org.sui.openapiext.pathField
@@ -104,7 +104,7 @@ class ChooseAptosCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
     private val bundledRadioButton = JBRadioButton("Bundled")
     private val localRadioButton = JBRadioButton("Local")
 
-    private val downloadPrecompiledBinaryAction = DownloadAptosSDKAction().also {
+    private val downloadPrecompiledBinaryAction = DownloadSuiSDKAction().also {
         it.onFinish = { sdk ->
             bundledRadioButton.isSelected = false
             localRadioButton.isSelected = true

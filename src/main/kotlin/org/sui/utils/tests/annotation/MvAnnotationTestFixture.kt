@@ -100,7 +100,7 @@ class MvAnnotationTestFixture(
 
     fun checkFixIsUnavailable(
         fixName: String,
-        @Language("Move") text: String,
+        @Language("Sui Move") text: String,
         checkWarn: Boolean,
         checkInfo: Boolean,
         checkWeakWarn: Boolean,
@@ -140,7 +140,7 @@ class MvAnnotationTestFixture(
     fun checkAvailableFixes(
         fixPrefix: String,
         fixes: List<String>,
-        @Language("Move") code: String,
+        @Language("Sui Move") code: String,
         checkWarn: Boolean = true,
         checkInfo: Boolean = false,
         checkWeakWarn: Boolean = false,

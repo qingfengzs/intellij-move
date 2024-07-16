@@ -40,7 +40,7 @@ fun gitTimestamp(): String {
 }
 
 val shortPlatformVersion = prop("shortPlatformVersion")
-val codeVersion = "1.3.4"
+val codeVersion = "1.4.0"
 val pluginVersion = "$codeVersion.$shortPlatformVersion"
 if (publishingChannel != "default") {
     // timestamp of the commit with this eaps addition

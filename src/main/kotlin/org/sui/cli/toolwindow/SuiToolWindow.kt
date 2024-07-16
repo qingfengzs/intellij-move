@@ -21,12 +21,12 @@ class SuiToolWindowFactory : ToolWindowFactory, DumbAware {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         if (!project.moveProjectsService.hasAtLeastOneValidProject) {
             project.moveProjectsService
-                .scheduleProjectsRefresh("Aptos Tool Window opened")
+                .scheduleProjectsRefresh("Sui Tool Window opened")
         }
 
         val toolwindowPanel = SuiToolWindowPanel(project)
         val tab = ContentFactory.getInstance()
-            .createContent(toolwindowPanel, "", false)
+            .createContent(toolwindowPanel, "Sui", false)
         toolWindow.contentManager.addContent(tab)
     }
 
@@ -35,7 +35,7 @@ class SuiToolWindowFactory : ToolWindowFactory, DumbAware {
 }
 
 private class SuiToolWindowPanel(project: Project) : SimpleToolWindowPanel(true, false) {
-    private val suiTab = AptosToolWindow(project)
+    private val suiTab = SuiToolWindow(project)
 
     init {
         toolbar = suiTab.toolbar.component
@@ -45,7 +45,7 @@ private class SuiToolWindowPanel(project: Project) : SimpleToolWindowPanel(true,
 
     override fun getData(dataId: String): Any? =
         when {
-            AptosToolWindow.SELECTED_MOVE_PROJECT.`is`(dataId) -> suiTab.selectedProject
+            SuiToolWindow.SELECTED_MOVE_PROJECT.`is`(dataId) -> suiTab.selectedProject
             PlatformDataKeys.TREE_EXPANDER.`is`(dataId) -> suiTab.treeExpander
             else -> super.getData(dataId)
         }
@@ -56,7 +56,7 @@ class SuiToolWindow(private val project: Project) {
     val toolbar: ActionToolbar = run {
         val actionManager = ActionManager.getInstance()
         actionManager.createActionToolbar(
-            APTOS_TOOLBAR_PLACE,
+            SUI_TOOLBAR_PLACE,
             actionManager.getAction("Move.Sui") as DefaultActionGroup,
             true
         )
@@ -91,6 +91,6 @@ class SuiToolWindow(private val project: Project) {
         @JvmStatic
         val SELECTED_MOVE_PROJECT: DataKey<MoveProject> = DataKey.create("SELECTED_MOVE_PROJECT")
 
-        const val APTOS_TOOLBAR_PLACE: String = "Aptos Toolbar"
+        const val SUI_TOOLBAR_PLACE: String = "Sui Toolbar"
     }
 }

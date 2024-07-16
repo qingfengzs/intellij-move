@@ -45,8 +45,8 @@ abstract class MvIntentionTestCase(private val intentionClass: KClass<out Intent
 
 //    @Suppress("unused")
 //    protected fun doAvailableTestWithFileTree(
-//        @Language("Move") fileStructureBefore: String,
-//        @Language("Move") openedFileAfter: String
+//        @Language("Sui Move") fileStructureBefore: String,
+//        @Language("Sui Move") openedFileAfter: String
 //    ) {
 //        val fileTree = fileTreeFromText(fileStructureBefore)
 //        val testProject = fileTree.toTestProject(myFixture.project, myFixture.findFileInTempDir("."))

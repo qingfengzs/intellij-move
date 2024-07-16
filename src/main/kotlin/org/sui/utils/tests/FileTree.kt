@@ -30,7 +30,7 @@ typealias TreeBuilder = FileTreeBuilder.() -> Unit
 fun fileTree(builder: FileTreeBuilder.() -> Unit): FileTree =
     FileTree(FileTreeBuilderImpl().apply { builder() }.intoDirectory())
 
-fun fileTreeFromText(@Language("Move") text: String): FileTree {
+fun fileTreeFromText(@Language("Sui Move") text: String): FileTree {
     val fileSeparator = """^\s*//- (\S+)\s*$""".toRegex(RegexOption.MULTILINE)
     val fileNames = fileSeparator.findAll(text).map { it.groupValues[1] }.toList()
     val fileTexts = fileSeparator.split(text)
@@ -71,8 +71,8 @@ interface FileTreeBuilder {
     fun dir(name: String, tree: FileTree)
     fun file(name: String, code: String)
 
-    fun main(@Language("Move") code: String = "") = move("main.move", code)
-    fun move(name: String, @Language("Move") code: String = "") = file(name, code)
+    fun main(@Language("Sui Move") code: String = "") = move("main.move", code)
+    fun move(name: String, @Language("Sui Move") code: String = "") = file(name, code)
     fun toml(name: String, @Language("TOML") code: String = "") = file(name, code)
 
     fun moveToml(@Language("TOML") code: String = "") = file("Move.toml", code)

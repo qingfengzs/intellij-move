@@ -22,7 +22,7 @@ import org.sui.cli.settings.VersionLabel
 import org.sui.cli.settings.isValidExecutable
 import org.sui.cli.settings.sui.SuiExecType.BUNDLED
 import org.sui.cli.settings.sui.SuiExecType.LOCAL
-import org.sui.ide.actions.DownloadAptosSDKAction
+import org.sui.ide.actions.DownloadSuiSDKAction
 import org.sui.ide.notifications.logOrShowBalloon
 import org.sui.openapiext.PluginPathManager
 import org.sui.openapiext.pathField
@@ -46,7 +46,7 @@ enum class SuiExecType {
                 return !SystemInfo.isMac
             }
 
-        fun bundledPath(): String? = PluginPathManager.bundledAptosCli
+        fun bundledPath(): String? = PluginPathManager.bundledSuiCli
 
         fun suiExecPath(execType: SuiExecType, localSuiPath: String?): Path? {
             val pathCandidate =
@@ -63,7 +63,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
 
     data class Data(
         val suiExecType: SuiExecType,
-        val localAptosPath: String?
+        val localSuiPath: String?
     )
 
     var data: Data
@@ -72,7 +72,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
             val path = localPathField.text.blankToNull()
             return Data(
                 suiExecType = execType,
-                localAptosPath = path
+                localSuiPath = path
             )
         }
         set(value) {
@@ -87,7 +87,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
                     localRadioButton.isSelected = true
                 }
             }
-            localPathField.text = value.localAptosPath ?: ""
+            localPathField.text = value.localSuiPath ?: ""
             updateVersion()
         }
 
@@ -95,7 +95,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
         pathField(
             FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor(),
             this,
-            "Choose Aptos CLI",
+            "Choose Sui CLI",
             onTextChanged = { _ ->
                 updateVersion()
             })
@@ -104,7 +104,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
     private val bundledRadioButton = JBRadioButton("Bundled")
     private val localRadioButton = JBRadioButton("Local")
 
-    private val downloadPrecompiledBinaryAction = DownloadAptosSDKAction().also {
+    private val downloadPrecompiledBinaryAction = DownloadSuiSDKAction().also {
         it.onFinish = { sdk ->
             bundledRadioButton.isSelected = false
             localRadioButton.isSelected = true
@@ -117,8 +117,8 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
             if (SuiExecType.isPreCompiledSupportedForThePlatform) downloadPrecompiledBinaryAction else null
         )
     )
-    private val getAptosActionLink =
-        DropDownLink("Get Aptos") { dropDownLink ->
+    private val getSuiActionLink =
+        DropDownLink("Get Sui") { dropDownLink ->
             val dataContext = DataManager.getInstance().getDataContext(dropDownLink)
             JBPopupFactory.getInstance().createActionGroupPopup(
                 null,
@@ -136,7 +136,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
 
     fun attachToLayout(layout: Panel): Row {
         val resultRow = with(layout) {
-            group("Aptos CLI") {
+            group("Sui CLI") {
                 buttonsGroup {
                     row {
                         cell(bundledRadioButton)
@@ -145,14 +145,14 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
                                 updateVersion()
                             }
                     }
-                    row {
-                        comment(
-                            "Bundled version is not available for MacOS. Refer to the " +
-                                    "<a href=\"https://aptos.dev/tools/aptos-cli/install-cli/install-cli-mac\">Official Aptos CLI docs</a> " +
-                                    "on how to install it on your platform."
-                        )
-                            .visible(!SuiExecType.isPreCompiledSupportedForThePlatform)
-                    }
+//                    row {
+//                        comment(
+//                            "Bundled version is not available for MacOS. Refer to the " +
+//                                    "<a href=\"https://aptos.dev/tools/aptos-cli/install-cli/install-cli-mac\">Official Aptos CLI docs</a> " +
+//                                    "on how to install it on your platform."
+//                        )
+//                            .visible(!SuiExecType.isPreCompiledSupportedForThePlatform)
+//                    }
                     row {
                         cell(localRadioButton)
                             .actionListener { _, _ ->
@@ -163,7 +163,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
                             .align(AlignX.FILL)
                             .resizableColumn()
                         if (popupActionGroup.childrenCount != 0) {
-                            cell(getAptosActionLink)
+                            cell(getSuiActionLink)
                         }
                     }
                     row("--version :") { cell(versionLabel) }
@@ -183,29 +183,29 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
     }
 
     private fun updateVersion() {
-        val aptosPath =
+        val suiPath =
             when {
                 bundledRadioButton.isSelected -> SuiExecType.bundledPath()
                 else -> localPathField.text
             }?.toPathOrNull()
-        versionLabel.updateAndNotifyListeners(aptosPath)
+        versionLabel.updateAndNotifyListeners(suiPath)
     }
 
-    fun updateAptosSdks(sdkPath: String) {
+    fun updateSuiSdks(sdkPath: String) {
         if (sdkPath == "") return
 
         // do not save if the executable has no `--version`
         if (versionLabel.isError()) return
 
-        // do not save if it's not an aptos
-        if ("aptos" !in versionLabel.text) return
+        // do not save if it's not an sui
+        if ("sui" !in versionLabel.text) return
 
         val settingsService = sdksService()
-        if (sdkPath in settingsService.state.aptosSdkPaths) return
+        if (sdkPath in settingsService.state.suiSdkPaths) return
 
-        settingsService.state.aptosSdkPaths.add(sdkPath)
+        settingsService.state.suiSdkPaths.add(sdkPath)
 
-        LOG.logOrShowBalloon("Aptos SDK saved: $sdkPath")
+        LOG.logOrShowBalloon("Sui SDK saved: $sdkPath")
     }
 
     override fun dispose() {

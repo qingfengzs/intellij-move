@@ -31,7 +31,7 @@ abstract class MvAnnotationTestCase : MvTestBase() {
                                 })
 
     protected fun checkByText(
-        @Language("Move") text: String,
+        @Language("Sui Move") text: String,
         checkWarn: Boolean = true,
         checkInfo: Boolean = false,
         checkWeakWarn: Boolean = false,

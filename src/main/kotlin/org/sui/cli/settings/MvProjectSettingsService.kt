@@ -35,6 +35,7 @@ class MvProjectSettingsService(
     val localSuiPath: String? get() = state.localSuiPath
 
     val fetchAptosDeps: Boolean get() = state.fetchAptosDeps
+    val fetchSuiDeps: Boolean get() = state.fetchSuiDeps
 
     val disableTelemetry: Boolean get() = state.disableTelemetry
     val skipFetchLatestGitDeps: Boolean get() = state.skipFetchLatestGitDeps
@@ -50,6 +51,8 @@ class MvProjectSettingsService(
     class MoveProjectSettings : MvProjectSettingsBase<MoveProjectSettings>() {
         @AffectsMoveProjectsMetadata
         var aptosExecType: AptosExecType by enum(defaultAptosExecType)
+
+        @AffectsMoveProjectsMetadata
         var suiExecType: SuiExecType by enum(defaultSuiExecType)
 
         @AffectsMoveProjectsMetadata
@@ -72,6 +75,9 @@ class MvProjectSettingsService(
 
         @AffectsMoveProjectsMetadata
         var fetchAptosDeps: Boolean by property(false)
+
+        @AffectsMoveProjectsMetadata
+        var fetchSuiDeps: Boolean by property(false)
 
         var disableTelemetry: Boolean by property(true)
 
@@ -138,7 +144,7 @@ fun Project.getAptosCliDisposedOnFileChange(file: VirtualFile): Aptos? {
 }
 
 val Project.aptosExecPath: Path? get() = this.getAptosCli()?.cliLocation
-val Project.suiExecPath: Path? get() = this.getAptosCli()?.cliLocation
+val Project.suiExecPath: Path? get() = this.getSuiCli()?.cliLocation
 
 fun Path?.isValidExecutable(): Boolean {
     return this != null

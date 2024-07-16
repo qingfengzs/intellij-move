@@ -36,4 +36,4 @@ class AptosSdksSettingsService : SimplePersistentStateComponent<AptosSdksSetting
     }
 }
 
-fun sdksService(): AptosSdksSettingsService = service()
+fun aptosSdksService(): AptosSdksSettingsService = service()

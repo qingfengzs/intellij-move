@@ -8,7 +8,7 @@ import org.sui.utils.tests.base.findElementAndOffsetInEditor
 
 abstract class MvDocumentationProviderProjectTestCase : MvProjectTestBase() {
     protected fun doTestByFileTree(
-        @Language("Move") builder: TreeBuilder,
+        @Language("Sui Move") builder: TreeBuilder,
         @Language("Html") expected: String?,
         block: MvDocumentationProvider.(PsiElement, PsiElement?) -> String?
     ) {
@@ -31,7 +31,7 @@ abstract class MvDocumentationProviderProjectTestCase : MvProjectTestBase() {
 
 abstract class MvDocumentationProviderTestCase : MvTestBase() {
     protected fun doTest(
-        @Language("Move") code: String,
+        @Language("Sui Move") code: String,
         @Language("Html") expected: String?,
         findElement: () -> Pair<PsiElement, Int> = { myFixture.findElementAndOffsetInEditor() },
         block: MvDocumentationProvider.(PsiElement, PsiElement?) -> String?
@@ -43,7 +43,7 @@ abstract class MvDocumentationProviderTestCase : MvTestBase() {
     }
 
 //    protected fun doTest(
-//        @Language("Move") code: String,
+//        @Language("Sui Move") code: String,
 //        expected: Regex?,
 //        findElement: () -> Pair<PsiElement, Int> = { myFixture.findElementAndOffsetInEditor() },
 //        block: MvDocumentationProvider.(PsiElement, PsiElement?) -> String?
@@ -55,7 +55,7 @@ abstract class MvDocumentationProviderTestCase : MvTestBase() {
 //    }
 
     protected fun <T> doTest(
-        @Language("Move") code: String,
+        @Language("Sui Move") code: String,
         expected: T?,
         findElement: () -> Pair<PsiElement, Int> = { myFixture.findElementAndOffsetInEditor() },
         block: MvDocumentationProvider.(PsiElement, PsiElement?) -> String?,

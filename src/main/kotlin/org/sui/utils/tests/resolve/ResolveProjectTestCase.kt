@@ -85,7 +85,7 @@ abstract class ResolveProjectTestCase : MvProjectTestBase() {
     }
 
     protected fun <T : PsiElement, R : PsiElement> checkByFileTree(
-        @Language("Move") code: String,
+        @Language("Sui Move") code: String,
         refClass: Class<R>,
         targetClass: Class<T>
     ) {

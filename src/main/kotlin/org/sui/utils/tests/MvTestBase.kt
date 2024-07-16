@@ -91,7 +91,7 @@ abstract class MvTestBase : MvLightTestBase(),
         return TestCase.camelOrWordsToSnake(camelCase)
     }
 
-    protected fun inlineFile(@Language("Sui Move") code: String, name: String = "main.move"): InlineFile {
+    protected fun InlineFile(@Language("Sui Move") code: String, name: String = "main.move"): InlineFile {
         return InlineFile(myFixture, code, name)
     }
 
@@ -131,8 +131,8 @@ abstract class MvTestBase : MvLightTestBase(),
     }
 
     protected fun checkByText(
-        @Language("Move") before: String,
-        @Language("Move") after: String,
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String,
         action: () -> Unit,
     ) {
 //        InlineFile(before)
@@ -151,8 +151,8 @@ abstract class MvTestBase : MvLightTestBase(),
 //        toTestProject(myFixture.project, myFixture.findFileInTempDir("."))
 
     protected open fun checkEditorAction(
-        @Language("Move") before: String,
-        @Language("Move") after: String,
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String,
         actionId: String,
         trimIndent: Boolean = true,
     ) {

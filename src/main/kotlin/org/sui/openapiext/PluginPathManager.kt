@@ -5,7 +5,6 @@ import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.util.SystemInfo
 import java.nio.file.Files
@@ -46,13 +45,11 @@ object PluginPathManager {
     private fun pluginDir(): Path = plugin().pluginPath
 
     fun getCurrentOS(): String {
-        val openssl3 = service<OpenSSLInfoService>().openssl3
         return when {
-            SystemInfo.isMac -> "MacOSX"
-            SystemInfo.isWindows -> "Windows"
-            else -> {
-                if (openssl3) "Ubuntu-22.04" else "Ubuntu"
-            }
+            SystemInfo.isMac -> "macos"
+            SystemInfo.isWindows -> "windows"
+            SystemInfo.isLinux -> "ubuntu"
+            else -> "ubuntu"
         }
     }
 
@@ -73,5 +70,10 @@ object PluginPathManager {
             } else {
                 null
             }
+        }
+
+    val bundledSuiCli: String?
+        get() {
+            return null
         }
 }

@@ -20,7 +20,7 @@ abstract class InspectionTestBase(
 
     fun checkFixIsUnavailable(
         fixName: String,
-        @Language("Move") text: String,
+        @Language("Sui Move") text: String,
         checkWarn: Boolean = true,
         checkInfo: Boolean = false,
         checkWeakWarn: Boolean = false,
@@ -32,8 +32,8 @@ abstract class InspectionTestBase(
 
     protected fun checkFixByText(
         fixName: String,
-        @Language("Move") before: String,
-        @Language("Move") after: String,
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String,
         checkWarn: Boolean = true,
         checkInfo: Boolean = false,
         checkWeakWarn: Boolean = false,

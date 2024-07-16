@@ -13,7 +13,7 @@ import org.sui.cli.Consts
 import org.sui.cli.MoveProject
 import org.sui.cli.externalLinter.ExternalLinter
 import org.sui.cli.externalLinter.externalLinterSettings
-import org.sui.cli.runConfigurations.AptosCommandLine
+import org.sui.cli.runConfigurations.SuiCommandLine
 import org.sui.cli.settings.moveSettings
 import org.sui.openapiext.*
 import org.sui.openapiext.common.isUnitTestMode
@@ -41,11 +41,11 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
         if (!isUnitTestMode) {
             checkIsBackgroundThread()
         }
-        val commandLine = AptosCommandLine(
-            "move init",
+        val commandLine = SuiCommandLine(
+            "move new",
             listOf(
                 "--name", packageName,
-                "--assume-yes"
+//                "--assume-yes"
             ),
             workingDirectory = project.rootPath
         )
@@ -64,16 +64,16 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
         skipLatest: Boolean,
         processListener: ProcessListener
     ): RsProcessResult<Unit> {
-        if (project.moveSettings.fetchAptosDeps) {
+        if (project.moveSettings.fetchSuiDeps) {
             val commandLine =
-                AptosCommandLine(
-                    subCommand = "move compile",
+                SuiCommandLine(
+                    subCommand = "move build",
                     arguments = listOfNotNull(
                         "--skip-fetch-latest-git-deps".takeIf { skipLatest }
                     ),
                     workingDirectory = projectDir
                 )
-            // TODO: as Aptos does not yet support fetching dependencies without compiling, ignore errors here,
+            // TODO: as Sui does not yet support fetching dependencies without compiling, ignore errors here,
             // TODO: still better than no call at all
             executeCommandLine(commandLine, listener = processListener)
 //                .unwrapOrElse { return Err(it) }
@@ -87,23 +87,23 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
 //            val checkCommand = if (useClippy) "clippy" else "check"
         val extraArguments = ParametersListUtil.parse(args.extraArguments)
         val commandLine =
-            AptosCommandLine(
-                "move compile",
+            SuiCommandLine(
+                "move build",
                 buildList {
 //                        add("--message-format=json")
                     if ("--skip-fetch-latest-git-deps" !in extraArguments) {
                         add("--skip-fetch-latest-git-deps")
                     }
-                    if (args.addCompilerV2Flags) {
-                        if ("--compiler-version" !in extraArguments) {
-                            add("--compiler-version")
-                            add("v2")
-                        }
-                        if ("--language-version" !in extraArguments) {
-                            add("--language-version")
-                            add("2.0")
-                        }
-                    }
+//                    if (args.addCompilerV2Flags) {
+//                        if ("--compiler-version" !in extraArguments) {
+//                            add("--compiler-version")
+//                            add("v2")
+//                        }
+//                        if ("--language-version" !in extraArguments) {
+//                            add("--language-version")
+//                            add("2.0")
+//                        }
+//                    }
                     addAll(ParametersListUtil.parse(args.extraArguments))
                 },
                 args.moveProjectDirectory,
@@ -133,7 +133,7 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
             )
         }
     ): RsProcessResult<ProcessOutput> {
-        val commandLine = AptosCommandLine(
+        val commandLine = SuiCommandLine(
             subCommand = "move download",
             arguments = buildList {
                 add("--account"); add(accountAddress)
@@ -162,7 +162,7 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
     fun decompileDownloadedPackage(downloadedPackagePath: Path): RsProcessResult<ProcessOutput> {
         val bytecodeModulesPath =
             downloadedPackagePath.resolve("bytecode_modules").toAbsolutePath().toString()
-        val commandLine = AptosCommandLine(
+        val commandLine = SuiCommandLine(
             subCommand = "move decompile",
             arguments = buildList {
                 add("--package-path"); add(bytecodeModulesPath)
@@ -178,7 +178,7 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
         outputDir: String?,
     ): RsProcessResult<ProcessOutput> {
         val fileRoot = Paths.get(bytecodeFilePath).parent
-        val commandLine = AptosCommandLine(
+        val commandLine = SuiCommandLine(
             subCommand = "move decompile",
             arguments = buildList {
                 add("--bytecode-path"); add(bytecodeFilePath)
@@ -194,7 +194,7 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
     }
 
     private fun executeCommandLine(
-        commandLine: AptosCommandLine,
+        commandLine: SuiCommandLine,
         listener: ProcessListener? = null,
         runner: CapturingProcessHandler.() -> ProcessOutput = {
             runProcessWithGlobalProgress(

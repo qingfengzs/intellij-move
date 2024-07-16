@@ -35,7 +35,7 @@
     generateTokenAccessors=true
 
     parserImports=[
-      'static org.move.lang.core.MoveParserUtil.PathParsingMode.*'
+      'static org.sui.lang.core.MoveParserUtil.PathParsingMode.*'
     ]
 
     tokens = [

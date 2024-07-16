@@ -8,7 +8,7 @@ abstract class MvTypingTestCase : MvTestBase() {
         myFixture.type(c)
     }
 
-    protected fun doTest(@Language("Sui Move") before: String, type: Char, @Language("Move") after: String) {
+    protected fun doTest(@Language("Sui Move") before: String, type: Char, @Language("Sui Move") after: String) {
         val beforeText = replaceCaretMarker(before)
         val afterText = replaceCaretMarker(after)
 
@@ -18,8 +18,8 @@ abstract class MvTypingTestCase : MvTestBase() {
     }
 
     protected fun doTestByText(
-        @Language("Move") before: String,
-        @Language("Move") after: String,
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String,
         c: Char = '\n'
     ) =
         checkByText(before.trimIndent(), after.trimIndent()) {

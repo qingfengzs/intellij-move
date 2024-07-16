@@ -38,9 +38,9 @@ class MoveProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeer
     private var checkValid: Runnable? = null
 
     override fun getSettings(): MoveProjectConfig {
-        val localSuiPath = this.chooseSuiCliPanel.data.localAptosPath
+        val localSuiPath = this.chooseSuiCliPanel.data.localSuiPath
         if (localSuiPath != null) {
-            this.chooseSuiCliPanel.updateAptosSdks(localSuiPath)
+            this.chooseSuiCliPanel.updateSuiSdks(localSuiPath)
         }
         return MoveProjectConfig(
             suiExecType = this.chooseSuiCliPanel.data.suiExecType,
@@ -63,7 +63,7 @@ class MoveProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeer
     override fun validate(): ValidationInfo? {
         val panelData = this.chooseSuiCliPanel.data
         val suiExecPath =
-            SuiExecType.suiExecPath(panelData.suiExecType, panelData.localAptosPath)
+            SuiExecType.suiExecPath(panelData.suiExecType, panelData.localSuiPath)
                 ?: return ValidationInfo("Invalid path to Sui executable")
         return null
     }

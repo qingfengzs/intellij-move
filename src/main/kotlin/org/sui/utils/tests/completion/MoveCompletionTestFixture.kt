@@ -19,7 +19,7 @@ class MvCompletionTestFixture(
         return completions.toList()
     }
 
-    fun doFirstCompletion(@Language("Sui Move") code: String, @Language("Move") after: String) {
+    fun doFirstCompletion(@Language("Sui Move") code: String, @Language("Sui Move") after: String) {
         check(hasCaretMarker(after)) { "No /*caret*/ marker in `after`" }
         checkByText(code, after.trimIndent()) {
             val variants = myFixture.completeBasic()
@@ -29,15 +29,15 @@ class MvCompletionTestFixture(
         }
     }
 
-    fun doSingleCompletion(@Language("Sui Move") code: String, @Language("Move") after: String) {
+    fun doSingleCompletion(@Language("Sui Move") code: String, @Language("Sui Move") after: String) {
         check(hasCaretMarker(after)) { "No /*caret*/ marker in `after`" }
         checkByText(code, after.trimIndent()) { executeSoloCompletion() }
     }
 
     fun checkCompletion(
         lookupString: String,
-        @Language("Move") before: String,
-        @Language("Move") after: String,
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String,
         completionChar: Char,
     ) {
         checkByText(before, after.trimIndent()) {

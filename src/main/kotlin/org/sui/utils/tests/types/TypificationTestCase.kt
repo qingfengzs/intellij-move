@@ -55,7 +55,7 @@ abstract class TypificationTestCase : MvTestBase() {
     }
 
     protected fun testBinding(
-        @Language("Move") code: String,
+        @Language("Sui Move") code: String,
 //        allowErrors: Boolean = false
     ) {
         InlineFile(myFixture, code, "main.move")
@@ -74,7 +74,7 @@ abstract class TypificationTestCase : MvTestBase() {
     }
 
 //    protected fun testExpr(
-//        @Language("Move") code: String,
+//        @Language("Sui Move") code: String,
 //        description: String = "",
 //        allowErrors: Boolean = false
 //    ) = testExpr(code, description, allowErrors)

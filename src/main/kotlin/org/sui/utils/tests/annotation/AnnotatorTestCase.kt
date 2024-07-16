@@ -18,8 +18,8 @@ abstract class AnnotatorTestCase(
 
     protected fun checkFixByText(
         fixName: String,
-        @Language("Move") before: String,
-        @Language("Move") after: String,
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String,
         checkWarn: Boolean = true,
         checkInfo: Boolean = false,
         checkWeakWarn: Boolean = false,

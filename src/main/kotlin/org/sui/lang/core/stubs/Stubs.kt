@@ -1,5 +1,6 @@
 package org.sui.lang.core.stubs
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.*
 import com.intellij.util.BitUtil
 import org.sui.cli.MoveProject
@@ -280,6 +281,37 @@ class MvStructStub(
     }
 }
 
+class MvEnumStub(
+    parent: StubElement<*>?,
+    elementType: IStubElementType<*, *>,
+    override val name: String?,
+    override val flags: Int,
+) : MvAttributeOwnerStubBase<MvEnum>(parent, elementType), MvNamedStub {
+
+    object Type : MvStubElementType<MvEnumStub, MvEnum>("ENUM") {
+        override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): MvEnumStub {
+            val name = dataStream.readNameAsString()
+            val flags = dataStream.readInt()
+            return MvEnumStub(parentStub, this, name, flags)
+        }
+
+        override fun createStub(psi: MvEnum, parentStub: StubElement<out PsiElement>?): MvEnumStub {
+            TODO("Not yet implemented")
+        }
+
+        override fun createPsi(stub: MvEnumStub): MvEnum {
+            TODO("Not yet implemented")
+        }
+
+        override fun serialize(stub: MvEnumStub, dataStream: StubOutputStream) =
+            with(dataStream) {
+                writeName(stub.name)
+            }
+
+        override fun indexStub(stub: MvEnumStub, sink: IndexSink) = sink.indexEnumStub(stub)
+    }
+}
+
 class MvSchemaStub(
     parent: StubElement<*>?,
     elementType: IStubElementType<*, *>,
@@ -379,7 +411,7 @@ fun factory(name: String): MvStubElementType<*, *> = when (name) {
     "SCHEMA" -> MvSchemaStub.Type
     "CONST" -> MvConstStub.Type
     "MODULE_SPEC" -> MvModuleSpecStub.Type
-//    "ENUM" -> MvEnumStub.Type
+    "ENUM" -> MvEnumStub.Type
     else -> error("Unknown element $name")
 }
 

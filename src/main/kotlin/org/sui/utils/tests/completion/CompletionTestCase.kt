@@ -18,35 +18,35 @@ abstract class CompletionTestCase : MvLightTestBase() {
     }
 
     protected fun doFirstCompletion(
-        @Language("Move") before: String,
-        @Language("Move") after: String
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String
     ) = completionFixture.doFirstCompletion(before, after)
 
     protected fun doSingleCompletion(
-        @Language("Move") before: String,
-        @Language("Move") after: String
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String
     ) = completionFixture.doSingleCompletion(before, after)
 
     protected fun checkContainsCompletion(
         variant: String,
-        @Language("Move") code: String
+        @Language("Sui Move") code: String
     ) = completionFixture.checkContainsCompletion(code, variant)
 
     protected fun checkContainsCompletion(
         variants: List<String>,
-        @Language("Move") code: String
+        @Language("Sui Move") code: String
     ) = completionFixture.checkContainsCompletion(code, variants)
 
     protected fun checkCompletion(
         lookupString: String,
-        @Language("Move") before: String,
-        @Language("Move") after: String,
+        @Language("Sui Move") before: String,
+        @Language("Sui Move") after: String,
         completionChar: Char = '\n',
     ) = completionFixture.checkCompletion(lookupString, before, after, completionChar)
 
     protected fun checkNotContainsCompletion(
         variant: String,
-        @Language("Move") code: String
+        @Language("Sui Move") code: String
     ) = completionFixture.checkNotContainsCompletion(code, variant)
 
     protected fun checkNoCompletion(@Language("Sui Move") code: String) = completionFixture.checkNoCompletion(code)
