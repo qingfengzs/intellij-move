@@ -15,10 +15,10 @@ abstract class SuiRunStateBase(
 ) : CommandLineState(environment) {
 
     val project = environment.project
-    val commandLine: AptosCommandLine = config.cmd
+    val commandLine: SuiCommandLine = config.cmd
 
     override fun startProcess(): ProcessHandler {
-        val generalCommandLine = commandLine.toGeneralCommandLine(config.aptosPath)
+        val generalCommandLine = commandLine.toGeneralCommandLine(config.suiPath)
         val handler = KillableColoredProcessHandler(generalCommandLine)
         consoleBuilder.console.attachToProcess(handler)
         ProcessTerminatedListener.attach(handler)  // shows exit code upon termination

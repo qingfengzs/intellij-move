@@ -132,7 +132,7 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
                     it.enableIndexExpr = state.enableIndexExpr
                     it.enablePublicPackage = state.enablePublicPackage
                     it.addCompilerV2CLIFlags = state.addCompilerV2CLIFlags
-                    it.fetchAptosDeps = state.fetchAptosDeps
+//                    it.fetchAptosDeps = state.fetchAptosDeps
                     it.fetchSuiDeps = state.fetchSuiDeps
                 }
             }

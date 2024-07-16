@@ -19,16 +19,16 @@ class AptosTestConsoleProperties(
         isIdBasedTestTree = false
     }
 
-    override fun getTestLocator(): SMTestLocator = AptosTestLocator
+    override fun getTestLocator(): SMTestLocator = SuiTestLocator
 
     override fun createTestEventsConverter(
         testFrameworkName: String,
         consoleProperties: TestConsoleProperties
     ): OutputToGeneralTestEventsConverter =
-        AptosTestEventsConverter(testFrameworkName, consoleProperties)
+        SuiTestEventsConverter(testFrameworkName, consoleProperties)
 
     companion object {
-        const val TEST_FRAMEWORK_NAME: String = "Aptos Test"
-        const val TEST_TOOL_WINDOW_SETTING_KEY: String = "org.sui.aptos.test.tool.window"
+        const val TEST_FRAMEWORK_NAME: String = "Sui Test"
+        const val TEST_TOOL_WINDOW_SETTING_KEY: String = "org.move.sui.test.tool.window"
     }
 }

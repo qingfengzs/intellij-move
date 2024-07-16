@@ -13,7 +13,7 @@ import org.jdom.Element
 import org.sui.cli.readPath
 import org.sui.cli.readString
 import org.sui.cli.runConfigurations.CommandConfigurationBase.CleanConfiguration.Companion.configurationError
-import org.sui.cli.runConfigurations.test.AptosTestConsoleProperties.Companion.TEST_TOOL_WINDOW_SETTING_KEY
+import org.sui.cli.runConfigurations.test.SuiTestConsoleProperties.Companion.TEST_TOOL_WINDOW_SETTING_KEY
 import org.sui.cli.runConfigurations.test.SuiTestRunState
 import org.sui.cli.settings.suiExecPath
 import org.sui.cli.writePath
@@ -66,24 +66,24 @@ abstract class CommandConfigurationBase(
     fun clean(): CleanConfiguration {
         val workingDirectory = workingDirectory
             ?: return configurationError("No working directory specified")
-        val (subcommand, arguments) = parseAptosCommand(command)
+        val (subcommand, arguments) = parseSuiCommand(command)
             ?: return configurationError("No subcommand specified")
 
-        val aptosPath = project.suiExecPath ?: return configurationError("No Aptos CLI specified")
-        if (!aptosPath.exists()) {
-            return configurationError("Invalid Aptos CLI location: $aptosPath")
+        val suiPath = project.suiExecPath ?: return configurationError("No Sui CLI specified")
+        if (!suiPath.exists()) {
+            return configurationError("Invalid Sui CLI location: $suiPath")
         }
         val commandLine =
-            AptosCommandLine(
+            SuiCommandLine(
                 subcommand,
                 arguments,
                 workingDirectory,
                 environmentVariables
             )
-        return CleanConfiguration.Ok(aptosPath, commandLine)
+        return CleanConfiguration.Ok(suiPath, commandLine)
     }
 
-    protected fun showTestToolWindow(commandLine: AptosCommandLine): Boolean =
+    protected fun showTestToolWindow(commandLine: SuiCommandLine): Boolean =
         when {
             !AdvancedSettings.getBoolean(TEST_TOOL_WINDOW_SETTING_KEY) -> false
             commandLine.subCommand != "move test" -> false
@@ -94,7 +94,7 @@ abstract class CommandConfigurationBase(
         }
 
     sealed class CleanConfiguration {
-        class Ok(val aptosPath: Path, val cmd: AptosCommandLine) : CleanConfiguration()
+        class Ok(val suiPath: Path, val cmd: SuiCommandLine) : CleanConfiguration()
         class Err(val error: RuntimeConfigurationError) : CleanConfiguration()
 
         val ok: Ok? get() = this as? Ok
@@ -107,8 +107,8 @@ abstract class CommandConfigurationBase(
     }
 
     companion object {
-        fun parseAptosCommand(rawAptosCommand: String): Pair<String, List<String>>? {
-            val args = ParametersListUtil.parse(rawAptosCommand)
+        fun parseSuiCommand(rawSuiCommand: String): Pair<String, List<String>>? {
+            val args = ParametersListUtil.parse(rawSuiCommand)
             val rootCommand = args.firstOrNull() ?: return null
             return if (rootCommand == "move") {
                 val subcommand = args.drop(1).firstOrNull() ?: return null

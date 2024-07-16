@@ -77,7 +77,7 @@ class TestLineParser {
 
 }
 
-class AptosTestEventsConverter(
+class SuiTestEventsConverter(
     testFrameworkName: String,
     consoleProperties: TestConsoleProperties
 ) : OutputToGeneralTestEventsConverter(testFrameworkName, consoleProperties) {
@@ -174,7 +174,7 @@ class AptosTestEventsConverter(
             val builder = ServiceMessageBuilder.testStarted(test)
                 .addAttribute("nodeId", test)
                 .addAttribute("parentNodeId", test.parent)
-                .addAttribute("locationHint", AptosTestLocator.getTestUrl(test))
+                .addAttribute("locationHint", SuiTestLocator.getTestUrl(test))
             return builder
         }
 

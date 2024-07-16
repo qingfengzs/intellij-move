@@ -13,7 +13,7 @@ import org.sui.lang.moveProject
 object SuiTestLocator : SMTestLocator {
 
     private const val NAME_SEPARATOR: String = "::"
-    private const val TEST_PROTOCOL: String = "aptos:test"
+    private const val TEST_PROTOCOL: String = "sui:test"
 
     override fun getLocation(
         protocol: String,

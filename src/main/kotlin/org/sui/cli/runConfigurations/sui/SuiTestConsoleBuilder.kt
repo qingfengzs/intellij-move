@@ -6,7 +6,7 @@ import com.intellij.execution.filters.TextConsoleBuilder
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.ui.ConsoleView
 import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfiguration
-import org.sui.cli.runConfigurations.test.AptosTestConsoleProperties.Companion.TEST_FRAMEWORK_NAME
+import org.sui.cli.runConfigurations.test.SuiTestConsoleProperties.Companion.TEST_FRAMEWORK_NAME
 
 class SuiTestConsoleBuilder(
     private val config: SuiCommandConfiguration,

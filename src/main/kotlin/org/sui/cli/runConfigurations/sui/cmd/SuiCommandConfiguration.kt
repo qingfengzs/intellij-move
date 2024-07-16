@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import org.sui.cli.moveProjectsService
 import org.sui.cli.runConfigurations.CommandConfigurationBase
 import org.sui.cli.runConfigurations.aptos.cmd.SuiCommandConfigurationEditor
-import org.sui.cli.runConfigurations.test.AptosTestConsoleProperties
+import org.sui.cli.runConfigurations.test.SuiTestConsoleProperties
 
 class SuiCommandConfiguration(
     project: Project,
@@ -31,7 +31,7 @@ class SuiCommandConfiguration(
     override fun createTestConsoleProperties(executor: Executor): TestConsoleProperties? {
         val config = clean().ok ?: return null
         return if (showTestToolWindow(config.cmd)) {
-            AptosTestConsoleProperties(this, executor)
+            SuiTestConsoleProperties(this, executor)
         } else {
             null
         }
