@@ -26,7 +26,7 @@ class SuiToolWindowFactory : ToolWindowFactory, DumbAware {
 
         val toolwindowPanel = SuiToolWindowPanel(project)
         val tab = ContentFactory.getInstance()
-            .createContent(toolwindowPanel, "Sui", false)
+            .createContent(toolwindowPanel, "", false)
         toolWindow.contentManager.addContent(tab)
     }
 

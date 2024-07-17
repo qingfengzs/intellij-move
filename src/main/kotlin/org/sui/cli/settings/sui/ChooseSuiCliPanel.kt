@@ -15,8 +15,6 @@ import com.intellij.ui.components.JBRadioButton
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.Row
-import com.intellij.ui.dsl.builder.actionListener
-import com.intellij.ui.layout.selected
 import org.sui.cli.sdks.sdksService
 import org.sui.cli.settings.VersionLabel
 import org.sui.cli.settings.isValidExecutable
@@ -138,13 +136,13 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
         val resultRow = with(layout) {
             group("Sui CLI") {
                 buttonsGroup {
-                    row {
-                        cell(bundledRadioButton)
-                            .enabled(SuiExecType.isPreCompiledSupportedForThePlatform)
-                            .actionListener { _, _ ->
-                                updateVersion()
-                            }
-                    }
+//                    row {
+//                        cell(bundledRadioButton)
+//                            .enabled(SuiExecType.isPreCompiledSupportedForThePlatform)
+//                            .actionListener { _, _ ->
+//                                updateVersion()
+//                            }
+//                    }
 //                    row {
 //                        comment(
 //                            "Bundled version is not available for MacOS. Refer to the " +
@@ -154,14 +152,14 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
 //                            .visible(!SuiExecType.isPreCompiledSupportedForThePlatform)
 //                    }
                     row {
-                        cell(localRadioButton)
-                            .actionListener { _, _ ->
-                                updateVersion()
-                            }
+//                        cell(localRadioButton)
+//                            .actionListener { _, _ ->
+//                                updateVersion()
+//                            }
                         cell(localPathField)
-                            .enabledIf(localRadioButton.selected)
                             .align(AlignX.FILL)
                             .resizableColumn()
+//                            .enabledIf(localRadioButton.selected)
                         if (popupActionGroup.childrenCount != 0) {
                             cell(getSuiActionLink)
                         }

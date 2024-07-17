@@ -79,13 +79,13 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
                     }
                 }
                 group("Command Line Options") {
-                    row {
-                        checkBox("Disable telemetry for new Run Configurations")
-                            .comment(
-                                "Adds SUI_DISABLE_TELEMETRY=true to every generated Sui command."
-                            )
-                            .bindSelected(state::disableTelemetry)
-                    }
+//                    row {
+//                        checkBox("Disable telemetry for new Run Configurations")
+//                            .comment(
+//                                "Adds SUI_DISABLE_TELEMETRY=true to every generated Sui command."
+//                            )
+//                            .bindSelected(state::disableTelemetry)
+//                    }
                     row {
                         checkBox("Skip updating to the latest git dependencies")
                             .comment(

@@ -6,7 +6,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
-import org.sui.bytecode.AptosBytecodeDecompiler
+import org.sui.bytecode.SuiBytecodeDecompiler
 import org.sui.cli.MoveProjectsService
 import org.sui.cli.MoveProjectsService.Companion.MOVE_PROJECTS_TOPIC
 import org.sui.cli.moveProjectsService
@@ -45,7 +45,7 @@ class NoMoveProjectDetectedNotificationProvider(project: Project) : MvEditorNoti
         if (!project.isTrusted()) return null
 
         // check whether file is a decompiler artifact
-        val decompiledArtifactsDir = AptosBytecodeDecompiler().getArtifactsDir()
+        val decompiledArtifactsDir = SuiBytecodeDecompiler().getArtifactsDir()
         val asNioFile = file.toNioPathOrNull()?.toFile()
         if (asNioFile == null || asNioFile.relativeToOrNull(decompiledArtifactsDir) != null) return null
 

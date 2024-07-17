@@ -44,7 +44,7 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
         val commandLine = SuiCommandLine(
             "move new",
             listOf(
-                "--name", packageName,
+                packageName,
 //                "--assume-yes"
             ),
             workingDirectory = project.rootPath

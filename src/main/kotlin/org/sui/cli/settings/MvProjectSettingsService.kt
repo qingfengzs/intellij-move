@@ -1,7 +1,10 @@
 package org.sui.cli.settings
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.components.*
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.StoragePathMacros
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
@@ -17,7 +20,6 @@ import java.nio.file.Path
 
 private const val SERVICE_NAME: String = "SuiMoveProjectSettingsService_1"
 
-@Service(Service.Level.PROJECT)
 @State(
     name = SERVICE_NAME,
     storages = [Storage(StoragePathMacros.WORKSPACE_FILE)]
@@ -26,15 +28,14 @@ class MvProjectSettingsService(
     project: Project
 ) :
     MvProjectSettingsServiceBase<MoveProjectSettings>(project, MoveProjectSettings()) {
-    // aptos
+
     val aptosExecType: AptosExecType get() = state.aptosExecType
     val localAptosPath: String? get() = state.localAptosPath
+    val fetchAptosDeps: Boolean get() = state.fetchAptosDeps
 
     // sui
     val suiExecType: SuiExecType get() = state.suiExecType
     val localSuiPath: String? get() = state.localSuiPath
-
-    val fetchAptosDeps: Boolean get() = state.fetchAptosDeps
     val fetchSuiDeps: Boolean get() = state.fetchSuiDeps
 
     val disableTelemetry: Boolean get() = state.disableTelemetry
@@ -53,10 +54,10 @@ class MvProjectSettingsService(
         var aptosExecType: AptosExecType by enum(defaultAptosExecType)
 
         @AffectsMoveProjectsMetadata
-        var suiExecType: SuiExecType by enum(defaultSuiExecType)
+        var localAptosPath: String? by string()
 
         @AffectsMoveProjectsMetadata
-        var localAptosPath: String? by string()
+        var suiExecType: SuiExecType by enum(defaultSuiExecType)
 
         @AffectsMoveProjectsMetadata
         var localSuiPath: String? by string()
@@ -138,9 +139,16 @@ fun Project.getSuiCli(parentDisposable: Disposable? = null): Sui? {
 
 val Project.isAptosConfigured: Boolean get() = this.getAptosCli() != null
 
+val Project.isSuiConfigured: Boolean get() = this.getSuiCli() != null
+
 fun Project.getAptosCliDisposedOnFileChange(file: VirtualFile): Aptos? {
     val anyChangeDisposable = this.createDisposableOnFileChange(file)
     return this.getAptosCli(anyChangeDisposable)
+}
+
+fun Project.getSuiCliDisposedOnFileChange(file: VirtualFile): Sui? {
+    val anyChangeDisposable = this.createDisposableOnFileChange(file)
+    return this.getSuiCli(anyChangeDisposable)
 }
 
 val Project.aptosExecPath: Path? get() = this.getAptosCli()?.cliLocation

@@ -8,7 +8,6 @@ import com.intellij.openapi.options.advanced.AdvancedSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.util.execution.ParametersListUtil
-import org.gradle.internal.impldep.org.testng.SuiteRunState
 import org.jdom.Element
 import org.sui.cli.readPath
 import org.sui.cli.readString
@@ -25,7 +24,7 @@ abstract class CommandConfigurationBase(
     project: Project,
     factory: ConfigurationFactory
 ) :
-    LocatableConfigurationBase<SuiteRunState>(project, factory),
+    LocatableConfigurationBase<SuiRunState>(project, factory),
     RunConfigurationWithSuppressedDefaultDebugAction {
 
     var command: String = ""

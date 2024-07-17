@@ -10,7 +10,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
-import org.sui.cli.runConfigurations.aptos.Aptos
+import org.sui.cli.runConfigurations.sui.Sui
 import org.sui.openapiext.pathAsPath
 import org.sui.openapiext.rootPath
 import org.sui.openapiext.rootPluginDisposable
@@ -23,7 +23,7 @@ import kotlin.io.path.relativeTo
 
 // todo: this is disabled for now, it's a process which requires ReadAction, and that's why
 //  it needs to be run in the indexing phase
-class AptosBytecodeDecompiler : BinaryFileDecompiler {
+class SuiBytecodeDecompiler : BinaryFileDecompiler {
     override fun decompile(file: VirtualFile): CharSequence {
         val fileText = file.readText()
         try {
@@ -34,18 +34,18 @@ class AptosBytecodeDecompiler : BinaryFileDecompiler {
             return LoadTextUtil.getTextByBinaryPresentation(bytes, file)
         }
 //        val project =
-//            ProjectLocator.getInstance().getProjectsForFile(file).firstOrNull { it?.isAptosConfigured == true }
-//                ?: ProjectManager.getInstance().defaultProject.takeIf { it.isAptosConfigured }
+//            ProjectLocator.getInstance().getProjectsForFile(file).firstOrNull { it?.isSuiConfigured == true }
+//                ?: ProjectManager.getInstance().defaultProject.takeIf { it.isSuiConfigured }
 //                ?: return file.readText()
 //        val targetFileDir = getDecompilerTargetFileDirOnTemp(project, file) ?: return file.readText()
 //        val targetFile = decompileFile(project, file, targetFileDir) ?: return file.readText()
 //        return LoadTextUtil.loadText(targetFile)
     }
 
-    fun decompileFileToTheSameDir(aptos: Aptos, file: VirtualFile): RsResult<VirtualFile, String> {
-        aptos.decompileFile(file.path, outputDir = null)
+    fun decompileFileToTheSameDir(sui: Sui, file: VirtualFile): RsResult<VirtualFile, String> {
+        sui.decompileFile(file.path, outputDir = null)
             .unwrapOrElse {
-                return RsResult.Err("`aptos move decompile` failed")
+                return RsResult.Err("`sui move decompile` failed")
             }
         val decompiledFilePath = file.parent.pathAsPath.resolve(sourceFileName(file))
         val decompiledFile = VirtualFileManager.getInstance().refreshAndFindFileByNioPath(decompiledFilePath)
@@ -56,14 +56,14 @@ class AptosBytecodeDecompiler : BinaryFileDecompiler {
         return RsResult.Ok(decompiledFile)
     }
 
-    fun decompileFile(aptos: Aptos, file: VirtualFile, targetFileDir: Path): RsResult<VirtualFile, String> {
+    fun decompileFile(sui: Sui, file: VirtualFile, targetFileDir: Path): RsResult<VirtualFile, String> {
         if (!targetFileDir.exists()) {
             targetFileDir.toFile().mkdirs()
         }
 
-        aptos.decompileFile(file.path, outputDir = targetFileDir.toString())
+        sui.decompileFile(file.path, outputDir = targetFileDir.toString())
             .unwrapOrElse {
-                return RsResult.Err("`aptos move decompile` failed")
+                return RsResult.Err("`sui move decompile` failed")
             }
         val decompiledName = sourceFileName(file)
         val decompiledFile =

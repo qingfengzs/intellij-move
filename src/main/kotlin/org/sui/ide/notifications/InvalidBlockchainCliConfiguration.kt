@@ -5,7 +5,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.EditorNotificationPanel
-import org.sui.cli.settings.PerProjectAptosConfigurable
+import org.sui.cli.settings.PerProjectSuiConfigurable
 import org.sui.cli.settings.isValidExecutable
 import org.sui.cli.settings.moveSettings
 import org.sui.cli.settings.sui.SuiExecType
@@ -32,7 +32,7 @@ class InvalidBlockchainCliConfiguration(project: Project) : MvEditorNotification
 
         val suiCliFromPATH = getCliFromPATH("sui")?.toString()
         return EditorNotificationPanel().apply {
-            text = "Aptos CLI path is not provided or invalid"
+            text = "Sui CLI path is not provided or invalid"
             if (suiCliFromPATH != null) {
                 createActionLabel("Set to \"$suiCliFromPATH\"") {
                     project.moveSettings.modify {
@@ -42,7 +42,7 @@ class InvalidBlockchainCliConfiguration(project: Project) : MvEditorNotification
                 }
             }
             createActionLabel("Configure") {
-                project.showSettingsDialog<PerProjectAptosConfigurable>()
+                project.showSettingsDialog<PerProjectSuiConfigurable>()
             }
             createActionLabel("Do not show again") {
                 disableNotification(file)
@@ -52,6 +52,6 @@ class InvalidBlockchainCliConfiguration(project: Project) : MvEditorNotification
     }
 
     companion object {
-        private const val NOTIFICATION_STATUS_KEY = "org.move.hideMoveNotifications"
+        private const val NOTIFICATION_STATUS_KEY = "org.sui.hideMoveNotifications"
     }
 }

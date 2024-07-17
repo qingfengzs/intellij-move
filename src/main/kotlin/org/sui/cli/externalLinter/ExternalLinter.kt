@@ -6,7 +6,7 @@
 package org.sui.cli.externalLinter
 
 enum class ExternalLinter(val title: String) {
-    COMPILER("Aptos Compiler");
+    COMPILER("Sui Compiler");
 //    LINTER("Move Linter");
 
     override fun toString(): String = title

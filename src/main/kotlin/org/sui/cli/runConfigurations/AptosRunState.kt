@@ -2,6 +2,7 @@ package org.sui.cli.runConfigurations
 
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.filters.Filter
+import com.intellij.execution.process.KillableColoredProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import org.sui.cli.MoveFileHyperlinkFilter
@@ -16,11 +17,11 @@ abstract class AptosRunStateBase(
     val commandLine: AptosCommandLine = AptosCommandLine(null)
 
     override fun startProcess(): ProcessHandler {
-//        val generalCommandLine = commandLine.toGeneralCommandLine(config.aptosPath)
-//        val handler = KillableColoredProcessHandler(generalCommandLine)
-//        consoleBuilder.console.attachToProcess(handler)
+        val generalCommandLine = commandLine.toGeneralCommandLine(config.suiPath)
+        val handler = KillableColoredProcessHandler(generalCommandLine)
+        consoleBuilder.console.attachToProcess(handler)
 //        ProcessTerminatedListener.attach(handler)  // shows exit code upon termination
-//        return handler
+        return handler
     }
 
     protected fun createFilters(): Collection<Filter> {

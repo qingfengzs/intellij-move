@@ -29,13 +29,13 @@ abstract class CommandConfigurationHandler {
         val moveProject = function.moveProject ?: return null
 
         val functionId = function.functionId(moveProject) ?: return null
-        val profileName = moveProject.profiles.firstOrNull()
+//        val profileName = moveProject.profiles.firstOrNull()
         val workingDirectory = moveProject.contentRootPath
 
         val arguments = mutableListOf<String>()
-        if (profileName != null) {
-            arguments.addAll(listOf("--profile", profileName))
-        }
+//        if (profileName != null) {
+//            arguments.addAll(listOf("--profile", profileName))
+//        }
         arguments.addAll(listOf("--function-id", functionId))
 
         val commandLine = SuiCommandLine(subCommand, arguments, workingDirectory)

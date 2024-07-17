@@ -42,18 +42,18 @@ data class MovePackage(
         }
     val suiConfigYaml: SuiConfigYaml?
         get() {
-            var root: VirtualFile? = contentRoot
-            while (true) {
-                if (root == null) break
-                val candidatePath = root
-                    .findChild(".sui")
-                    ?.takeIf { it.isDirectory }
-                    ?.findChild("config.yaml")
-                if (candidatePath != null) {
-                    return SuiConfigYaml.fromPath(candidatePath.pathAsPath)
-                }
-                root = root.parent
-            }
+//            var root: VirtualFile? = contentRoot
+//            while (true) {
+//                if (root == null) break
+//                val candidatePath = root
+//                    .findChild(".sui")
+//                    ?.takeIf { it.isDirectory }
+//                    ?.findChild("config.yaml")
+//                if (candidatePath != null) {
+//                    return SuiConfigYaml.fromPath(candidatePath.pathAsPath)
+//                }
+//                root = root.parent
+//            }
             return null
         }
 

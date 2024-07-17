@@ -12,7 +12,10 @@ import javax.swing.Icon
 
 object MoveIcons {
     val MOVE_LOGO = load("/icons/move_logo.svg")
-    val APTOS_LOGO = load("/icons/move_logo.svg")
+    val APTOS_LOGO = load("/icons/aptos.svg")
+
+    val MV_LOGO = load("/icons/move_logo.svg")
+
     val ADDRESS = load("/icons/annotationtype.png")
     val MODULE = load("/icons/module.svg")
 
@@ -80,7 +83,7 @@ fun Icon.multiple(): Icon {
 /**
  * Rotates the icon by the given angle, in degrees.
  *
- * **Important**: Do ***not*** rotate the icon by ��90 degrees (or any sufficiently close amount)!
+ * **Important**: Do ***not*** rotate the icon by ±90 degrees (or any sufficiently close amount)!
  * The implementation of rotation by that amount in AWT is broken, and results in erratic shifts for composed
  * transformations. In other words, the (final) transformation matrix as a function of rotation angle
  * is discontinuous at those points.

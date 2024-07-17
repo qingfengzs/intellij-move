@@ -205,7 +205,7 @@ class MoveProjectsSyncTask(
         buildContentDescriptor.isActivateToolWindowWhenFailed = true
         buildContentDescriptor.isActivateToolWindowWhenAdded = false
 //        buildContentDescriptor.isNavigateToError = project.rustSettings.autoShowErrorsInEditor
-        val refreshAction = ActionManager.getInstance().getAction("Move.RefreshAllProjects")
+        val refreshAction = ActionManager.getInstance().getAction("Sui.RefreshAllProjects")
         val descriptor = DefaultBuildDescriptor(Any(), "Sui", project.basePath!!, System.currentTimeMillis())
             .withContentDescriptor { buildContentDescriptor }
             .withRestartAction(refreshAction)

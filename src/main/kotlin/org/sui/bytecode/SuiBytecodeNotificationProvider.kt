@@ -14,8 +14,8 @@ import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
-import org.sui.cli.runConfigurations.aptos.Aptos
-import org.sui.cli.settings.getAptosCliDisposedOnFileChange
+import org.sui.cli.runConfigurations.sui.Sui
+import org.sui.cli.settings.getSuiCliDisposedOnFileChange
 import org.sui.ide.notifications.showDebugBalloon
 import org.sui.ide.notifications.updateAllNotifications
 import org.sui.openapiext.openFile
@@ -25,7 +25,7 @@ import org.sui.stdext.unwrapOrElse
 import java.util.function.Function
 import javax.swing.JComponent
 
-class AptosBytecodeNotificationProvider(project: Project) : EditorNotificationProvider {
+class SuiBytecodeNotificationProvider(project: Project) : EditorNotificationProvider {
 
     init {
         project.messageBus.connect().subscribe(VirtualFileManager.VFS_CHANGES, object : BulkFileListener {
@@ -39,16 +39,16 @@ class AptosBytecodeNotificationProvider(project: Project) : EditorNotificationPr
         project: Project,
         file: VirtualFile
     ): Function<in FileEditor, out JComponent?>? {
-        if (!FileTypeRegistry.getInstance().isFileOfType(file, AptosBytecodeFileType)) {
+        if (!FileTypeRegistry.getInstance().isFileOfType(file, SuiBytecodeFileType)) {
             return null
         }
         val properties = PropertiesComponent.getInstance(project)
         val decompilationFailedKey = DECOMPILATION_FAILED + "." + file.path
 
-        val aptosDecompiler = AptosBytecodeDecompiler()
-        val decompiledFilePath = file.parent.pathAsPath.resolve(aptosDecompiler.sourceFileName(file))
+        val suiDecompiler = SuiBytecodeDecompiler()
+        val decompiledFilePath = file.parent.pathAsPath.resolve(suiDecompiler.sourceFileName(file))
 
-        // null if no Aptos configured
+        // null if no Sui configured
         val decompilationTask = DecompilationModalTask.forVirtualFile(project, file)
             ?: return null
 
@@ -103,7 +103,7 @@ class AptosBytecodeNotificationProvider(project: Project) : EditorNotificationPr
 
     class DecompilationModalTask private constructor(
         project: Project,
-        val aptos: Aptos,
+        val sui: Sui,
         val file: VirtualFile
     ) :
         Task.WithResult<RsResult<VirtualFile, String>, Exception>(
@@ -113,24 +113,24 @@ class AptosBytecodeNotificationProvider(project: Project) : EditorNotificationPr
         ) {
 
         override fun compute(indicator: ProgressIndicator): RsResult<VirtualFile, String> {
-            return AptosBytecodeDecompiler().decompileFileToTheSameDir(aptos, file)
+            return SuiBytecodeDecompiler().decompileFileToTheSameDir(sui, file)
         }
 
         fun runWithProgress(): RsResult<VirtualFile, String> = ProgressManager.getInstance().run(this)
 
         companion object {
-            /// fails if Aptos CLI is not configured
+            /// fails if Sui CLI is not configured
             fun forVirtualFile(project: Project, file: VirtualFile): DecompilationModalTask? {
                 // bound to file state at the point of task creation, not at the point of computation
-                val aptos =
-                    project.getAptosCliDisposedOnFileChange(file) ?: return null
-                return DecompilationModalTask(project, aptos, file)
+                val sui =
+                    project.getSuiCliDisposedOnFileChange(file) ?: return null
+                return DecompilationModalTask(project, sui, file)
             }
         }
     }
 
     companion object {
-        private const val DECOMPILATION_FAILED = "org.sui.aptosDecompilerNotificationKey"
+        private const val DECOMPILATION_FAILED = "org.sui.suiDecompilerNotificationKey"
 
     }
 }

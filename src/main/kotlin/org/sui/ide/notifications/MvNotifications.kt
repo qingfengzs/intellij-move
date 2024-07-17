@@ -9,6 +9,6 @@ object MvNotifications {
     }
 
     fun pluginNotifications(): NotificationGroup {
-        return NotificationGroupManager.getInstance().getNotificationGroup("Move Language")
+        return NotificationGroupManager.getInstance().getNotificationGroup("Sui Move Language")
     }
 }

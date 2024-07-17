@@ -8,13 +8,13 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <fileType name="APTOS_BYTECODE"
+        <fileType name="SUI_BYTECODE"
                   extensions="mv"
-                  implementationClass="org.sui.bytecode.AptosBytecodeFileType"
+                  implementationClass="org.sui.bytecode.SuiBytecodeFileType"
                   fieldName="INSTANCE"/>
-        <filetype.decompiler filetype="APTOS_BYTECODE"
-                             implementationClass="org.sui.bytecode.AptosBytecodeDecompiler"/>
-        <editorNotificationProvider implementation="org.sui.bytecode.AptosBytecodeNotificationProvider"/>
+        <filetype.decompiler filetype="SUI_BYTECODE"
+                             implementationClass="org.sui.bytecode.SuiBytecodeDecompiler"/>
+        <editorNotificationProvider implementation="org.sui.bytecode.SuiBytecodeNotificationProvider"/>
 
         <fileType name="Sui Move"
                   language="Sui Move"
@@ -28,6 +28,8 @@
         <!-- PSI managing -->
         <projectService serviceInterface="org.sui.lang.core.psi.MvPsiManager"
                         serviceImplementation="org.sui.lang.core.psi.MvPsiManagerImpl"/>
+
+        <projectService serviceImplementation="org.sui.cli.settings.MvProjectSettingsService"/>
 
         <configurationType
                 implementation="org.sui.cli.runConfigurations.sui.SuiCommandConfigurationType"/>
@@ -319,7 +321,6 @@
                         testServiceImplementation="org.sui.utils.TestProjectRootServiceImpl"/>
 
         <projectService serviceImplementation="org.sui.cli.MoveProjectsService"/>
-        <!--        <projectService serviceImplementation="org.sui.cli.packages.MovePackageService"/>-->
 
         <!--        <projectService serviceInterface="com.intellij.openapi.externalSystem.autoimport.ExternalSystemProjectTracker"-->
         <!--                        serviceImplementation="org.sui.cli.projectAware.MoveExternalSystemProjectAware"-->
@@ -457,12 +458,6 @@
                 text="Open Objects Dialog"
                 class="org.sui.ide.actions.OpenObjectListAction"
                 icon="AllIcons.Actions.GroupByPrefix"/>
-        <action id="Sui.DownloadAptos"
-                text="Download Aptos CLI"
-                description="Download aptos-cli executable from Github"
-                class="org.sui.ide.actions.DownloadSuiSDKAction"
-                icon="AllIcons.Actions.Download"/>
-
         <action id="Sui.RunExternalLinter"
                 class="org.sui.ide.actions.MvRunExternalLinterAction"
                 icon="/icons/externalLinter.svg">
@@ -471,24 +466,23 @@
                 class="org.sui.ide.actions.MoveEditSettingsAction"
                 icon="AllIcons.General.Settings">
         </action>
-        <action id="Sui.FetchAptosPackage"
-                class="org.sui.bytecode.FetchAptosPackageAction"
+        <action id="Sui.FetchSuiPackage"
+                class="org.sui.bytecode.FetchSuiPackageAction"
                 icon="AllIcons.Actions.Download">
         </action>
-
-        <action id="Sui.DecompileAptosMvFile"
-                class="org.sui.bytecode.DecompileAptosMvFileAction">
+        <action id="Sui.DecompileSuiMvFile"
+                class="org.sui.bytecode.DecompileSuiMvFileAction">
             <add-to-group group-id="ProjectViewPopupMenu"/>
         </action>
         <group id="Move.Sui">
             <reference id="Sui.RefreshAllProjects"/>
             <separator/>
-            <reference id="Sui.RunExternalLinter"/>
+            <!--            <reference id="Sui.RunExternalLinter"/>-->
             <separator/>
             <reference id="ExpandAll"/>
             <reference id="CollapseAll"/>
-            <separator/>
-            <reference id="Sui.FetchAptosPackage"/>
+            <!--            <separator/>-->
+            <!--            <reference id="Sui.FetchSuiPackage"/>-->
             <separator/>
             <reference id="Sui.ShowSettings"/>
             <separator/>

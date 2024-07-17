@@ -13,8 +13,8 @@ import com.intellij.ui.components.fields.IntegerField
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.columns
 import com.intellij.ui.dsl.builder.panel
-import org.sui.cli.settings.getAptosCli
-import org.sui.cli.settings.isAptosConfigured
+import org.sui.cli.settings.getSuiCli
+import org.sui.cli.settings.isSuiConfigured
 import org.sui.openapiext.RsProcessResult
 import org.sui.openapiext.pathField
 import org.sui.stdext.blankToNull
@@ -22,7 +22,7 @@ import org.sui.stdext.unwrapOrElse
 import javax.swing.JComponent
 import kotlin.io.path.Path
 
-class FetchAptosPackageDialog(val project: Project) : DialogWrapper(project, true) {
+class FetchSuiPackageDialog(val project: Project) : DialogWrapper(project, true) {
 
     val addressTextField = JBTextField()
     val packageTextField = JBTextField()
@@ -39,7 +39,7 @@ class FetchAptosPackageDialog(val project: Project) : DialogWrapper(project, tru
     val connectionTimeout = IntegerField("Connection timeout", 0, Int.MAX_VALUE)
 
     init {
-        title = "Aptos Decompiler"
+        title = "Sui Decompiler"
         setSize(800, 600)
 
         outputDirField.text = project.basePath.orEmpty()
@@ -50,8 +50,8 @@ class FetchAptosPackageDialog(val project: Project) : DialogWrapper(project, tru
 
         init()
 
-        if (!project.isAptosConfigured) {
-            setErrorText("Aptos CLI is not provided in the plugin settings")
+        if (!project.isSuiConfigured) {
+            setErrorText("Sui CLI is not provided in the plugin settings")
             okAction.isEnabled = false
         }
     }
@@ -82,7 +82,7 @@ class FetchAptosPackageDialog(val project: Project) : DialogWrapper(project, tru
 
             val parametersGroup =
                 collapsibleGroup("Connection Parameters") {
-                    row("Aptos profile:") {
+                    row("Sui profile:") {
                         cell(profileField).columns(12)
                             .comment(
                                 "Profile to use from the CLI config. " +
@@ -121,9 +121,9 @@ class FetchAptosPackageDialog(val project: Project) : DialogWrapper(project, tru
         val decompile = this.decompileCheckbox.isSelected
 
         // cannot be null, it's checked at time of window creation
-        val aptos = project.getAptosCli(this.disposable) ?: return
+        val sui = project.getSuiCli(this.disposable) ?: return
 
-        val aptosProfile = this.profileField.text.blankToNull()
+        val suiProfile = this.profileField.text.blankToNull()
         val nodeApiKey = this.nodeApiKey.text.blankToNull()
         val networkUrl = this.networkUrl.text.blankToNull()
         val connectionTimeout = this.connectionTimeout.value
@@ -138,8 +138,9 @@ class FetchAptosPackageDialog(val project: Project) : DialogWrapper(project, tru
             true
         ) {
             override fun compute(indicator: ProgressIndicator): RsProcessResult<ProcessOutput> {
-                return aptos.downloadPackage(project, accountAddress, packageName, outputDir,
-                    profile = aptosProfile,
+                return sui.downloadPackage(
+                    project, accountAddress, packageName, outputDir,
+                    profile = suiProfile,
                     networkUrl = networkUrl,
                     connectionTimeoutSecs = connectionTimeout,
                     nodeApiKey = nodeApiKey,
@@ -160,7 +161,7 @@ class FetchAptosPackageDialog(val project: Project) : DialogWrapper(project, tru
             ) {
                 override fun compute(indicator: ProgressIndicator): RsProcessResult<ProcessOutput> {
                     val downloadedPath = Path(outputDir).resolve(packageName)
-                    return aptos.decompileDownloadedPackage(downloadedPath)
+                    return sui.decompileDownloadedPackage(downloadedPath)
                 }
             }
             ProgressManager.getInstance().run(decompileTask)

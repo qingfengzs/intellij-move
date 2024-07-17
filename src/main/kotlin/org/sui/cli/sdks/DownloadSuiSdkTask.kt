@@ -56,7 +56,7 @@ class DownloadSuiSdkTask(
             indicator.text2 = "Unpacking $archiveFileName"
             try {
                 tmpExtractionDir.mkdir()
-                Decompressor.Zip(tmpDownloadFile).withZipExtensions()
+                Decompressor.Tar(tmpDownloadFile)
                     .entryFilter { indicator.checkCanceled(); true }
                     .extract(tmpExtractionDir)
             } catch (t: Throwable) {
