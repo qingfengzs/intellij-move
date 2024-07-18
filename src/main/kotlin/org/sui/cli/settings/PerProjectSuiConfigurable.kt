@@ -52,15 +52,15 @@ class PerProjectSuiConfigurable(val project: Project) : BoundConfigurable("Sui")
                                 )
                                 .bindSelected(state::enableReceiverStyleFunctions)
                         }
-                        row {
-                            checkBox("Resource-Access control")
-                                .comment(
-                                    "Allows specifying resource access attributes " +
-                                            "(<code>reads, writes, pure</code> for functions). " +
-                                            "Requires re-parsing of all Move files in the project, can be slow."
-                                )
-                                .bindSelected(state::enableResourceAccessControl)
-                        }
+//                        row {
+//                            checkBox("Resource-Access control")
+//                                .comment(
+//                                    "Allows specifying resource access attributes " +
+//                                            "(<code>reads, writes, pure</code> for functions). " +
+//                                            "Requires re-parsing of all Move files in the project, can be slow."
+//                                )
+//                                .bindSelected(state::enableResourceAccessControl)
+//                        }
                         row {
                             checkBox("Index notation")
                                 .comment(

@@ -41,7 +41,7 @@ class OpenObjectListAction : AnAction() {
         val type: String
     )
 
-    fun extractData(s: String, project: Project): List<SuiObject> {
+    private fun extractData(s: String, project: Project): List<SuiObject> {
         val gson = Gson()
         if (s.contains("This address has no owned objects")) {
             val notificationType = NotificationType.WARNING

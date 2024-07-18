@@ -259,8 +259,7 @@ private ModuleItem ::= !('}' | <<eof>>) ModuleItem_item
 private Item_first ::= use | public | native | fun | CONST_KW | STRUCT_KW |ENUM_KW| spec | friend | Attr | entry | inline | UseFunFirst
 private Item_recover ::= !('}' | <<eof>> | Item_first)
 
-private ModuleItem_item ::= PublicUseFun
-                            | UseStmt
+private ModuleItem_item ::= UseStmt
                             | FriendDecl
                             | StructItem
                             | EnumItem
@@ -573,10 +572,11 @@ FriendDecl ::= Attr* friend FQModuleRef ';'
     implements = [ "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner" ]
 }
 
-UseStmt ::= Attr* use (ItemUseSpeck | ModuleUseSpeck) ';' {
+UseStmt ::= Attr* use (ItemUseSpeck | MixUseSpeck | ModuleUseSpeck ) ';' {
     pin = "use"
     implements = [ "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner" ]
 }
+
 ModuleUseSpeck ::= (AddressRef !'::') | FQModuleRef UseAlias?
 {
     name = "qual path to module"
@@ -586,7 +586,8 @@ ModuleUseSpeck ::= (AddressRef !'::') | FQModuleRef UseAlias?
     ]
     mixin = "org.sui.lang.core.psi.ext.MvModuleUseSpeckMixin"
 }
-ItemUseSpeck ::= FQModuleRef '::' (UseItem | UseItemGroup)
+
+MixUseSpeck ::= AddressRef '::' UseItemGroup
 {
     pin = 2
     name = "qual path to imported item"
@@ -594,7 +595,15 @@ ItemUseSpeck ::= FQModuleRef '::' (UseItem | UseItemGroup)
 //        "org.sui.lang.core.psi.MvUseSpeck"
 //    ]
 }
-
+ItemUseSpeck ::= FQModuleRef '::' ( UseItem | UseItemGroup )
+{
+    pin = 2
+    name = "qual path to imported item"
+//    implements = [
+//        "org.sui.lang.core.psi.MvUseSpeck"
+//    ]
+}
+//UseItemList ::= UseItem (',' UseItem)*
 UseItemGroup ::= '{' <<non_empty_comma_sep_items MultiItemUse_member_with_recovery>>? '}'
 {
     pin = 1
@@ -604,7 +613,7 @@ private MultiItemUse_member_with_recovery ::= !('}' | ';' | <<eof>>) UseItem
     pin = 1
 }
 
-UseItem ::= IDENTIFIER UseAlias? | ModuleRef
+UseItem ::= ModulePathIdent | IDENTIFIER UseAlias?
 {
     pin = 1
     name = "item name"
@@ -686,11 +695,11 @@ private TypeParamBound_items_recover ::= !('>' | ',')
 TypeArgumentList ::= TypeArgumentListImpl {
     name = "type arguments"
 }
-ColonTypeArgumentList ::= &'::' TypeArgumentListImpl { elementType = TypeArgumentList }
+ColonTypeArgumentList ::= (&'::')? TypeArgumentListImpl { elementType = TypeArgumentList }
 
-//private TypeArgumentListImpl ::= '::'? '<' !'=' TypeArgumentImpl* '>' { pin = 3 }
+private TypeArgumentListImpl ::= '::'? '<' !'=' <<non_empty_comma_sep_items TypeArgument >>* '>' { pin = 3 }
 //private TypeArgumentImpl ::= !'>' TypeArgument (',' | &'>') { pin = 2 }
-private TypeArgumentListImpl ::= '::'? '<' !'=' <<non_empty_comma_sep_items ( TypeArgument &(',' | '>') )>>? '>'
+//private TypeArgumentListImpl ::= '::'? '<' !'=' <<non_empty_comma_sep_items ( TypeArgument &(',' | '>'))>>? '>' { pin = 3 }
 
 TypeArgument ::= Type
 

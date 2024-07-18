@@ -9,6 +9,8 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.columns
 import com.intellij.ui.dsl.builder.panel
 import org.sui.openapiext.pathField
+import javax.swing.DefaultComboBoxModel
+import javax.swing.JComboBox
 import javax.swing.JComponent
 
 class DownloadSuiSdkDialog(val project: Project?) : DialogWrapper(project, true) {
@@ -19,10 +21,13 @@ class DownloadSuiSdkDialog(val project: Project?) : DialogWrapper(project, true)
         this.disposable,
         "Choose Target Dir"
     )
+    val networkOptions = arrayOf("mainnet", "testnet", "devnet")
+    val networkComboBox = JComboBox<String>(DefaultComboBoxModel(networkOptions)).apply {
+        selectedItem = "mainnet" // 假设settings.state.network已经包含了当前选择的网络
+    }
 
     init {
         title = "Select Sui SDK"
-
         targetSdksDirField.text = sdksService().sdksDir ?: ""
 
         init()
@@ -30,6 +35,7 @@ class DownloadSuiSdkDialog(val project: Project?) : DialogWrapper(project, true)
 
     override fun createCenterPanel(): JComponent {
         val settings = sdksService()
+
         return panel {
             row("Sui CLI version:") {
                 cell(versionField)
@@ -43,6 +49,10 @@ class DownloadSuiSdkDialog(val project: Project?) : DialogWrapper(project, true)
                         }
                     }
             }
+            row("Network:") {
+                cell(networkComboBox)
+                    .align(AlignX.FILL)
+            }
             row("Target directory:") {
                 cell(targetSdksDirField)
                     .align(AlignX.FILL)
@@ -50,6 +60,7 @@ class DownloadSuiSdkDialog(val project: Project?) : DialogWrapper(project, true)
             }
 
             onApply {
+                settings.state.network = networkComboBox.selectedItem as String
                 settings.state.sdksDir = targetSdksDirField.text
             }
         }

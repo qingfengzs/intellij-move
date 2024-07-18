@@ -11,7 +11,6 @@ import org.sui.cli.sdks.DownloadSuiSdkDialog
 import org.sui.cli.sdks.DownloadSuiSdkTask
 import org.sui.cli.sdks.SuiSdk
 import org.sui.cli.sdks.sdksService
-import java.io.File
 
 @Suppress("DialogTitleCapitalization")
 class DownloadSuiSDKAction : DumbAwareAction("Download pre-compiled binary from GitHub") {
@@ -26,25 +25,20 @@ class DownloadSuiSDKAction : DumbAwareAction("Download pre-compiled binary from 
         if (isOk) {
             // download Sui SDK
             val sdkVersion = sdkParametersDialog.versionField.text
-
-            // kotlin 判断目录是否存在，不存在则发起通知，并直接返回
-
-
-//            val sdksDir = sdksService().sdksDir ?: return
+            val network = sdkParametersDialog.networkComboBox.selectedItem as String
             val project: Project = e.project ?: return
-            val sdksDir = sdksService().sdksDir // 获取 SDKs 目录
+            val sdksDir = sdksService().sdksDir
 
-            if (sdksDir == null || !File(sdksDir).exists()) {
-                // 如果目录不存在，则发起通知
+            if (sdksDir == null) {
                 val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("Sui Move Language")
                 notificationGroup.createNotification(
                     "Sui SDK Download",
                     "The SDKs directory does not exist.",
                     NotificationType.ERROR
                 ).notify(project)
-                return // 直接返回，不继续执行下载操作
+                return
             }
-            val archive = SuiSdk(sdksDir, sdkVersion)
+            val archive = SuiSdk(sdksDir, sdkVersion, network)
             ProgressManager.getInstance()
                 .run(DownloadSuiSdkTask(archive, onFinish))
         }

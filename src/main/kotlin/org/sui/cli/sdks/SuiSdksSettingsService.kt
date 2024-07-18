@@ -16,8 +16,11 @@ class SuiSdksSettingsService :
 
     val sdksDir: String? get() = this.state.sdksDir
     val suiSdkPaths: List<String> get() = this.state.suiSdkPaths
+    val suiNetwork: String get() = this.state.network
 
     class SuiSdksSettings : BaseState() {
+        var network: String = "mainnet"
+
         // null is empty string
         var sdksDir: String? by string(defaultValue = DEFAULT_SDKS_DIR)
 

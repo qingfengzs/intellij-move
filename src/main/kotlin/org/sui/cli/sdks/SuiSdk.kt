@@ -4,18 +4,18 @@ import com.intellij.openapi.util.SystemInfo
 import org.sui.openapiext.PluginPathManager
 import java.io.File
 
-data class SuiSdk(val sdksDir: String, val version: String) {
+data class SuiSdk(val sdksDir: String, val version: String, val network: String) {
     val githubArchiveUrl: String
         get() {
             return "https://github.com/MystenLabs/sui/releases/download" +
-                    "/mainnet-v$version/$githubArchiveFileName"
+                    "/$network-v$version/$githubArchiveFileName"
         }
 
     val githubArchiveFileName: String
         get() {
             // 如果是mac系统，判断当前处理器架构是arm还是x86
             val arch = getMacProcessorArchitecture()
-            return "sui-mainnet-v$version-${PluginPathManager.getCurrentOS()}-${arch}.tgz"
+            return "sui-$network-v$version-${PluginPathManager.getCurrentOS()}-${arch}.tgz"
         }
 
     val targetFile: File

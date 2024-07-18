@@ -14,12 +14,20 @@ import org.sui.lang.core.types.ty.Ty
 import org.sui.lang.core.types.ty.TyReference
 import org.sui.lang.core.types.ty.TyStruct
 
+val SUI_BUILTIN_TYPE_IDENTIFIERS = setOf(
+    "transfer", "object", "tx_context", "vector", "option",
+    "UID", "ID", "Option", "TxContext"
+)
+val PRELOAD_STD_MODULES = setOf("vector", "option")
+val PRELOAD_SUI_MODULES = setOf("transfer", "object", "tx_context")
+val PRELOAD_MODULE_ITEMS = setOf("UID", "ID", "TxContext")
+
 val INTEGER_TYPE_IDENTIFIERS = setOf("u8", "u16", "u32", "u64", "u128", "u256")
 val SPEC_INTEGER_TYPE_IDENTIFIERS = INTEGER_TYPE_IDENTIFIERS + setOf("num")
 val SPEC_ONLY_PRIMITIVE_TYPES = setOf("num")
 val PRIMITIVE_TYPE_IDENTIFIERS = INTEGER_TYPE_IDENTIFIERS + setOf("bool")
 val PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS = setOf("address", "signer")
-val BUILTIN_TYPE_IDENTIFIERS = PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS + setOf("vector")
+val BUILTIN_TYPE_IDENTIFIERS = PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS + SUI_BUILTIN_TYPE_IDENTIFIERS + setOf("vector")
 
 val GLOBAL_STORAGE_ACCESS_FUNCTIONS =
     setOf("move_from", "borrow_global", "borrow_global_mut", "exists", "freeze")
@@ -29,20 +37,9 @@ val SPEC_BUILTIN_FUNCTIONS = setOf(
     "global", "len", "vec", "concat", "contains", "index_of", "range",
     "in_range", "update", "update_field", "old", "TRACE", "int2bv", "bv2int"
 )
-
-val SUI_BUILTIN_TYPE_IDENTIFIERS =
-    PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS + setOf(
-        "transfer", "object", "tx_context", "vector", "option",
-        "UID", "ID", "Option", "TxContext"
-    )
 val HAS_DROP_ABILITY_TYPES = INTEGER_TYPE_IDENTIFIERS + PRIMITIVE_BUILTIN_TYPE_IDENTIFIERS + setOf(
     "address", "signer", "vector", "Option", "String", "TypeName"
 )
-
-val PRELOAD_STD_MODULES = setOf("vector", "option")
-val PRELOAD_SUI_MODULES = setOf("transfer", "object", "tx_context")
-val PRELOAD_MODULE_ITEMS = setOf("UID", "ID", "TxContext")
-
 class HighlightingAnnotator : MvAnnotatorBase() {
     override fun annotateInternal(element: PsiElement, holder: AnnotationHolder) {
         val color = when {

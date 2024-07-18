@@ -24,6 +24,7 @@ class MvModuleReferenceImpl(
         val moduleRef = when {
             resolved is MvUseItem && resolved.text == "Self" -> resolved.itemUseSpeck.fqModuleRef
             resolved is MvModuleUseSpeck -> resolved.fqModuleRef
+//            resolved is MvMixUseSpeck && resolved.text == "Self" -> resolved.itemUseSpeck.fqModuleRef
             else -> return emptyList()
         }
         return moduleRef?.reference?.resolve().wrapWithList()
