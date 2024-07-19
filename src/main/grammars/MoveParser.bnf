@@ -572,7 +572,7 @@ FriendDecl ::= Attr* friend FQModuleRef ';'
     implements = [ "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner" ]
 }
 
-UseStmt ::= Attr* use (ItemUseSpeck | MixUseSpeck | ModuleUseSpeck ) ';' {
+UseStmt ::= Attr* use (ItemUseSpeck | ModuleUseSpeck ) ';' {
     pin = "use"
     implements = [ "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner" ]
 }
@@ -587,14 +587,41 @@ ModuleUseSpeck ::= (AddressRef !'::') | FQModuleRef UseAlias?
     mixin = "org.sui.lang.core.psi.ext.MvModuleUseSpeckMixin"
 }
 
-MixUseSpeck ::= AddressRef '::' UseItemGroup
-{
-    pin = 2
-    name = "qual path to imported item"
+//MixUseSpeck ::= AddressRef '::' MixUseItemGroup
+//{
+//    pin = 2
+//    name = "qual path to imported item"
 //    implements = [
-//        "org.sui.lang.core.psi.MvUseSpeck"
+//        "org.sui.lang.core.psi.MvNamedElement"
 //    ]
-}
+//    mixin = "org.sui.lang.core.psi.ext.MvMixUseSpeckMixin"
+//}
+//MixUseItemGroup ::= '{' <<non_empty_comma_sep_items MixMultiItemUse_member_with_recovery>>? '}'
+//{
+//    pin = 1
+//}
+//private MixMultiItemUse_member_with_recovery ::= !('}' | ';' | <<eof>>) MixUseItem
+//{
+//    pin = 1
+//}
+//MixUseItem ::= MixPathItem ('::' UseItem)?
+//{
+//    pin = 1
+//    name = "mix item name"
+//    implements = [
+//        "org.sui.lang.core.psi.MvNamedElement"
+//    ]
+//    mixin = "org.sui.lang.core.psi.ext.MvMixUseItemMixin"
+//}
+//MixPathItem ::= ModuleRef
+//{
+//    implements = [
+//     "org.sui.lang.core.psi.MvNamedElement"
+////      "org.sui.lang.core.resolve.ref.MvReferenceElement"
+//    ]
+//    mixin = "org.sui.lang.core.psi.ext.MvMixPathItemMixin"
+//}
+
 ItemUseSpeck ::= FQModuleRef '::' ( UseItem | UseItemGroup )
 {
     pin = 2
@@ -613,7 +640,7 @@ private MultiItemUse_member_with_recovery ::= !('}' | ';' | <<eof>>) UseItem
     pin = 1
 }
 
-UseItem ::= ModulePathIdent | IDENTIFIER UseAlias?
+UseItem ::= IDENTIFIER UseAlias?
 {
     pin = 1
     name = "item name"

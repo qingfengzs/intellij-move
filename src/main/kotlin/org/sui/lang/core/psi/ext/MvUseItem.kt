@@ -14,6 +14,10 @@ import org.sui.lang.core.resolve.resolveModuleItem
 val MvUseItem.itemUseSpeck: MvItemUseSpeck
     get() = ancestorStrict() ?: error("MvUseItem outside MvItemUseSpeck")
 
+val MvUseItem.mixItemSpeck: MvMixUseSpeck?
+    get() = ancestorStrict()
+
+
 val MvUseItem.annotationItem: MvElement
     get() {
         val parent = this.parent

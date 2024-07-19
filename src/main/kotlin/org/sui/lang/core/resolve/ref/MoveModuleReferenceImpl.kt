@@ -24,7 +24,17 @@ class MvModuleReferenceImpl(
         val moduleRef = when {
             resolved is MvUseItem && resolved.text == "Self" -> resolved.itemUseSpeck.fqModuleRef
             resolved is MvModuleUseSpeck -> resolved.fqModuleRef
-//            resolved is MvMixUseSpeck && resolved.text == "Self" -> resolved.itemUseSpeck.fqModuleRef
+//            resolved is MvMixUseItem -> {
+//                if (resolved.mixPathItem.moduleRef.text == element.text) {
+//                    val elementList = MvNamedElementIndex.getElementsByName(
+//                        element.project, element.text, GlobalSearchScope.allScope(element.project)
+//                    )
+//                    val filter = elementList.filterIsInstance<MvModule>()
+//                        .filter { it.addressRef?.text == resolved.ancestorStrict<MvMixUseSpeck>()?.addressRef?.text }
+//                    return listOf(filter.first())
+//                }
+//                return emptyList()
+//            }
             else -> return emptyList()
         }
         return moduleRef?.reference?.resolve().wrapWithList()
