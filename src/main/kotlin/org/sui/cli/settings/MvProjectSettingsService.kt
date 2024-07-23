@@ -63,16 +63,16 @@ class MvProjectSettingsService(
         var localSuiPath: String? by string()
 
         @AffectsHighlighting
-        var enableReceiverStyleFunctions: Boolean by property(false)
+        var enableReceiverStyleFunctions: Boolean by property(true)
 
         @AffectsParseTree
         var enableResourceAccessControl: Boolean by property(false)
 
         @AffectsHighlighting
-        var enableIndexExpr: Boolean by property(false)
+        var enableIndexExpr: Boolean by property(true)
 
         @AffectsHighlighting
-        var enablePublicPackage: Boolean by property(false)
+        var enablePublicPackage: Boolean by property(true)
 
         @AffectsMoveProjectsMetadata
         var fetchAptosDeps: Boolean by property(false)

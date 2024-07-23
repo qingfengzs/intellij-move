@@ -119,6 +119,7 @@ IDENTIFIER=[_a-zA-Z][_a-zA-Z0-9]* | `type`
       "|"        { return OR; }
       "@"        { return AT; }
       "#"        { return HASH; }
+      "`"        { return BACKTICK;}
 
       // keywords
       "script"         { return SCRIPT_KW; }
@@ -178,8 +179,8 @@ IDENTIFIER=[_a-zA-Z][_a-zA-Z0-9]* | `type`
  }
   [^]     { }
 }
-//<IN_LIFETIME_OR_CHAR> {
-//  \'{IDENTIFIER}                        { yybegin(YYINITIAL); return QUOTE_IDENTIFIER; }
-//  <<EOF>>                               { yybegin(YYINITIAL); return BAD_CHARACTER; }
-//}
+<IN_LIFETIME_OR_CHAR> {
+  \'{IDENTIFIER}                        { yybegin(YYINITIAL); return QUOTE_IDENTIFIER; }
+  <<EOF>>                               { yybegin(YYINITIAL); return BAD_CHARACTER; }
+}
 [^] { return BAD_CHARACTER; }

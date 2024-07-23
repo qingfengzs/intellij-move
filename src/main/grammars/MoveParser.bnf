@@ -96,7 +96,7 @@
         EQ_EQ_GT        = '==>'
         LT_EQ_EQ_GT     = '<==>'
         DOT_DOT     = '..'
-
+        BACKTICK = '`'
         ADDRESS     = 'address_kw'
         HAS     = 'has_kw'
         ENTRY     = 'entry_kw'
@@ -259,7 +259,8 @@ private ModuleItem ::= !('}' | <<eof>>) ModuleItem_item
 private Item_first ::= use | public | native | fun | CONST_KW | STRUCT_KW |ENUM_KW| spec | friend | Attr | entry | inline | UseFunFirst
 private Item_recover ::= !('}' | <<eof>> | Item_first)
 
-private ModuleItem_item ::= UseStmt
+private ModuleItem_item ::= PublicUseFun
+                            | UseStmt
                             | FriendDecl
                             | StructItem
                             | EnumItem
@@ -724,10 +725,9 @@ TypeArgumentList ::= TypeArgumentListImpl {
 }
 ColonTypeArgumentList ::= (&'::')? TypeArgumentListImpl { elementType = TypeArgumentList }
 
-private TypeArgumentListImpl ::= '::'? '<' !'=' <<non_empty_comma_sep_items TypeArgument >>* '>' { pin = 3 }
+//private TypeArgumentListImpl ::= '::'? '<' !'=' <<non_empty_comma_sep_items TypeArgument >>* '>' { pin = 3 }
 //private TypeArgumentImpl ::= !'>' TypeArgument (',' | &'>') { pin = 2 }
-//private TypeArgumentListImpl ::= '::'? '<' !'=' <<non_empty_comma_sep_items ( TypeArgument &(',' | '>'))>>? '>' { pin = 3 }
-
+private TypeArgumentListImpl ::= '::'? '<' !'=' <<non_empty_comma_sep_items ( TypeArgument &(',' | '>'))>>? '>'
 TypeArgument ::= Type
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1083,6 +1083,7 @@ private ConditionBody ::= Expr { recoverWhile = "ConditionBody_recover" }
 private ConditionBody_recover ::= !')'
 
 ElseBlock ::= else AnyBlock { pin = 1 }
+LabelDecl ::= QUOTE_IDENTIFIER ':'
 
 LoopExpr ::= loop AnyBlock {
     pin = 1

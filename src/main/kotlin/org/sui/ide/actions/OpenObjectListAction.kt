@@ -49,6 +49,10 @@ class OpenObjectListAction : AnAction() {
                 Notification(NOTIFACATION_GROUP, "Objects", "This address has no owned objects", notificationType)
             Notifications.Bus.notify(notification, project)
         }
+        // 如果以[]开头，则返回提示没有对象
+        if (s.startsWith("[]")) {
+            return emptyList()
+        }
         val type = object : TypeToken<List<Map<String, SuiObject>>>() {}.type
         val jsonList: List<Map<String, SuiObject>> = gson.fromJson(s, type)
 

@@ -1,25 +1,21 @@
 package org.sui.lang.core.psi.ext
 
-import com.intellij.lang.ASTNode
-import org.sui.lang.core.psi.*
-import org.sui.lang.core.psi.impl.MvNamedElementImpl
-
-val MvMixUseItem.itemUseSpeck: MvMixUseSpeck
-    get() = ancestorStrict() ?: error("MvUseItem outside MvItemUseSpeck")
-
-val MvMixUseItem.annotationItem: MvElement
-    get() {
-        val parent = this.parent
-        if (parent is MvUseItemGroup && parent.useItemList.size != 1) return this
-        return useStmt
-    }
-
-val MvMixUseItem.useStmt: MvUseStmt
-    get() =
-        ancestorStrict() ?: error("always has MvUseStmt as ancestor")
-
-val MvMixUseItem.moduleName: String
-    get() = this.mixPathItem.moduleRef.referenceName.toString()
+//val MvMixUseItem.itemUseSpeck: MvMixUseSpeck
+//    get() = ancestorStrict() ?: error("MvUseItem outside MvItemUseSpeck")
+//
+//val MvMixUseItem.annotationItem: MvElement
+//    get() {
+//        val parent = this.parent
+//        if (parent is MvUseItemGroup && parent.useItemList.size != 1) return this
+//        return useStmt
+//    }
+//
+//val MvMixUseItem.useStmt: MvUseStmt
+//    get() =
+//        ancestorStrict() ?: error("always has MvUseStmt as ancestor")
+//
+//val MvMixUseItem.moduleName: String
+//    get() = this.mixPathItem.moduleRef.referenceName.toString()
 
 //class MvMixUseItemReferenceElement(
 //    element: MvMixUseItem
@@ -65,20 +61,20 @@ val MvMixUseItem.moduleName: String
 //
 //}
 
-abstract class MvMixUseItemMixin(node: ASTNode) : MvNamedElementImpl(node),
-    MvMixUseItem {
-    override fun getName(): String? {
-        val name = super.getText()
-
-        if (name?.contains("::") == true) {
-            return name.split("::").last()
-        }
-        return name
-    }
+//abstract class MvMixUseItemMixin(node: ASTNode) : MvNamedElementImpl(node),
+//    MvMixUseItem {
+//    override fun getName(): String? {
+//        val name = super.getText()
+//
+//        if (name?.contains("::") == true) {
+//            return name.split("::").last()
+//        }
+//        return name
+//    }
 
 //    override val referenceName:String? get() = this.text
 //    override val referenceNameElement: PsiElement get() = identifier
 //
 //    override fun getReference() = MvMixUseItemReferenceElement(this)
 
-}
+//}
