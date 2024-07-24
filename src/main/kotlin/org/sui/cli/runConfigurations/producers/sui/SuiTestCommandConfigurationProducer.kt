@@ -8,10 +8,10 @@ import com.intellij.psi.PsiFileSystemItem
 import org.sui.cli.Consts
 import org.sui.cli.MoveProject
 import org.sui.cli.runConfigurations.SuiCommandLine
-import org.sui.cli.runConfigurations.aptos.cmd.SuiCommandConfigurationFactory
 import org.sui.cli.runConfigurations.producers.CommandConfigurationProducerBase
 import org.sui.cli.runConfigurations.producers.SuiCommandLineFromContext
 import org.sui.cli.runConfigurations.sui.SuiCommandConfigurationType
+import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfigurationFactory
 import org.sui.cli.settings.moveSettings
 import org.sui.lang.MoveFile
 import org.sui.lang.core.psi.MvFunction

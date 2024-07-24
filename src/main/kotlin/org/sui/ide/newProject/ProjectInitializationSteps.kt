@@ -4,9 +4,9 @@ import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.sui.cli.Consts
-import org.sui.cli.runConfigurations.aptos.cmd.SuiCommandConfigurationFactory
-import org.sui.cli.runConfigurations.sui.SuiTransactionConfigurationType
+import org.sui.cli.runConfigurations.sui.SuiCommandConfigurationType
 import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfiguration
+import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfigurationFactory
 import org.sui.ide.notifications.updateAllNotifications
 import org.sui.openapiext.addRunConfiguration
 import org.sui.openapiext.contentRoots
@@ -40,17 +40,18 @@ object ProjectInitializationSteps {
     fun createDefaultCompileConfiguration(project: Project, selected: Boolean): RunnerAndConfigurationSettings {
         val runConfigurationAndWithSettings =
             project.addRunConfiguration(selected) { runManager, _ ->
-                val configurationFactory = SuiTransactionConfigurationType.getInstance()
+                val configurationFactory = SuiCommandConfigurationType.getInstance()
                     .configurationFactories.find { it is SuiCommandConfigurationFactory }
                     ?: error("AnyCommandConfigurationFactory should be present in the factories list")
-                runManager.createConfiguration("Compile Project", configurationFactory)
+                runManager.createConfiguration("Build", configurationFactory)
                     .apply {
                         (configuration as? SuiCommandConfiguration)?.apply {
-                            command = "move compile"
+                            command = "move build"
                             workingDirectory = project.basePath?.toPath()
                         }
                     }
             }
+        runConfigurationAndWithSettings
         return runConfigurationAndWithSettings
     }
 }

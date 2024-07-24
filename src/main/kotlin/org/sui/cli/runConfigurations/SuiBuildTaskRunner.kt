@@ -27,7 +27,7 @@ class SuiBuildTaskRunner : ProjectTaskRunner() {
     ): Promise<Result> {
         val compileConfigurationWithSettings =
             project.suiCommandConfigurationsSettings()
-                .find { (it.configuration as SuiCommandConfiguration).command == "move compile" }
+                .find { (it.configuration as SuiCommandConfiguration).command == "move build" }
                 ?: ProjectInitializationSteps.createDefaultCompileConfiguration(project, false)
 //        val compileConfiguration =
 //            project.aptosCommandConfigurations().find { it.command.startsWith("move compile") }

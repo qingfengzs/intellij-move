@@ -4,15 +4,15 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationTypeBase
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.util.NotNullLazyValue
-import org.sui.cli.runConfigurations.aptos.cmd.SuiCommandConfigurationFactory
+import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfigurationFactory
 import org.sui.ide.MoveIcons
 
 class SuiCommandConfigurationType :
     ConfigurationTypeBase(
-        "AptosCommandConfiguration",
-        "Aptos",
-        "Aptos command execution",
-        NotNullLazyValue.createConstantValue(MoveIcons.APTOS_LOGO)
+        "SuiCommandConfiguration",
+        "Sui",
+        "Sui command execution",
+        NotNullLazyValue.createConstantValue(MoveIcons.SUI_LOGO)
     ) {
 
     init {

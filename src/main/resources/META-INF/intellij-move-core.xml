@@ -33,8 +33,8 @@
 
         <configurationType
                 implementation="org.sui.cli.runConfigurations.sui.SuiCommandConfigurationType"/>
-        <configurationType
-                implementation="org.sui.cli.runConfigurations.sui.SuiTransactionConfigurationType"/>
+        <!--        <configurationType-->
+        <!--                implementation="org.sui.cli.runConfigurations.sui.SuiTransactionConfigurationType"/>-->
 
         <runConfigurationProducer
                 implementation="org.sui.cli.runConfigurations.producers.sui.SuiTestCommandConfigurationProducer"/>
@@ -275,10 +275,10 @@
                          implementationClass="org.sui.ide.inspections.compilerV2.ReplaceWithIndexExprInspection"/>
 
         <!--cannotberunon-the-fly,thereforeenabled-->
-        <globalInspection language="Sui Move" groupName="Move"
-                          enabledByDefault="true" level="ERROR"
-                          implementationClass="org.sui.ide.inspections.MvExternalLinterInspection"
-                          displayName="External linter"/>
+        <!--        <globalInspection language="Sui Move" groupName="Move"-->
+        <!--                          enabledByDefault="true" level="ERROR"-->
+        <!--                          implementationClass="org.sui.ide.inspections.MvExternalLinterInspection"-->
+        <!--                          displayName="External linter"/>-->
 
         <!-- Color Settings -->
         <colorSettingsPage implementation="org.sui.ide.colors.MvColorSettingsPage"/>

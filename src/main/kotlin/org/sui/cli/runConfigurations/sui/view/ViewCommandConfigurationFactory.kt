@@ -5,7 +5,7 @@ import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.project.Project
 import org.sui.cli.moveProjectsService
-import org.sui.cli.runConfigurations.aptos.workingDirectory
+import org.sui.cli.runConfigurations.sui.workingDirectory
 
 class ViewCommandConfigurationFactory(
     configurationType: ConfigurationType

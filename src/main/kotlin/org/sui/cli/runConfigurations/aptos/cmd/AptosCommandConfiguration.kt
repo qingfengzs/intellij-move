@@ -24,7 +24,7 @@ class AptosCommandConfiguration(
         }
     }
 
-    override fun getConfigurationEditor() = SuiCommandConfigurationEditor()
+    override fun getConfigurationEditor() = AptosCommandConfigurationEditor()
 
     override fun createTestConsoleProperties(executor: Executor): TestConsoleProperties? {
         val config = clean().ok ?: return null

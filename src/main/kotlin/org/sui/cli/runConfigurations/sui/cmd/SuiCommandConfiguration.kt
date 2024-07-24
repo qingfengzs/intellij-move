@@ -7,7 +7,6 @@ import com.intellij.execution.testframework.actions.ConsolePropertiesProvider
 import com.intellij.openapi.project.Project
 import org.sui.cli.moveProjectsService
 import org.sui.cli.runConfigurations.CommandConfigurationBase
-import org.sui.cli.runConfigurations.aptos.cmd.SuiCommandConfigurationEditor
 import org.sui.cli.runConfigurations.test.SuiTestConsoleProperties
 
 class SuiCommandConfiguration(

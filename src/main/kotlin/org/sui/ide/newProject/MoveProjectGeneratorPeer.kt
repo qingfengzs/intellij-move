@@ -30,7 +30,7 @@ class MoveProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeer
             ProjectManager.getInstance().defaultProject.getService(MvProjectSettingsService::class.java)
 
         val localSuiPath =
-            defaultProjectSettings.localAptosPath ?: getCliFromPATH("aptos")?.toString()
+            defaultProjectSettings.localSuiPath ?: getCliFromPATH("sui")?.toString()
         chooseSuiCliPanel.data =
             ChooseSuiCliPanel.Data(defaultProjectSettings.suiExecType, localSuiPath)
     }
@@ -64,7 +64,9 @@ class MoveProjectGeneratorPeer(val parentDisposable: Disposable) : GeneratorPeer
         val panelData = this.chooseSuiCliPanel.data
         val suiExecPath =
             SuiExecType.suiExecPath(panelData.suiExecType, panelData.localSuiPath)
-                ?: return ValidationInfo("Invalid path to Sui executable")
+        if (suiExecPath == null) {
+            return ValidationInfo("Invalid path to Sui executable")
+        }
         return null
     }
 }

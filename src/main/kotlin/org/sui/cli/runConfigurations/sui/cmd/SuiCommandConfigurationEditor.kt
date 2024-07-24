@@ -1,10 +1,9 @@
-package org.sui.cli.runConfigurations.aptos.cmd
+package org.sui.cli.runConfigurations.sui.cmd
 
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.ui.components.fields.ExpandableTextField
 import com.intellij.ui.dsl.builder.panel
-import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfiguration
 import org.sui.openapiext.fullWidthCell
 import org.sui.utils.ui.WorkingDirectoryField
 import java.nio.file.Path

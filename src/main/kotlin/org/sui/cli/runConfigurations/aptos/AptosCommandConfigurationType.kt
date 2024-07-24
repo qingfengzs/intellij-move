@@ -4,7 +4,7 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationTypeBase
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.util.NotNullLazyValue
-import org.sui.cli.runConfigurations.aptos.cmd.SuiCommandConfigurationFactory
+import org.sui.cli.runConfigurations.aptos.cmd.AptosCommandConfigurationFactory
 import org.sui.ide.MoveIcons
 
 class AptosCommandConfigurationType :
@@ -16,7 +16,7 @@ class AptosCommandConfigurationType :
     ) {
 
     init {
-        addFactory(SuiCommandConfigurationFactory(this))
+        addFactory(AptosCommandConfigurationFactory(this))
     }
 
     val factory: ConfigurationFactory get() = configurationFactories.single()

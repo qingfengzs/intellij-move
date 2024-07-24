@@ -1,19 +1,18 @@
-package org.sui.cli.runConfigurations.aptos.cmd
+package org.sui.cli.runConfigurations.sui.cmd
 
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.project.Project
-import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfiguration
 
 class SuiCommandConfigurationFactory(
     configurationType: ConfigurationType
 ) :
     ConfigurationFactory(configurationType) {
 
-    override fun getId(): String = "AnyCommand"
+    override fun getId(): String = "SuiCommand"
 
-    override fun getName(): String = "any command"
+    override fun getName(): String = "sui command"
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration {
         return SuiCommandConfiguration(project, this)

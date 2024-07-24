@@ -181,11 +181,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
     }
 
     private fun updateVersion() {
-        val suiPath =
-            when {
-                bundledRadioButton.isSelected -> SuiExecType.bundledPath()
-                else -> localPathField.text
-            }?.toPathOrNull()
+        val suiPath = localPathField.text.toPathOrNull()
         versionLabel.updateAndNotifyListeners(suiPath)
     }
 
