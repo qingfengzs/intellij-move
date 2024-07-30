@@ -110,8 +110,7 @@ class MvProjectSettingsService(
             get() =
                 if (AptosExecType.isPreCompiledSupportedForThePlatform) AptosExecType.BUNDLED else AptosExecType.LOCAL
         private val defaultSuiExecType
-            get() =
-                if (SuiExecType.isPreCompiledSupportedForThePlatform) SuiExecType.BUNDLED else SuiExecType.LOCAL
+            get() = SuiExecType.LOCAL
     }
 }
 

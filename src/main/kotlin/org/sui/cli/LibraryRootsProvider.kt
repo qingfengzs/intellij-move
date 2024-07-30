@@ -66,7 +66,7 @@ private val MoveProject.ideaLibraries: Collection<SyntheticLibrary>
                 sourceRoots.add(tomlFile)
 //                it.moveToml.tomlFile
 //                    .virtualFile.let { f -> sourceRoots.add(f) }
-                MoveLangLibrary(it.packageName, sourceRoots, emptySet(), MoveIcons.MOVE_LOGO, null)
+                MoveLangLibrary(it.packageName, sourceRoots, emptySet(), MoveIcons.SUI_LOGO, null)
             }
 
     }

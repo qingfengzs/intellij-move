@@ -14,7 +14,7 @@ import javax.swing.Icon
 /// called only when IDE opens a project from existing sources
 class MoveLangProjectOpenProcessor : ProjectOpenProcessor() {
     override val name: String get() = "Sui Move"
-    override val icon: Icon get() = MoveIcons.MOVE_LOGO
+    override val icon: Icon get() = MoveIcons.SUI_LOGO
 
     override fun canOpenProject(file: VirtualFile): Boolean {
         val canBeOpened = (FileUtil.namesEqual(file.name, Consts.MANIFEST_FILE)

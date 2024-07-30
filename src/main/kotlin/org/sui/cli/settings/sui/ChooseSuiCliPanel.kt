@@ -47,11 +47,7 @@ enum class SuiExecType {
         fun bundledPath(): String? = PluginPathManager.bundledSuiCli
 
         fun suiExecPath(execType: SuiExecType, localSuiPath: String?): Path? {
-            val pathCandidate =
-                when (execType) {
-                    BUNDLED -> bundledPath()?.toPathOrNull()
-                    LOCAL -> localSuiPath?.blankToNull()?.toPathOrNull()
-                }
+            val pathCandidate = localSuiPath?.blankToNull()?.toPathOrNull()
             return pathCandidate?.takeIf { it.isValidExecutable() }
         }
     }
@@ -66,7 +62,7 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
 
     var data: Data
         get() {
-            val execType = if (bundledRadioButton.isSelected) BUNDLED else LOCAL
+            val execType = LOCAL
             val path = localPathField.text.blankToNull()
             return Data(
                 suiExecType = execType,

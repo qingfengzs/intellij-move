@@ -20,6 +20,7 @@ class MoveProjectsTree : SimpleTree() {
         showsRootHandles = true
         emptyText.text = "There are no Move projects to display."
         selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
-        addMouseListener(MoveEntrypointMouseAdapter())
+        // run function
+//        addMouseListener(MoveEntrypointMouseAdapter())
     }
 }

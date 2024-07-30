@@ -1,12 +1,13 @@
 .idea
 .gradle
 out/
-/build
+build/
 src/main/gen/
 .DS_Store
 /dove
 deps/
 bin/
+.intellijPlatform
 *.log
 plugin/*
 !/plugin/src/

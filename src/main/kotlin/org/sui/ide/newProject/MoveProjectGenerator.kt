@@ -31,7 +31,7 @@ class MoveProjectGenerator : DirectoryProjectGeneratorBase<MoveProjectConfig>(),
     private val disposable = service<PluginApplicationDisposable>()
 
     override fun getName() = "Sui Move"
-    override fun getLogo() = MoveIcons.MOVE_LOGO
+    override fun getLogo() = MoveIcons.SUI_LOGO
     override fun createPeer(): ProjectGeneratorPeer<MoveProjectConfig> = MoveProjectGeneratorPeer(disposable)
 
     override fun generateProject(
