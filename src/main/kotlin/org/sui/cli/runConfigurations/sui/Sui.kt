@@ -21,7 +21,7 @@ import org.sui.stdext.RsResult
 import org.sui.stdext.RsResult.Err
 import org.sui.stdext.RsResult.Ok
 import org.sui.stdext.buildList
-import org.sui.stdext.unwrapOrElse
+import org.sui.stdext.toPath
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -41,20 +41,26 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
         if (!isUnitTestMode) {
             checkIsBackgroundThread()
         }
+
+        val baseDirPath = rootDirectory.path
+        val rootDirectoryPath = baseDirPath.removeSuffix("/$packageName")
+
         val commandLine = SuiCommandLine(
             "move new",
-            listOf(
-                packageName,
-//                "--assume-yes"
-            ),
-            workingDirectory = project.rootPath
+            listOf(packageName),
+            workingDirectory = rootDirectoryPath.toPath()
         )
-        executeCommandLine(commandLine).unwrapOrElse { return Err(it) }
+        val result = executeCommandLine(commandLine)
+        if (result is Err) {
+            println("Sui command execution failed: $result")
+            return result
+        }
 
         fullyRefreshDirectory(rootDirectory)
 
         val manifest =
             checkNotNull(rootDirectory.findChild(Consts.MANIFEST_FILE)) { "Can't find the manifest file" }
+
         return Ok(manifest)
     }
 

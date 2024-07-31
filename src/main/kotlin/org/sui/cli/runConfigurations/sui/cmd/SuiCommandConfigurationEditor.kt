@@ -13,7 +13,7 @@ class SuiCommandConfigurationEditor : SettingsEditor<SuiCommandConfiguration>() 
 
     private val commandTextField = ExpandableTextField()
     private val envVarsField = EnvironmentVariablesComponent()
-    val workingDirectoryField = WorkingDirectoryField()
+    private val workingDirectoryField = WorkingDirectoryField()
 
     private val workingDirectory: Path? get() = workingDirectoryField.toPath()
 
@@ -39,8 +39,8 @@ class SuiCommandConfigurationEditor : SettingsEditor<SuiCommandConfiguration>() 
             row(envVarsField.label) {
                 fullWidthCell(envVarsField)
             }
-            row(workingDirectoryField.label) {
-                fullWidthCell(workingDirectoryField)
+            row("Working directory:") {
+                fullWidthCell(workingDirectoryField.component)
                     .resizableColumn()
             }
         }

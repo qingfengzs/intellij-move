@@ -42,7 +42,7 @@ object ProjectInitializationSteps {
             project.addRunConfiguration(selected) { runManager, _ ->
                 val configurationFactory = SuiCommandConfigurationType.getInstance()
                     .configurationFactories.find { it is SuiCommandConfigurationFactory }
-                    ?: error("AnyCommandConfigurationFactory should be present in the factories list")
+                    ?: error("SuiCommandConfigurationFactory should be present in the factories list")
                 runManager.createConfiguration("Build", configurationFactory)
                     .apply {
                         (configuration as? SuiCommandConfiguration)?.apply {
@@ -51,7 +51,6 @@ object ProjectInitializationSteps {
                         }
                     }
             }
-        runConfigurationAndWithSettings
         return runConfigurationAndWithSettings
     }
 }
