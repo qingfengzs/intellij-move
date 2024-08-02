@@ -11,9 +11,9 @@ class RunCommandConfigurationFactory(
     configurationType: ConfigurationType
 ) : ConfigurationFactory(configurationType) {
 
-    override fun getId(): String = "RunCommand"
+    override fun getId(): String = "CallCommand"
 
-    override fun getName(): String = "run"
+    override fun getName(): String = "call"
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration {
         val templateConfiguration = RunCommandConfiguration(project, this)

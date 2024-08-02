@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project
 import org.sui.cli.moveProjectsService
 import org.sui.cli.runConfigurations.CommandConfigurationBase
 import org.sui.cli.runConfigurations.test.SuiTestConsoleProperties
+import org.sui.openapiext.contentRoot
 
 class SuiCommandConfiguration(
     project: Project,
@@ -17,10 +18,16 @@ class SuiCommandConfiguration(
     ConsolePropertiesProvider {
 
     init {
-        workingDirectory = if (!project.isDefault) {
-            project.moveProjectsService.allProjects.firstOrNull()?.contentRootPath
-        } else {
-            null
+        workingDirectory = project.run {
+            if (!isDefault) {
+                val contentRootPath = moveProjectsService.allProjects.firstOrNull()?.contentRootPath
+                if (contentRootPath == null) {
+                    project.contentRoot
+                }
+                contentRootPath
+            } else {
+                null
+            }
         }
     }
 

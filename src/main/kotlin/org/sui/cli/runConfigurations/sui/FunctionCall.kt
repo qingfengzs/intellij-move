@@ -28,7 +28,11 @@ data class FunctionCallParam(val value: String, val type: String) {
 data class FunctionCall(
     val item: SmartPsiElementPointer<MvFunction>?,
     val typeParams: MutableMap<String, String?>,
-    val valueParams: MutableMap<String, FunctionCallParam?>
+    val valueParams: MutableMap<String, FunctionCallParam?>,
+    val packageId: String?,
+    val moduleName: String?,
+    val gasId: String?,
+    val gasBudget: String?
 ) {
     fun itemName(): String? = item?.element?.qualName?.editorText()
     fun functionId(moveProject: MoveProject): String? = item?.element?.functionId(moveProject)
@@ -43,13 +47,13 @@ data class FunctionCall(
     }
 
     companion object {
-        fun empty(): FunctionCall = FunctionCall(null, mutableMapOf(), mutableMapOf())
+        fun empty(): FunctionCall = FunctionCall(null, mutableMapOf(), mutableMapOf(), null, null, null, null)
 
-        fun template(function: MvFunction): FunctionCall {
-            val typeParameterNames = function.typeParameters.mapNotNull { it.name }
+        fun template(function: MvFunction, packageId: String?, gasId: String?, gasBudget: String?): FunctionCall {
+            val typeParameterNames = function.functionParameterList?.getFunctionParameterList()?.mapNotNull { it.name }
 
             val nullTypeParams = mutableMapOf<String, String?>()
-            for (typeParameterName in typeParameterNames) {
+            for (typeParameterName in typeParameterNames!!) {
                 nullTypeParams[typeParameterName] = null
             }
 
@@ -60,7 +64,15 @@ data class FunctionCall(
             for (parameterName in parameterNames) {
                 nullParams[parameterName] = null
             }
-            return FunctionCall(function.asSmartPointer(), nullTypeParams, nullParams)
+            return FunctionCall(
+                function.asSmartPointer(),
+                nullTypeParams,
+                nullParams,
+                packageId,
+                null,
+                gasId,
+                gasBudget
+            )
         }
     }
 }

@@ -2,12 +2,14 @@ package org.sui.cli.runConfigurations
 
 import com.intellij.execution.configuration.EnvironmentVariablesData
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
+import org.sui.cli.settings.moveSettings
 import java.nio.file.Path
 
 data class SuiCommandLine(
     val subCommand: String?,
-    val arguments: List<String> = emptyList(),
+    var arguments: List<String> = emptyList(),
     val workingDirectory: Path? = null,
     val environmentVariables: EnvironmentVariablesData = EnvironmentVariablesData.DEFAULT
 ) {
@@ -25,6 +27,12 @@ data class SuiCommandLine(
             .withCharset(Charsets.UTF_8)
         this.environmentVariables.configureCommandLine(generalCommandLine, true)
         return generalCommandLine
+    }
+
+    fun appendSkipFetchDependencyIfNeeded(project: Project) {
+        if (subCommand == "move build" && project.moveSettings.skipFetchLatestGitDeps) {
+            this.arguments += "--skip-fetch-latest-git-deps"
+        }
     }
 
 //    fun createRunConfiguration(

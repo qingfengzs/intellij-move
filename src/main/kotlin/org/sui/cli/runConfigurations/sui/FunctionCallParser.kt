@@ -12,14 +12,22 @@ data class FunctionCallParser(
     val functionId: String,
     val typeArgs: List<String>,
     val args: List<String>,
-    val profile: String
+    val profile: String,
+    val packageId: String,
+    val moduleName: String?,
+    val gasId: String,
+    val gasBudget: String,
 ) {
     companion object {
         class Parser : CliktCommand() {
-            val functionId: String by option("--function-id").required()
+            val functionId: String by option("--function").required()
             val typeParams: List<String> by option("--type-args").multiple()
             val params: List<String> by option("--args").multiple()
             val profile: String? by option("--profile")
+            val packageId: String? by option("--package")
+            val moduleName: String? by option("--module")
+            val gasId: String? by option("--gas")
+            val gasBudget: String? by option("--gas-budget")
             override fun run() {}
         }
 
@@ -38,7 +46,14 @@ data class FunctionCallParser(
             }
             val functionId = runParser.functionId
             val profile = runParser.profile ?: "default"
-            val parser = FunctionCallParser(functionId, runParser.typeParams, runParser.params, profile)
+            val packageId = runParser.packageId ?: ""
+            val gasId = runParser.gasId ?: ""
+            val gasBudget = runParser.gasBudget ?: ""
+
+            val parser = FunctionCallParser(
+                functionId, runParser.typeParams, runParser.params, profile,
+                packageId, runParser.moduleName, gasId, gasBudget
+            )
             return RsResult.Ok(parser)
         }
     }

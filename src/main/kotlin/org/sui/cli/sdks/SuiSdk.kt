@@ -19,7 +19,7 @@ data class SuiSdk(val sdksDir: String, val version: String, val network: String)
         }
 
     val targetFile: File
-        get() = File(sdksDir, if (SystemInfo.isWindows) "sui-$version.exe" else "sui-$version")
+        get() = File(sdksDir, if (SystemInfo.isWindows) "sui-$network-$version.exe" else "sui-$network-$version")
 
     private fun getMacProcessorArchitecture(): String {
         if (SystemInfo.isMac) {

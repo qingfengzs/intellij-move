@@ -11,7 +11,7 @@ import org.sui.lang.index.MvEntryFunctionIndex
 
 class RunCommandConfigurationHandler : CommandConfigurationHandler() {
 
-    override val subCommand: String get() = "move run"
+    override val subCommand: String get() = "client call"
 
     override fun configurationName(functionId: String): String = "Run $functionId"
 

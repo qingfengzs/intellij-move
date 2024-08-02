@@ -1,6 +1,5 @@
 package org.sui.ide.actions
 
-import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -11,6 +10,7 @@ import org.sui.cli.sdks.DownloadSuiSdkDialog
 import org.sui.cli.sdks.DownloadSuiSdkTask
 import org.sui.cli.sdks.SuiSdk
 import org.sui.cli.sdks.sdksService
+import org.sui.ide.notifications.MvNotifications
 
 @Suppress("DialogTitleCapitalization")
 class DownloadSuiSDKAction : DumbAwareAction("Download pre-compiled binary from GitHub") {
@@ -30,8 +30,7 @@ class DownloadSuiSDKAction : DumbAwareAction("Download pre-compiled binary from 
             val sdksDir = sdksService().sdksDir
 
             if (sdksDir == null) {
-                val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("Sui Move Language")
-                notificationGroup.createNotification(
+                MvNotifications.pluginNotifications().createNotification(
                     "Sui SDK Download",
                     "The SDKs directory does not exist.",
                     NotificationType.ERROR

@@ -359,8 +359,7 @@ SpecInlineFunctionStmt ::= SpecInlineFunctionInner
 private PublicKeyword ::= 'public'
 
 //private LastAbilitiesList ::= (AbilitiesList? ';')
-fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameterList? AbilitiesList?
-                     (';' | StructBlock)?
+fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameterList? (StructBlock | TupleStructBlock)? AbilitiesList? ';'?
 //fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameterList?
 //                      (AbilitiesList? (';' | StructBlock)?) | ((StructBlock)? AbilitiesList? ';'?)
 {
@@ -377,9 +376,9 @@ fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameter
 
 private StructInnerFirst ::= STRUCT_KW
 StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
-                         StructBlock
+                          (StructBlock | TupleStructBlock)? AbilitiesList? ';'?
 //StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList?
-//                    (AbilitiesList? (';' | StructBlock)?) | ((StructBlock)? AbilitiesList? ';'?)
+//                     (StructBlock | TupleStructBlock)? AbilitiesList? ';'?
 {
  pin = StructInnerFirst
  elementType = Struct
@@ -547,6 +546,8 @@ Ability ::= copy | IDENTIFIER
 {
     name = "ability"
 }
+
+TupleStructBlock ::= '(' <<non_empty_comma_sep_items Type>> ')'
 StructBlock ::= '{' StructField_with_recover* '}' { pin = 1 }
 private StructField_with_recover ::= !'}' StructField (',' | &'}')
 {
@@ -641,7 +642,7 @@ private MultiItemUse_member_with_recovery ::= !('}' | ';' | <<eof>>) UseItem
     pin = 1
 }
 
-UseItem ::= IDENTIFIER UseAlias?
+UseItem ::= (IDENTIFIER | INTEGER_LITERAL) UseAlias?
 {
     pin = 1
     name = "item name"
@@ -1114,9 +1115,11 @@ private DotExpr_inner ::= '.' !('.' | VectorStart) (MethodCall | StructDotField)
     consumeTokenMethod = "consumeTokenFast"
 }
 
+TupleIndex ::= INTEGER_LITERAL
+
 private VectorStart ::= (<<VECTOR_IDENTIFIER>> ('[' | '<'))
 
-StructDotField ::= IDENTIFIER !('(' | '::' | '!' | '{')
+StructDotField ::= (IDENTIFIER | TupleIndex) !('(' | '::' | '!' | '{')
 {
     implements = ["org.sui.lang.core.psi.ext.MvMethodOrField"]
     mixin = "org.sui.lang.core.psi.ext.MvStructDotFieldMixin"

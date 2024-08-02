@@ -7,7 +7,6 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import org.sui.cli.runConfigurations.CommandConfigurationBase
-import org.sui.cli.settings.moveSettings
 
 abstract class CommandConfigurationProducerBase :
     LazyRunConfigurationProducer<CommandConfigurationBase>() {
@@ -30,10 +29,7 @@ abstract class CommandConfigurationProducerBase :
         templateConfiguration.command = commandLine.joinArgs()
         templateConfiguration.workingDirectory = commandLine.workingDirectory
 
-        var environment = commandLine.environmentVariables.envs
-        if (context.project.moveSettings.disableTelemetry) {
-            environment = environment + mapOf("APTOS_DISABLE_TELEMETRY" to "true")
-        }
+        val environment = commandLine.environmentVariables.envs
         templateConfiguration.environmentVariables = EnvironmentVariablesData.create(environment, true)
         return true
 

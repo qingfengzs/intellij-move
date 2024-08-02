@@ -11,6 +11,10 @@ abstract class FunctionCallConfigurationBase(
     val configurationHandler: CommandConfigurationHandler,
 ) : CommandConfigurationBase(project, factory) {
 
+    var packageId: String? = null
+    var gasId: String? = null
+    var gasBudget: String? = null
+
     fun firstRunShouldOpenEditor(): Boolean {
         val moveProject = workingDirectory
             ?.let { wdir -> project.moveProjectsService.findMoveProjectForPath(wdir) } ?: return true

@@ -18,6 +18,7 @@ abstract class SuiRunStateBase(
     val commandLine: SuiCommandLine = config.cmd
 
     override fun startProcess(): ProcessHandler {
+        commandLine.appendSkipFetchDependencyIfNeeded(project)
         val generalCommandLine = commandLine.toGeneralCommandLine(config.suiPath)
         val handler = KillableColoredProcessHandler(generalCommandLine)
         consoleBuilder.console.attachToProcess(handler)

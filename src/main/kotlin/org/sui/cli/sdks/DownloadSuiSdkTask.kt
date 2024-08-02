@@ -1,5 +1,6 @@
 package org.sui.cli.sdks
 
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.ControlFlowException
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
@@ -10,6 +11,7 @@ import com.intellij.openapi.util.component2
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.download.DownloadableFileService
 import com.intellij.util.io.Decompressor
+import org.sui.ide.notifications.MvNotifications
 import java.io.*
 import java.util.zip.GZIPInputStream
 
@@ -93,6 +95,14 @@ class DownloadSuiSdkTask(
         } catch (t: Throwable) {
             //if we were cancelled in the middle or failed, let's clean up
             JdkDownloaderLogger.logDownload(false)
+
+            // Create and display a notification
+            MvNotifications.pluginNotifications().createNotification(
+                "Sui SDK Download Failed",
+                "Failed to download and install Sui SDK v${suiSdk.version}. ${t.message}",
+                NotificationType.ERROR
+            ).notify(project)
+
             throw t
         } finally {
             runCatching { FileUtil.delete(tmpExtractionDir) }

@@ -91,6 +91,7 @@ data class Sui(val cliLocation: Path, val parentDisposable: Disposable?) : Dispo
 //            val useClippy = args.linter == ExternalLinter.CLIPPY
 //                    && !checkNeedInstallClippy(project, args.cargoProjectDirectory)
 //            val checkCommand = if (useClippy) "clippy" else "check"
+
         val extraArguments = ParametersListUtil.parse(args.extraArguments)
         val commandLine =
             SuiCommandLine(

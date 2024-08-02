@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
-import org.sui.cli.Consts
 import org.sui.cli.MoveProject
 import org.sui.cli.runConfigurations.SuiCommandLine
 import org.sui.cli.runConfigurations.producers.CommandConfigurationProducerBase
@@ -66,7 +65,7 @@ class SuiTestCommandConfigurationProducer : CommandConfigurationProducerBase() {
         val confName = "Test $modName::$functionName"
 
         val arguments = buildList {
-            addAll(arrayOf("--filter", "$modName::$functionName"))
+            addAll(arrayOf("$modName::$functionName"))
             addAll(cliFlagsFromProjectSettings(psi.project))
         }
 
@@ -92,7 +91,7 @@ class SuiTestCommandConfigurationProducer : CommandConfigurationProducerBase() {
         val confName = "Test $modName"
 
         val arguments = buildList {
-            addAll(arrayOf("--filter", modName))
+            addAll(arrayOf(modName))
             addAll(cliFlagsFromProjectSettings(psi.project))
         }
 
@@ -134,9 +133,9 @@ class SuiTestCommandConfigurationProducer : CommandConfigurationProducerBase() {
 
     private fun initEnvironmentVariables(project: Project): EnvironmentVariablesData {
         val environmentMap = linkedMapOf<String, String>()
-        if (project.moveSettings.addCompilerV2CLIFlags) {
-            environmentMap[Consts.MOVE_COMPILER_V2_ENV] = "true"
-        }
+//        if (project.moveSettings.addCompilerV2CLIFlags) {
+//            environmentMap[Consts.MOVE_COMPILER_V2_ENV] = "true"
+//        }
         return EnvironmentVariablesData.create(environmentMap, true)
     }
 
@@ -145,12 +144,12 @@ class SuiTestCommandConfigurationProducer : CommandConfigurationProducerBase() {
             if (project.moveSettings.skipFetchLatestGitDeps) {
                 add("--skip-fetch-latest-git-deps")
             }
-            if (project.moveSettings.dumpStateOnTestFailure) {
-                add("--dump")
-            }
-            if (project.moveSettings.addCompilerV2CLIFlags) {
-                addAll(arrayOf("--compiler-version", "v2"))
-                addAll(arrayOf("--language-version", "2.0"))
-            }
+//            if (project.moveSettings.dumpStateOnTestFailure) {
+//                add("--dump")
+//            }
+//            if (project.moveSettings.addCompilerV2CLIFlags) {
+//                addAll(arrayOf("--compiler-version", "v2"))
+//                addAll(arrayOf("--language-version", "2.0"))
+//            }
         }
 }

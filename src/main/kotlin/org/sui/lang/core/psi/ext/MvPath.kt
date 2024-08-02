@@ -69,6 +69,7 @@ fun MvPath.namespaces(): Set<Namespace> {
         parent is MvAccessSpecifier -> setOf(Namespace.TYPE)
         parent is MvAddressSpecifierArg -> setOf(Namespace.FUNCTION)
         parent is MvAddressSpecifierCallParam -> setOf(Namespace.NAME)
+        parent is MvPublicUseFun -> setOf(Namespace.FUNCTION)
         else -> debugErrorOrFallback(
             "Cannot build path namespaces: unhandled parent type ${parent.elementType}",
             setOf(Namespace.NAME)

@@ -39,6 +39,11 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
     private val projectComboBox: ComboBox<MoveProjectItem> = ComboBox()
     private val accountTextField = JTextField()
 
+    private val packageIdTextField = JTextField()
+    private val moduleIdTextField = JTextField()
+    private val gasIdTextField = JTextField()
+    private val gasBudgetTextField = JTextField(5000000)
+
     private val functionItemField = CompletionTextField(project, "", emptyList())
     private val functionApplyButton = JButton("Select and refresh UI")
     private val functionParametersPanel = FunctionParametersPanel(project, commandHandler)
@@ -112,7 +117,12 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
             val functionItem = commandHandler.getFunctionItem(mp, functionItemName)
                 ?: error("Button should be disabled if function name is invalid")
 
-            val functionCall = FunctionCall.template(functionItem)
+            val functionCall = FunctionCall.template(
+                functionItem,
+                packageIdTextField.text,
+                gasIdTextField.text,
+                gasBudgetTextField.text
+            )
             functionParametersPanel.updateFromFunctionCall(functionCall)
             functionValidator.revalidate()
             functionParametersPanel.fireChangeEvent()
@@ -157,6 +167,9 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
 //        this.signerAccount = profile
         this.accountTextField.text = profile
         this.functionItemField.text = functionCall.itemName() ?: ""
+        this.packageIdTextField.text = ""
+        this.gasIdTextField.text = ""
+        this.gasBudgetTextField.text = ""
         functionApplyButton.isEnabled = false
 
         functionParametersPanel.updateFromFunctionCall(functionCall)
@@ -167,6 +180,9 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
         functionParametersPanel.fireChangeEvent()
         s.command = rawCommandField.text
         s.workingDirectory = moveProject?.contentRootPath
+        s.packageId = packageIdTextField.text
+        s.gasId = gasIdTextField.text
+        s.gasBudget = gasBudgetTextField.text
     }
 
     override fun createEditor(): JComponent {
@@ -189,6 +205,8 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
 
     fun setMoveProject(moveProject: MoveProject) {
         this.moveProject = moveProject
+
+        gasBudgetTextField.text = "5000000"
 
         functionItemField.text = ""
         accountTextField.text = ""
@@ -213,8 +231,9 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
                         setMoveProject(it.moveProject)
                     }
             }
-            row("Account") {
-                cell(accountTextField)
+            row("Package") {
+                cell(packageIdTextField)
+                    .columns(COLUMNS_LARGE)
                     .align(AlignX.FILL)
             }
             row("Entry function") {
@@ -222,6 +241,16 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
                     .align(AlignX.FILL)
                     .resizableColumn()
                 cell(functionApplyButton)
+            }
+            row("Gas") {
+                cell(gasIdTextField)
+                    .columns(COLUMNS_LARGE)
+                    .align(AlignX.FILL)
+            }
+            row("GasBudget") {
+                cell(gasBudgetTextField)
+                    .columns(COLUMNS_LARGE)
+                    .align(AlignX.FILL)
             }
             separator()
             row {

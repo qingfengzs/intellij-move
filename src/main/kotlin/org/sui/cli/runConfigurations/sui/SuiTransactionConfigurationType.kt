@@ -4,7 +4,6 @@ import com.intellij.execution.configurations.ConfigurationTypeBase
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.util.NotNullLazyValue
 import org.sui.cli.runConfigurations.sui.run.RunCommandConfigurationFactory
-import org.sui.cli.runConfigurations.sui.view.ViewCommandConfigurationFactory
 import org.sui.ide.MoveIcons
 
 class SuiTransactionConfigurationType :
@@ -17,7 +16,7 @@ class SuiTransactionConfigurationType :
 
     init {
         addFactory(RunCommandConfigurationFactory(this))
-        addFactory(ViewCommandConfigurationFactory(this))
+//        addFactory(ViewCommandConfigurationFactory(this))
     }
 
     @Suppress("CompanionObjectInExtension")

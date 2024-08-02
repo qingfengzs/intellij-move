@@ -101,7 +101,7 @@ class FunctionParametersPanel(
     }
 
     fun fireChangeEvent() {
-        val functionCall = FunctionCall(this.functionItem, this.typeParams, this.valueParams)
+        val functionCall = FunctionCall(this.functionItem, this.typeParams, this.valueParams, null, null, null, null)
         eventListeners.forEach {
             it.functionParametersChanged(functionCall)
         }

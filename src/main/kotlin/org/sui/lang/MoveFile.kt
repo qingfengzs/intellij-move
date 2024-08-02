@@ -78,11 +78,14 @@ class MoveFile(fileViewProvider: FileViewProvider) : MoveFileBase(fileViewProvid
 
     fun preloadModules(): Sequence<MvModule> {
         return getProjectPsiDependentCache(this) { it ->
-            it.childrenOfType<MvModule>()
-                .chain(it.childrenOfType<MvAddressDef>().flatMap { a -> a.modules() })
-                .filter {
-                    it.isPreload()
-                }
+            it.modules().filter {
+                it.isPreload()
+            }
+//            it.childrenOfType<MvModule>()
+//                .chain(it.childrenOfType<MvAddressDef>().flatMap { a -> a.modules() })
+//                .filter {
+//                    it.isPreload()
+//                }
         }
     }
 }

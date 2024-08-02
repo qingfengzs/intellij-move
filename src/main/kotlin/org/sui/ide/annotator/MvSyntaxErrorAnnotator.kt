@@ -64,12 +64,12 @@ class MvSyntaxErrorAnnotator: MvAnnotatorBase() {
     }
 
     private fun checkCastExpr(holder: MvAnnotationHolder, castExpr: MvCastExpr) {
-        val parent = castExpr.parent
-        if (parent !is MvParensExpr) {
-            Diagnostic
-                .ParensAreRequiredForCastExpr(castExpr)
-                .addToHolder(holder)
-        }
+//        val parent = castExpr.parent
+//        if (parent !is MvParensExpr) {
+//            Diagnostic
+//                .ParensAreRequiredForCastExpr(castExpr)
+//                .addToHolder(holder)
+//        }
     }
 
     private fun checkIndexExpr(holder: MvAnnotationHolder, indexExpr: MvIndexExpr) {

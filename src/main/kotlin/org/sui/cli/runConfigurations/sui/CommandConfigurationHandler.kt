@@ -33,10 +33,14 @@ abstract class CommandConfigurationHandler {
         val workingDirectory = moveProject.contentRootPath
 
         val arguments = mutableListOf<String>()
-        if (profileName != null) {
-            arguments.addAll(listOf("--profile", profileName))
-        }
-        arguments.addAll(listOf("--function-id", functionId))
+
+        val functionQualList = functionId.split("::")
+        val moduleName = functionQualList[1]
+        val functionName = functionQualList[2]
+
+        // arguments.addAll(listOf("--package", functionId))
+        arguments.addAll(listOf("--module", moduleName))
+        arguments.addAll(listOf("--function", functionId))
 
         val commandLine = SuiCommandLine(subCommand, arguments, workingDirectory)
         return SuiCommandLineFromContext(
@@ -66,14 +70,25 @@ abstract class CommandConfigurationHandler {
         val params = functionCall.valueParams
             .mapNotNull { it.value?.cmdText() }.flatMap { listOf("--args", it) }
 
+        val functionQualList = functionId.split("::")
+        val moduleName = functionQualList[1]
+        val functionName = functionQualList[2]
+
+        val gasArguments = functionCall.gasId?.let { listOf("", it) }
+        val gasBudgetArguments = functionCall.gasBudget?.let { listOf("--gas-budget", it) }
+
         val commandArguments = listOf(
             subCommand.split(' '),
-            listOf("--profile", signerAccount),
-            listOf("--function-id", functionId),
+            listOf("--package", functionCall.packageId),
+            listOf("--module", moduleName),
+            listOf("--function", functionName),
+            gasArguments ?: emptyList(),
+            gasBudgetArguments ?: emptyList(),
             typeParams,
             params
-        ).flatten()
-        val command = commandArguments.joinToString(" ")
+        )
+
+        val command = commandArguments.flatten().joinToString(" ")
         return RsResult.Ok(command)
     }
 
@@ -92,15 +107,7 @@ abstract class CommandConfigurationHandler {
         val function = getFunctionByCmdName(moveProject, functionId)
             ?: return RsResult.Err("function with this functionId does not exist in the current project")
 
-//        val aptosConfig = moveProject.aptosConfigYaml
-//        if (aptosConfig == null) {
-//            return RsResult.Err("Aptos account is not initialized / is invalid for the current project")
-//        }
-//
-//        if (profileName !in aptosConfig.profiles) {
-//            return RsResult.Err("account '$profileName' is not present in the project's accounts")
-//        }
-        val transaction = FunctionCall.template(function)
+        val transaction = FunctionCall.template(function, callArgs.packageId, callArgs.gasId, callArgs.gasBudget)
 
         val typeParameterNames = function.typeParameters.mapNotNull { it.name }
         for ((name, value) in typeParameterNames.zip(callArgs.typeArgs)) {
