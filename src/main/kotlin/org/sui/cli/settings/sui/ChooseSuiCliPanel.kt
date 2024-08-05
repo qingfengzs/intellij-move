@@ -5,6 +5,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.JBPopupFactory.ActionSelectionAid.SPEEDSEARCH
 import com.intellij.openapi.util.Disposer
@@ -16,6 +17,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.Row
 import org.sui.cli.sdks.sdksService
+import org.sui.cli.settings.MvProjectSettingsService
 import org.sui.cli.settings.VersionLabel
 import org.sui.cli.settings.isValidExecutable
 import org.sui.cli.settings.sui.SuiExecType.BUNDLED
@@ -194,6 +196,10 @@ class ChooseSuiCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
         if (sdkPath in settingsService.state.suiSdkPaths) return
 
         settingsService.state.suiSdkPaths.add(sdkPath)
+        // update default path
+        ProjectManager.getInstance().defaultProject.getService(MvProjectSettingsService::class.java).modify {
+            it.localSuiPath = sdkPath
+        }
 
         LOG.logOrShowBalloon("Sui SDK saved: $sdkPath")
     }

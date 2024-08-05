@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.intellij.execution.process.ProcessOutput
 import com.intellij.execution.util.ExecUtil
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
@@ -11,7 +12,11 @@ import com.intellij.openapi.progress.ProgressManager
 import org.sui.cli.runConfigurations.SuiCommandLine
 import org.sui.cli.settings.suiExecPath
 import org.sui.ide.dialog.EnvDialog
+import org.sui.ide.notifications.MvNotifications
 import org.sui.utils.StringUtils
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 class OpenSwitchEnvsDialogAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -38,7 +43,24 @@ class OpenSwitchEnvsDialogAction : AnAction() {
                 EnvDialog(networkList, project).show()
             }
         }
-        ProgressManager.getInstance().runProcessWithProgressSynchronously(task, "Processing", true, project)
+
+        val executor = Executors.newSingleThreadExecutor()
+        val future = executor.submit(task)
+
+        try {
+            ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                future.get(6, TimeUnit.SECONDS) // 设置超时时间为60秒
+            }, "Processing", true, project)
+        } catch (e: TimeoutException) {
+            future.cancel(true)
+            MvNotifications.pluginNotifications().createNotification(
+                "Timeout",
+                "The operation timed out.",
+                NotificationType.ERROR
+            ).notify(project)
+        } finally {
+            executor.shutdown()
+        }
     }
 
     data class Envs(

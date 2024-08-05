@@ -15,10 +15,12 @@ import org.sui.cli.settings.suiExecPath
 import org.sui.ide.dialog.ObjectDialog
 import org.sui.ide.notifications.MvNotifications
 import org.sui.utils.StringUtils
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 class OpenObjectListAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-
         val project = e.project ?: return
         if (project.suiExecPath == null) return
 
@@ -33,7 +35,24 @@ class OpenObjectListAction : AnAction() {
                 ObjectDialog(extractData).show()
             }
         }
-        ProgressManager.getInstance().runProcessWithProgressSynchronously(task, "Processing", true, project)
+
+        val executor = Executors.newSingleThreadExecutor()
+        val future = executor.submit(task)
+
+        try {
+            ProgressManager.getInstance().runProcessWithProgressSynchronously({
+                future.get(6, TimeUnit.SECONDS) // 设置超时时间为60秒
+            }, "Processing", true, project)
+        } catch (e: TimeoutException) {
+            future.cancel(true)
+            MvNotifications.pluginNotifications().createNotification(
+                "Timeout",
+                "The operation timed out.",
+                NotificationType.ERROR
+            ).notify(project)
+        } finally {
+            executor.shutdown()
+        }
     }
 
     data class SuiObject(
