@@ -65,7 +65,7 @@ version = pluginVersion
 plugins {
     id("java")
     kotlin("jvm") version "1.9.22"
-    id("org.jetbrains.intellij.platform") version "2.0.0-rc1"
+    id("org.jetbrains.intellij.platform") version "2.0.0"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("net.saliman.properties") version "1.5.2"
     id("org.gradle.idea")
@@ -108,7 +108,7 @@ allprojects {
             testFramework(TestFrameworkType.Platform)
             pluginVerifier()
             bundledPlugin("org.toml.lang")
-            jetbrainsRuntimeExplicit("jbr_jcef-17.0.11-windows-x64-b1207.30")
+            jetbrainsRuntime("17.0.11b1207.30")
         }
     }
 
@@ -172,7 +172,7 @@ allprojects {
             failureLevel.set(
                 EnumSet.complementOf(
                     EnumSet.of(
-//thesearetheonlyissueswetolerate
+                        //these are the only issue swetolerate
                         VerifyPluginTask.FailureLevel.DEPRECATED_API_USAGES,
                         VerifyPluginTask.FailureLevel.EXPERIMENTAL_API_USAGES,
                         VerifyPluginTask.FailureLevel.SCHEDULED_FOR_REMOVAL_API_USAGES,
@@ -240,7 +240,7 @@ allprojects {
     }
 
     idea {
-        pathVariables(mapOf("USER_HOME" to file("C:\\Users\\jinyu1")))
+        pathVariables(mapOf("USER_HOME" to file("/Users/yu")))
         module {
             name = "intellij-sui-move.main"
         }

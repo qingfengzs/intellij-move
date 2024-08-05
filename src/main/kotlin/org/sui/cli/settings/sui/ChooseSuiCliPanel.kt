@@ -43,7 +43,7 @@ enum class SuiExecType {
                 if (Registry.`is`("org.move.sui.bundled.force.unsupported", false)) {
                     return false
                 }
-                return !SystemInfo.isMac
+                return true
             }
 
         fun bundledPath(): String? = PluginPathManager.bundledSuiCli
