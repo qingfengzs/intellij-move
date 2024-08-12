@@ -50,6 +50,9 @@ val MvFunction.isEntry: Boolean
         return stub?.isEntry ?: this.isChildExists(MvElementTypes.ENTRY)
     }
 
+val MvFunction.isPublicScript: Boolean
+    get() = this.visibilityModifier?.isPublicScript ?: false
+
 val MvFunction.isInline: Boolean get() = this.isChildExists(MvElementTypes.INLINE)
 
 val MvFunction.isView: Boolean
@@ -82,7 +85,7 @@ val MvFunction.outerFileName: String
 
 fun MvFunction.innerItemSpecs(): List<MvItemSpec> {
     val functionName = this.name ?: return emptyList()
-    val itemSpecs = this.module?.moduleBlock?.itemSpecs().orEmpty()
+    val itemSpecs = this.module?.itemSpecList.orEmpty()
     return itemSpecs
         .filter { it.itemSpecRef?.referenceName == functionName }
 }
@@ -91,7 +94,7 @@ fun MvFunction.outerItemSpecs(): List<MvItemSpec> {
     val functionName = this.name ?: return emptyList()
     val moduleSpecs = this.module?.allModuleSpecs().orEmpty()
     return moduleSpecs
-        .flatMap { it.moduleSpecBlock?.itemSpecs().orEmpty() }
+        .flatMap { it.moduleSpecBlock?.itemSpecList.orEmpty() }
         .filter { it.itemSpecRef?.referenceName == functionName }
 }
 

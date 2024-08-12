@@ -1,4 +1,6 @@
-<idea-plugin>
+<idea-plugin
+        require-restart="true"
+>
     <id>org.sui.lang</id>
     <name>Sui Move Language</name>
 
@@ -49,8 +51,6 @@
         ]]>
     </description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-     on how to target different products -->
     <resource-bundle>messages.MvBundle</resource-bundle>
 
     <depends>com.intellij.modules.platform</depends>
@@ -76,10 +76,16 @@
                                         implementationClass="org.sui.ide.lineMarkers.ItemSpecsLineMarkerProvider"/>
 
         <!-- PSI managing -->
+
         <projectService serviceInterface="org.sui.lang.core.psi.MvPsiManager"
                         serviceImplementation="org.sui.lang.core.psi.MvPsiManagerImpl"/>
 
         <projectService serviceImplementation="org.sui.cli.settings.MvProjectSettingsService"/>
+
+        <!--specificallytosupportnamedaddressesintests,doesnothinginnon-testenvironment-->
+        <projectService serviceInterface="org.sui.cli.tests.NamedAddressService"
+                        serviceImplementation="org.sui.cli.tests.NamedAddressServiceImpl"
+                        testServiceImplementation="org.sui.cli.tests.NamedAddressServiceTestImpl"/>
 
         <configurationType
                 implementation="org.sui.cli.runConfigurations.sui.SuiCommandConfigurationType"/>
@@ -103,6 +109,7 @@
         <stubIndex implementation="org.sui.lang.index.MvEntryFunctionIndex"/>
         <stubIndex implementation="org.sui.lang.index.MvViewFunctionIndex"/>
         <stubIndex implementation="org.sui.lang.index.MvTestFunctionIndex"/>
+        <stubIndex implementation="org.sui.lang.index.MvModuleIndex"/>
         <stubIndex implementation="org.sui.lang.index.MvModuleSpecIndex"/>
 
         <lang.documentationProvider language="Sui Move"
@@ -271,10 +278,6 @@
                          enabledByDefault="true" level="WARNING"
                          implementationClass="org.sui.ide.inspections.MvLocalBindingNamingInspection"/>
         <localInspection language="Sui Move" groupName="SuiMove"
-                         displayName="Redundant qualifier"
-                         enabledByDefault="false" level="WARNING"
-                         implementationClass="org.sui.ide.inspections.RedundantQualifiedPathInspection"/>
-        <localInspection language="Sui Move" groupName="SuiMove"
                          displayName="Type checking"
                          enabledByDefault="true" level="ERROR"
                          implementationClass="org.sui.ide.inspections.MvTypeCheckInspection"/>
@@ -307,10 +310,6 @@
                          enabledByDefault="true" level="WARNING"
                          implementationClass="org.sui.ide.inspections.UnusedTestSignerInspection"/>
         <localInspection language="Sui Move" groupName="SuiMove"
-                         displayName="Address by value inspection"
-                         enabledByDefault="false" level="WEAK WARNING"
-                         implementationClass="org.sui.ide.inspections.AddressByValueImportInspection"/>
-        <localInspection language="Sui Move" groupName="SuiMove"
                          displayName="Redundant type cast"
                          enabledByDefault="true" level="WARNING"
                          implementationClass="org.sui.ide.inspections.RedundantTypeCastInspection"/>
@@ -318,7 +317,7 @@
                          displayName="Convert to method call"
                          enabledByDefault="true" level="WEAK WARNING"
                          implementationClass="org.sui.ide.inspections.ReplaceWithMethodCallInspection"/>
-        <localInspection language="Sui Move" groupName="Move"
+        <localInspection language="Sui Move" groupName="SuiMove"
                          displayName="Convert to index expr"
                          enabledByDefault="true" level="WEAK WARNING"
                          implementationClass="org.sui.ide.inspections.compilerV2.ReplaceWithIndexExprInspection"/>
@@ -347,8 +346,6 @@
 
         <postStartupActivity
                 implementation="org.sui.ide.newProject.projectActivity.AlwaysRefreshProjectsAfterOpen"/>
-        <!--    <postStartupActivity-->
-        <!--        implementation="org.sui.cli.openProject.OpenMoveTomlOnProjectCreationFile" />-->
         <!--     background = 5 seconds delayed  -->
         <!--    <postStartupActivity-->
         <!--        implementation="org.sui.cli.openProject.CreateDefaultCompileRunConfiguration" />-->
@@ -370,9 +367,10 @@
                         testServiceImplementation="org.sui.utils.TestProjectRootServiceImpl"/>
 
         <projectService serviceImplementation="org.sui.cli.MoveProjectsService"/>
+        <!--        <projectService serviceImplementation="org.move.cli.packages.MovePackageService"/>-->
 
         <!--        <projectService serviceInterface="com.intellij.openapi.externalSystem.autoimport.ExternalSystemProjectTracker"-->
-        <!--                        serviceImplementation="org.sui.cli.projectAware.MoveExternalSystemProjectAware"-->
+        <!--                        serviceImplementation="org.move.cli.externalSystem.MoveExternalSystemProjectAware"-->
         <!--                        overrides="true" />-->
         <!--<applicationServiceserviceImplementation="org.sui.openapiext.OpenSSLInfoService"/>-->
 
@@ -392,11 +390,16 @@
             <className>org.sui.ide.intentions.RemoveCurlyBracesIntention</className>
             <category>Move</category>
         </intentionAction>
-        <intentionAction>
-            <language>Sui Move</language>
-            <className>org.sui.ide.intentions.InlineAddressBlockIntention</className>
-            <category>Move</category>
-        </intentionAction>
+        <!--    <intentionAction>-->
+        <!--      <language>Move</language>-->
+        <!--      <className>org.move.ide.intentions.InlineAddressBlockIntention</className>-->
+        <!--      <category>Move</category>-->
+        <!--    </intentionAction>-->
+        <!--        <intentionAction>-->
+        <!--            <language>Sui Move</language>-->
+        <!--            <className>org.sui.ide.intentions.InlineAddressBlockIntention</className>-->
+        <!--            <category>Move</category>-->
+        <!--        </intentionAction>-->
         <intentionAction>
             <language>Sui Move</language>
             <className>org.sui.ide.intentions.ChopParameterListIntention</className>
@@ -409,17 +412,7 @@
         </intentionAction>
         <intentionAction>
             <language>Sui Move</language>
-            <className>org.sui.ide.intentions.ChopAttrArgumentListIntention</className>
-            <category>Move</category>
-        </intentionAction>
-        <intentionAction>
-            <language>Sui Move</language>
             <className>org.sui.ide.intentions.ChopStructLiteralIntention</className>
-            <category>Move</category>
-        </intentionAction>
-        <intentionAction>
-            <language>Sui Move</language>
-            <className>org.sui.ide.intentions.ChopStructPatIntention</className>
             <category>Move</category>
         </intentionAction>
 
@@ -482,6 +475,25 @@
                 description="Download sui-cli executable from Github"
                 class="org.sui.ide.actions.DownloadSuiSDKAction"
                 icon="AllIcons.Actions.Download"/>
+
+        <action id="Sui.RunExternalLinter"
+                class="org.sui.ide.actions.MvRunExternalLinterAction"
+                icon="/icons/externalLinter.svg">
+        </action>
+        <action id="Sui.ShowSettings"
+                class="org.sui.ide.actions.MoveEditSettingsAction"
+                icon="AllIcons.General.Settings">
+        </action>
+        <action id="Sui.FetchSuiPackage"
+                class="org.sui.bytecode.FetchSuiPackageAction"
+                icon="AllIcons.Actions.Download">
+        </action>
+
+        <action id="Sui.DecompileSuiMvFile"
+                class="org.sui.bytecode.DecompileSuiMvFileAction">
+            <add-to-group group-id="ProjectViewPopupMenu"/>
+        </action>
+
         <action id="Sui.GetActiveAddress"
                 description="Get active address"
                 text="Get Active Address"
@@ -507,22 +519,7 @@
                 text="Open Objects Dialog"
                 class="org.sui.ide.actions.OpenObjectListAction"
                 icon="AllIcons.Actions.GroupByPrefix"/>
-        <action id="Sui.RunExternalLinter"
-                class="org.sui.ide.actions.MvRunExternalLinterAction"
-                icon="/icons/externalLinter.svg">
-        </action>
-        <action id="Sui.ShowSettings"
-                class="org.sui.ide.actions.MoveEditSettingsAction"
-                icon="AllIcons.General.Settings">
-        </action>
-        <action id="Sui.FetchSuiPackage"
-                class="org.sui.bytecode.FetchSuiPackageAction"
-                icon="AllIcons.Actions.Download">
-        </action>
-        <action id="Sui.DecompileSuiMvFile"
-                class="org.sui.bytecode.DecompileSuiMvFileAction">
-            <add-to-group group-id="ProjectViewPopupMenu"/>
-        </action>
+
         <group id="Move.Sui">
             <reference id="Sui.RefreshAllProjects"/>
             <separator/>
@@ -530,8 +527,6 @@
             <separator/>
             <reference id="ExpandAll"/>
             <reference id="CollapseAll"/>
-            <!--            <separator/>-->
-            <!--            <reference id="Sui.FetchSuiPackage"/>-->
             <separator/>
             <reference id="Sui.ShowSettings"/>
             <separator/>

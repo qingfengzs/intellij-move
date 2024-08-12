@@ -119,6 +119,7 @@ IDENTIFIER=[_a-zA-Z][_a-zA-Z0-9]* | `type`
       "|"        { return OR; }
       "@"        { return AT; }
       "#"        { return HASH; }
+      "=>"       { return FAT_ARROW; }
       "`"        { return BACKTICK;}
 
       // keywords
