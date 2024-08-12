@@ -385,12 +385,13 @@ fake Struct ::= Attr* PublicKeyword? native? STRUCT_KW IDENTIFIER? TypeParameter
  elementTypeFactory = "org.sui.lang.core.stubs.StubsKt.factory"
 }
 
-private StructInnerFirst ::= STRUCT_KW
+
 //StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
 //                          (StructBlock | TupleStructBlock)? AbilitiesList? ';'?
 //StructInner ::= Attr* PublicKeyword? StructInnerFirst IDENTIFIER TypeParameterList?
 //                     (StructBlock | TupleStructBlock)? AbilitiesList? ';'?
-StructInner ::= Attr* StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
+private StructInnerFirst ::= STRUCT_KW
+StructInner ::= Attr* VisibilityModifier? StructInnerFirst IDENTIFIER TypeParameterList? AbilitiesList?
                             BlockFields
 {
  pin = StructInnerFirst
@@ -406,7 +407,7 @@ NativeStructInner ::= Attr* PublicKeyword? NativeStructInnerFirst IDENTIFIER Typ
 }
 private StructItem ::= StructInner | NativeStructInner
 
-Enum ::= Attr* enum IDENTIFIER TypeParameterList? AbilitiesList? EnumBody
+Enum ::= Attr* VisibilityModifier? enum IDENTIFIER TypeParameterList? AbilitiesList? EnumBody
 {
    pin = "enum"
    implements = [
@@ -423,7 +424,7 @@ EnumBody ::= '{' (EnumVariant ','?)* '}'
    pin = 1
  }
 
-EnumVariant ::= Attr* IDENTIFIER BlockFields?
+EnumVariant ::= Attr* IDENTIFIER (BlockFields | TupleType)?
 {
   pin = 2
     implements = [

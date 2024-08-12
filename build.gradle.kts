@@ -1,3 +1,4 @@
+import org.jetbrains.intellij.platform.gradle.Constants.Constraints
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -43,7 +44,7 @@ fun gitTimestamp(): String {
 
 val shortPlatformVersion = prop("shortPlatformVersion")
 val useInstaller = prop("useInstaller").toBooleanStrict()
-val codeVersion = "1.5.0"
+val codeVersion = "1.6.0"
 var pluginVersion = "$codeVersion.$shortPlatformVersion"
 if (publishingChannel != "default") {
     // timestamp of the commit with this eaps addition
@@ -64,7 +65,7 @@ version = pluginVersion
 
 plugins {
     id("java")
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "1.9.25"
     id("org.jetbrains.intellij.platform") version "2.0.0"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("net.saliman.properties") version "1.5.2"
@@ -106,7 +107,7 @@ allprojects {
         intellijPlatform {
             create(prop("platformType"), prop("platformVersion"), useInstaller = useInstaller)
             testFramework(TestFrameworkType.Platform)
-            pluginVerifier()
+            pluginVerifier(Constraints.LATEST_VERSION)
             bundledPlugin("org.toml.lang")
             jetbrainsRuntime("17.0.11b1207.30")
         }
@@ -140,7 +141,7 @@ allprojects {
                 sinceBuild.set(prop("pluginSinceBuild"))
                 untilBuild.set(prop("pluginUntilBuild"))
             }
-//            plugins.set(listOf("com.intellij.marketplace"))
+
             val codeVersionForUrl = codeVersion.replace('.', '-')
             changeNotes.set(
                 """
@@ -160,7 +161,8 @@ allprojects {
             token.set(publishingToken)
             channels.set(listOf(publishingChannel))
         }
-        verifyPlugin {
+
+        pluginVerification {
             ides {
                 recommended()
             }
