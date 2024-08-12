@@ -4,22 +4,20 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.resolve.ref.MvPolyVariantReference
-import org.sui.lang.core.resolve.ref.MvStructPatShorthandFieldReferenceImpl
-import org.sui.lang.core.resolve.ref.MvStructRefFieldReferenceImpl
 
-val MvStructPatField.structPat: MvStructPat
+
+val MvFieldPat.structPat: MvStructPat
     get() = ancestorStrict()!!
 
-val MvStructPatField.pat: MvPat?
-    get() {
-        return this.bindingPat ?: this.structPatFieldBinding?.pat
-    }
+val MvFieldPat.pat: MvPat?
+    get() =
+        this.bindingPat ?: this.fieldPatBinding?.pat
 
-val MvStructPatField.isShorthand: Boolean get() = this.structPatFieldBinding == null
+val MvFieldPat.isShorthand: Boolean get() = this.fieldPatBinding == null
 
-val MvStructPatField.kind: PatFieldKind
+val MvFieldPat.kind: PatFieldKind
     get() = bindingPat?.let { PatFieldKind.Shorthand(it) }
-        ?: PatFieldKind.Full(this.identifier!!, this.structPatFieldBinding?.pat!!)
+        ?: PatFieldKind.Full(this.identifier!!, this.fieldPatBinding?.pat!!)
 
 // PatField ::= identifier ':' Pat | box? PatBinding
 sealed class PatFieldKind {
@@ -44,9 +42,8 @@ val PatFieldKind.fieldName: String
         is PatFieldKind.Shorthand -> binding.name
     }
 
-
-abstract class MvStructPatFieldMixin(node: ASTNode) : MvElementImpl(node),
-    MvStructPatField {
+abstract class MvFieldPatMixin(node: ASTNode) : MvElementImpl(node),
+    MvFieldPat {
     override val referenceNameElement: PsiElement
         get() {
             val bindingPat = this.bindingPat
@@ -57,11 +54,6 @@ abstract class MvStructPatFieldMixin(node: ASTNode) : MvElementImpl(node),
             }
         }
 
-    override fun getReference(): MvPolyVariantReference {
-        return if (this.isShorthand) {
-            MvStructPatShorthandFieldReferenceImpl(this)
-        } else {
-            MvStructRefFieldReferenceImpl(this)
-        }
-    }
+    override fun getReference(): MvPolyVariantReference =
+        MvFieldReferenceImpl(this, shorthand = this.isShorthand)
 }

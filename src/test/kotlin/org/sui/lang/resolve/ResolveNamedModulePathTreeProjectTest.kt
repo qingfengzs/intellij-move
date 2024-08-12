@@ -5,7 +5,7 @@ import org.sui.utils.tests.FileTreeBuilder
 import org.sui.utils.tests.resolve.ResolveProjectTestCase
 import org.toml.lang.psi.TomlKeySegment
 
-class ResolveNamedAddressTreeProjectTest : ResolveProjectTestCase() {
+class ResolveNamedModulePathTreeProjectTest : ResolveProjectTestCase() {
     fun `test resolve named address to address`() = checkByFileTree {
         moveToml(
             """
@@ -155,9 +155,8 @@ class ResolveNamedAddressTreeProjectTest : ResolveProjectTestCase() {
         sources {
             move(
                 "main.move", """
-            module 0x1::M {
-                use Std::Reflect;
-                    //^
+            module Std::M {
+                  //^
             }     
             """
             )

@@ -6,7 +6,7 @@ import org.sui.utils.tests.FileTreeBuilder
 import org.sui.utils.tests.MvProjectTestBase
 import org.sui.utils.tests.base.findElementAndDataInEditor
 
-class NamedAddressValuesTest : MvProjectTestBase() {
+class NamedModulePathValuesTest : MvProjectTestBase() {
     fun `test named address`() = checkByFileTree {
         moveToml(
             """
@@ -143,9 +143,8 @@ class NamedAddressValuesTest : MvProjectTestBase() {
         sources {
             move(
                 "main.move", """
-            module 0x1::M {
-                use Std::Reflect;
-                    //^ Std = 0x2
+            module Std::M {
+                  //^ Std = 0x2
             }
             """
             )

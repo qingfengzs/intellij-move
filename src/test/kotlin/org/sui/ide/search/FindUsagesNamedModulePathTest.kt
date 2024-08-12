@@ -8,7 +8,7 @@ import org.sui.utils.tests.MvProjectTestBase
 import org.sui.utils.tests.base.findElementWithDataAndOffsetInEditor
 import org.toml.lang.psi.TomlKeySegment
 
-class FindUsagesNamedAddressTest : MvProjectTestBase() {
+class FindUsagesNamedModulePathTest : MvProjectTestBase() {
     fun `test resolve toml to move usage`() = doTestByText(
         """
         //- Move.toml
@@ -20,7 +20,7 @@ class FindUsagesNamedAddressTest : MvProjectTestBase() {
     """
     )
 
-    private fun doTestByText(@Language("Sui Move") code: String) {
+    private fun doTestByText(@Language("Move") code: String) {
         testProject(code)
 
         val (_, _, offset) = myFixture.findElementWithDataAndOffsetInEditor<PsiElement>()

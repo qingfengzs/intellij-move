@@ -1,6 +1,8 @@
 package org.sui.lang.core
 
 import com.intellij.patterns.*
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
@@ -12,39 +14,45 @@ import org.sui.lang.MoveFile
 import org.sui.lang.MvElementTypes.*
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.elementType
-import org.sui.lang.core.psi.ext.hasAncestorOrSelf
 import org.sui.lang.core.psi.ext.leftLeaves
 
-object MvPsiPatterns {
+object MvPsiPattern {
     private val STMT_BOUNDARIES = TokenSet.create(SEMICOLON, L_BRACE, R_BRACE)
 
-    val whitespace: PsiElementPattern.Capture<PsiElement> = PlatformPatterns.psiElement().whitespace()
+//    val whitespace: PsiElementPattern.Capture<PsiElement> = PlatformPatterns.psiElement().whitespace()
 
-    val onStmtBeginning: PsiElementPattern.Capture<PsiElement> =
-        PlatformPatterns.psiElement().with(OnStmtBeginning())
+    fun identifierStatementBeginningPattern(vararg startWords: String): PsiElementPattern.Capture<PsiElement> =
+        psiElement(IDENTIFIER).and(onStatementBeginning(*startWords))
 
-    fun onStmtBeginning(vararg startWords: String): PsiElementPattern.Capture<PsiElement> =
-        PlatformPatterns.psiElement().with(OnStmtBeginning(*startWords))
+//    val onStatementBeginning: PsiElementPattern.Capture<PsiElement> =
+//        psiElement().with(OnStatementBeginning())
 
-    fun toplevel(): PsiElementPattern.Capture<PsiElement> =
-        psiElementWithParent<MoveFile>()
+    fun onStatementBeginning(vararg startWords: String): PsiElementPattern.Capture<PsiElement> =
+        psiElement().with(OnStatementBeginning(*startWords))
 
-    fun addressBlock(): PsiElementPattern.Capture<PsiElement> =
-        psiElementWithParent<MvAddressBlock>()
+    fun toplevel(): PsiElementPattern.Capture<PsiElement> = psiElementWithParent<MoveFile>()
 
-    fun moduleBlock(): PsiElementPattern.Capture<PsiElement> =
-        psiElementWithParent<MvModuleBlock>()
+//    fun moduleChildElement(): PsiElementPattern.Capture<PsiElement> = psiElementWithParent<MvModule>()
 
-    fun function(): PsiElementPattern.Capture<PsiElement> =
-        psiElementWithParent<MvFunction>()
+    fun module(): PsiElementPattern.Capture<PsiElement> = psiElementWithParent<MvModule>()
 
-    fun scriptBlock(): PsiElementPattern.Capture<PsiElement> = psiElementWithParent<MvScriptBlock>()
+    fun function(): PsiElementPattern.Capture<PsiElement> = psiElementWithParent<MvFunction>()
+
+    fun script(): PsiElementPattern.Capture<PsiElement> = psiElementWithParent<MvScript>()
 
     fun moduleSpecBlock(): PsiElementPattern.Capture<PsiElement> = psiElementWithParent<MvModuleSpecBlock>()
 
-    fun codeStmt(): PsiElementPattern.Capture<PsiElement> = psiElementInside<MvCodeBlock>()
+    fun codeStatementPattern(): PsiElementPattern.Capture<PsiElement> =
+        psiElement()
+            .inside(psiElement<MvCodeBlock>())
+            .andNot(psiElement().withParent(MvModule::class.java))
+            .andNot(psiElement().withSuperParent(3, MvStructLitExpr::class.java))
+            // let S { field } = 1
+            //  STRUCT_PAT[FIELD_PAT[BINDING[IDENTIFIER]]]
+            //  ^ 3         ^ 2           ^ 1       ^ 0
+            .andNot(psiElement().withSuperParent(3, MvStructPat::class.java))
 
-    fun anySpecStart() = psiElementInside<MvItemSpec>().and(onStmtBeginning("spec"))
+    fun anySpecStart() = psiElementInside<MvItemSpec>().and(onStatementBeginning("spec"))
 
     fun itemSpecStmt(): PsiElementPattern.Capture<PsiElement> = psiElementInside<MvSpecCodeBlock>()
 
@@ -52,9 +60,7 @@ object MvPsiPatterns {
 
     fun bindingPat(): PsiElementPattern.Capture<PsiElement> = psiElementWithParent<MvBindingPat>()
 
-    fun namedAddress(): PsiElementPattern.Capture<MvNamedAddress> {
-        return psiElement()
-    }
+    fun namedAddress(): PsiElementPattern.Capture<MvNamedAddress> = psiElement<MvNamedAddress>()
 
     fun typeParameter(): PsiElementPattern.Capture<PsiElement> =
         psiElementWithParent<MvTypeParameter>()
@@ -91,32 +97,29 @@ object MvPsiPatterns {
             .withCond("FirstChild") { it.prevSibling == null }
 
     fun specIdentifier(): PsiElementPattern.Capture<PsiElement> =
-        PlatformPatterns.psiElement()
+        psiElement()
             .withParent<MvItemSpecRef>()
 
-    private fun whitespaceAndErrors() = PlatformPatterns.psiElement().whitespaceCommentEmptyOrError()
+    private fun whitespaceAndErrors() = psiElement().whitespaceCommentEmptyOrError()
 
     inline fun <reified I : PsiElement> psiElementWithParent() =
-        PlatformPatterns.psiElement().withParent(
-            StandardPatterns.or(
-                psiElement<I>(),
-                psiElement<PsiErrorElement>().withParent(psiElement<I>())
+        psiElement()
+            .withParent(
+                or(psiElement<I>(), psiElement<PsiErrorElement>().withParent(psiElement<I>()))
             )
-        )
 
     inline fun <reified I : PsiElement> psiElementAfterSiblingSkipping(
         skip: ElementPattern<*>,
     ) =
-        StandardPatterns.or(
-            PlatformPatterns.psiElement()
-                .afterSiblingSkipping(skip, psiElement<I>()),
-            PlatformPatterns.psiElement()
+        or(
+            psiElement().afterSiblingSkipping(skip, psiElement<I>()),
+            psiElement()
                 .withParent(psiElement<PsiErrorElement>().afterSiblingSkipping(skip, psiElement<I>()))
         )
 
     inline fun <reified I : PsiElement> psiElementInside(): PsiElementPattern.Capture<PsiElement> =
-        PlatformPatterns.psiElement().inside(
-            StandardPatterns.or(
+        psiElement().inside(
+            or(
                 psiElement<I>(),
                 psiElement<PsiErrorElement>().withParent(psiElement<I>())
             )
@@ -158,7 +161,7 @@ object MvPsiPatterns {
         }
     }
 
-    private class OnStmtBeginning(
+    private class OnStatementBeginning(
         vararg startWords: String
     ) : PatternCondition<PsiElement>("on statement beginning") {
         val myStartWords = startWords
@@ -167,8 +170,9 @@ object MvPsiPatterns {
             return if (myStartWords.isEmpty()) {
                 val onBoundary =
                     prev == null || prev is PsiWhiteSpace || prev.node.elementType in STMT_BOUNDARIES
-                onBoundary &&
-                        !(t.hasAncestorOrSelf<MvStructPat>() || t.hasAncestorOrSelf<MvStructLitExpr>())
+//                onBoundary &&
+//                        !(t.hasAncestorOrSelf<MvStructPat>() || t.hasAncestorOrSelf<MvStructLitExpr>())
+                onBoundary
             } else {
                 prev != null && prev.node.text in myStartWords
             }
