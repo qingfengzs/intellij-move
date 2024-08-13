@@ -42,6 +42,7 @@ fun gitTimestamp(): String {
     }
 }
 
+val psiViewerPlugin: String by project
 val shortPlatformVersion = prop("shortPlatformVersion")
 val useInstaller = prop("useInstaller").toBooleanStrict()
 val codeVersion = "1.6.0"
@@ -105,6 +106,7 @@ allprojects {
         testImplementation("junit:junit:4.13.2")
 
         intellijPlatform {
+            plugins(listOf(psiViewerPlugin))
             create(prop("platformType"), prop("platformVersion"), useInstaller = useInstaller)
             testFramework(TestFrameworkType.Platform)
             pluginVerifier(Constraints.LATEST_VERSION)
@@ -141,16 +143,15 @@ allprojects {
                 sinceBuild.set(prop("pluginSinceBuild"))
                 untilBuild.set(prop("pluginUntilBuild"))
             }
-
             val codeVersionForUrl = codeVersion.replace('.', '-')
             changeNotes.set(
                 """
-    <body>
-        <p><a href="https://intellij-move.github.io/$codeVersionForUrl.html">
-            Changelog for the Intellij-Move $codeVersion
-            </a></p>
-    </body>
-            """
+                    <body>
+                        <p><a href="https://intellij-move.github.io/$codeVersionForUrl.html">
+                            Changelog for the Intellij-Move $codeVersion
+                            </a></p>
+                    </body>
+                """
             )
 
         }
