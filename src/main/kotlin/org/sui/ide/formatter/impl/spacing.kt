@@ -32,7 +32,8 @@ fun createSpacingBuilder(commonSettings: CommonCodeStyleSettings): SpacingBuilde
 
         .before(TYPE_ANNOTATION).spacing(0, 0, 0, true, 0)
         .before(INITIALIZER).spacing(1, 1, 0, true, 0)
-
+        .before(ENUM).spacing(1, 1, 1, true, 0) // Default spacing before enum
+        .before(ENUM_VARIANT).spacing(1, 1, 1, true, 0)
         .between(AND, MUT).spacing(0, 0, 0, false, 0)
 
         .afterInside(AND, PATH_TYPE).spacing(0, 0, 0, false, 0)

@@ -424,7 +424,7 @@ EnumBody ::= '{' (EnumVariant ','?)* '}'
    pin = 1
  }
 
-EnumVariant ::= Attr* IDENTIFIER (BlockFields | TupleType)?
+EnumVariant ::= Attr* IDENTIFIER VariantArgs?
 {
   pin = 2
     implements = [
@@ -437,6 +437,16 @@ EnumVariant ::= Attr* IDENTIFIER (BlockFields | TupleType)?
     elementTypeFactory = "org.sui.lang.core.stubs.StubsKt.factory"
   hooks = [ leftBinder = "ADJACENT_LINE_COMMENTS" ]
 }
+
+private VariantArgs ::= [BlockFields | TupleFields]
+TupleFields ::= '(' TupleFieldDecl_with_recover* ')'
+private TupleFieldDecl_with_recover ::= !')' TupleFieldDecl (',' | &')') {
+  pin = 1
+  recoverWhile = TupleFieldDecl_recover
+}
+private TupleFieldDecl_recover ::= !(')' | Type )
+TupleFieldDecl ::= Type
+
 
 UseFunFirst::= 'use fun'
 PublicUseFun ::= 'public'? UseFunFirst PathStart? 'as' IDENTIFIER'.'IDENTIFIER ';' {
@@ -694,7 +704,7 @@ Pat ::= TuplePat
         | BindingPat
 
 MatchPat ::= Pat | EnumVariantPat
-EnumVariantPat ::= PathImpl !('{')
+EnumVariantPat ::= PathImpl ValueArgumentList? !('{')
 
 WildPat ::= '_'
 

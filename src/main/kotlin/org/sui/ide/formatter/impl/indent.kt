@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode
 import org.sui.ide.formatter.MoveFmtBlock
 import org.sui.ide.formatter.MvFmtContext
 import org.sui.lang.MvElementTypes.*
-import org.sui.lang.core.psi.MvExpr
+import org.sui.lang.core.psi.*
 
 fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? {
     val parentNode = node
@@ -23,8 +23,7 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
         // if (true)
         // else
         //     2 + 2;
-        parentType == ELSE_BLOCK
-                && child.elementType == INLINE_BLOCK -> Indent.getContinuationIndent()
+        parentType == ELSE_BLOCK && child.elementType == INLINE_BLOCK -> Indent.getContinuationIndent()
 
         // do not indent else block
         child.elementType == ELSE_BLOCK -> Indent.getNoneIndent()
@@ -36,12 +35,11 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
         parentType in DELIMITED_BLOCKS -> getIndentIfNotDelim(child, parentNode)
 
         // Indent flat block contents, excluding closing brace
-        node.isFlatBlock ->
-            if (childCtx.metLBrace) {
-                getIndentIfNotDelim(child, node)
-            } else {
-                Indent.getNoneIndent()
-            }
+        node.isFlatBlock -> if (childCtx.metLBrace) {
+            getIndentIfNotDelim(child, node)
+        } else {
+            Indent.getNoneIndent()
+        }
 
 //        //     let a =
 //        //     92;
@@ -60,7 +58,10 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
         //     .myfield
         //     .myotherfield
         parentPsi is MvExpr -> Indent.getContinuationWithoutFirstIndent()
-
+        parentPsi is MvMatchBody -> Indent.getNoneIndent()
+        parentPsi is MvMatchArm -> Indent.getNormalIndent()
+        parentPsi is MvEnumBody -> Indent.getNoneIndent()
+        parentPsi is MvEnumVariant -> Indent.getContinuationIndent()
         // same thing as previous one, but for spec statements
         parentPsi.isSpecStmt -> Indent.getContinuationWithoutFirstIndent()
 
@@ -75,9 +76,8 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
 //        Indent.getNormalIndent()
 //    }
 
-private fun getIndentIfNotDelim(child: ASTNode, parent: ASTNode): Indent =
-    if (child.isBlockDelim(parent)) {
-        Indent.getNoneIndent()
-    } else {
-        Indent.getNormalIndent()
-    }
+private fun getIndentIfNotDelim(child: ASTNode, parent: ASTNode): Indent = if (child.isBlockDelim(parent)) {
+    Indent.getNoneIndent()
+} else {
+    Indent.getNormalIndent()
+}
