@@ -3,9 +3,7 @@ package org.sui.lang.core.resolve2.ref
 import com.intellij.psi.ResolveResult
 import org.sui.cli.MoveProject
 import org.sui.lang.core.psi.*
-import org.sui.lang.core.psi.ext.MvMethodOrPath
-import org.sui.lang.core.psi.ext.useSpeck
-import org.sui.lang.core.psi.ext.variants
+import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.resolve.*
 import org.sui.lang.core.resolve.ref.*
 import org.sui.lang.core.resolve.ref.Namespace.MODULE
@@ -113,7 +111,7 @@ fun processQualifiedPathResolveVariants(
         if (processItemDeclarations(module, ns, processor)) return true
     }
     if (resolvedQualifier is MvEnum) {
-        if (processor.processAll(resolvedQualifier.variants)) return true
+        if (processor.processAll(TYPES, resolvedQualifier.variants)) return true
     }
     return false
 }
@@ -136,6 +134,8 @@ class ResolutionContext(val element: MvElement, val isCompletion: Boolean) {
 
     val methodOrPath: MvMethodOrPath? get() = element as? MvMethodOrPath
     val path: MvPath? get() = element as? MvPath
+
+    val isSpecOnlyExpr: Boolean get() = element.hasAncestor<MvSpecOnlyExpr>()
 }
 
 //// todo: use in inference later

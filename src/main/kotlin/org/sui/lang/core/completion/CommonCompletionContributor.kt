@@ -3,11 +3,13 @@ package org.sui.lang.core.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.completion.impl.CompletionSorterImpl
 import com.intellij.psi.util.elementType
+import org.sui.lang.MvElementTypes.IDENTIFIER
 import org.sui.lang.MvElementTypes.MODULE_KW
 import org.sui.lang.core.MvPsiPattern
 import org.sui.lang.core.completion.providers.*
 import org.sui.lang.core.completion.sort.COMPLETION_WEIGHERS_GROUPED
 import org.sui.lang.core.psi.MvModule
+import org.sui.lang.core.psi.ext.nextNonWsSibling
 import org.sui.lang.core.psi.ext.prevNonWsSibling
 
 class CommonCompletionContributor : CompletionContributor() {
@@ -31,6 +33,8 @@ class CommonCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC, MacrosCompletionProvider)
         extend(CompletionType.BASIC, VectorLiteralCompletionProvider)
         extend(CompletionType.BASIC, MethodOrFieldCompletionProvider)
+
+//        extend(CompletionType.BASIC, CommonCompletionProvider)
     }
 
     fun extend(type: CompletionType?, provider: MvCompletionProvider) {

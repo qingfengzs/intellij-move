@@ -55,9 +55,9 @@ if (publishingChannel != "default") {
 }
 
 val pluginGroup = "org.sui"
-val javaVersion = JavaVersion.VERSION_17
 val pluginName = "intellij-sui-move"
 val pluginJarName = "intellij-sui-move-$pluginVersion"
+val javaVersion = JavaVersion.VERSION_17
 
 val kotlinReflectVersion = "1.9.10"
 
@@ -67,7 +67,7 @@ version = pluginVersion
 plugins {
     id("java")
     kotlin("jvm") version "1.9.25"
-    id("org.jetbrains.intellij.platform") version "2.0.0"
+    id("org.jetbrains.intellij.platform") version "2.0.1"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("net.saliman.properties") version "1.5.2"
     id("org.gradle.idea")
@@ -185,7 +185,7 @@ allprojects {
         }
     }
     tasks {
-        withType<KotlinCompile> {
+        compileKotlin {
             kotlinOptions {
                 jvmTarget = "17"
                 languageVersion = "1.9"
@@ -194,42 +194,45 @@ allprojects {
             }
         }
 
-        withType<Jar> {
+        jar {
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         }
 
         generateLexer {
             sourceFile.set(file("src/main/grammars/MoveLexer.flex"))
             targetOutputDir.set(file("src/main/gen/org/sui/lang"))
-            purgeOldFiles.set(true)
+//            purgeOldFiles.set(true)
         }
         generateParser {
             sourceFile.set(file("src/main/grammars/MoveParser.bnf"))
             targetRootOutputDir.set(file("src/main/gen"))
+            // not used if purgeOldFiles set to false
             pathToParser.set("/org/sui/lang/MoveParser.java")
-            pathToPsiRoot.set("/org/sui/lang/psi")
-            purgeOldFiles.set(true)
+            pathToPsiRoot.set("/org/sui/lang/core/psi")
+//            purgeOldFiles.set(true)
         }
 
         withType<KotlinCompile> {
             dependsOn(generateLexer, generateParser)
         }
 
-        runIde {
+    }
+
+    val runIdeWithPlugins by intellijPlatformTesting.runIde.registering {
+        plugins {
+            plugin("com.google.ide-perf:1.3.1")
+//            plugin("PsiViewer:PsiViewer 241.14494.158-EAP-SNAPSHOT")
+        }
+        task {
             systemProperty("org.sui.debug.enabled", true)
 //            systemProperty("org.move.external.linter.max.duration", 30)  // 30 ms
 //            systemProperty("org.move.aptos.bundled.force.unsupported", true)
 //            systemProperty("idea.log.debug.categories", "org.move.cli")
         }
 
-        prepareSandbox {
-//            enabled = true
-//        dependsOn("downloadAptosBinaries")
-            // copy bin/ directory inside the plugin zip file
-            from("$rootDir/bin") {
-                into("$pluginName/bin")
-                include("**")
-            }
+        prepareSandboxTask {
+            // dependsOn("downloadAptosBinaries")
+            // copyDownloadedAptosBinaries(this)
         }
     }
 

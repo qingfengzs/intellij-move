@@ -117,7 +117,7 @@ class MvFunctionStub(
     elementType: IStubElementType<*, *>,
     override val name: String?,
     override val flags: Int,
-    val visibility: FunctionVisibility,
+    val visibility: VisKind?,
     val address: StubAddress,
     val moduleName: String?,
 ) : MvAttributeOwnerStubBase<MvFunction>(parent, elementType), MvNamedStub {
@@ -154,9 +154,10 @@ class MvFunctionStub(
             val name = dataStream.readNameAsString()
             val flags = dataStream.readInt()
 
-            val vis = dataStream.readInt()
-            val visibility = FunctionVisibility.values()
-                .find { it.ordinal == vis } ?: error("Invalid vis value $vis")
+            val visSyntax = dataStream.readUTFFastAsNullable()
+            val visibility = visSyntax?.let { kw ->
+                VisKind.entries.find { it.keyword == kw } ?: error("Invalid vis keyword $kw")
+            }
 
             val stubAddress = dataStream.deserializeStubAddress()
             val moduleName = dataStream.readUTFFastAsNullable()
@@ -176,7 +177,7 @@ class MvFunctionStub(
             with(dataStream) {
                 writeName(stub.name)
                 writeInt(stub.flags)
-                writeInt(stub.visibility.ordinal)
+                writeUTFFastAsNullable(stub.visibility?.keyword)
                 serializeStubAddress(stub.address)
                 writeUTFFastAsNullable(stub.moduleName)
             }
@@ -201,7 +202,7 @@ class MvFunctionStub(
                 this,
                 psi.name,
                 flags,
-                visibility = psi.visibilityFromPsi(),
+                visibility = psi.visibilityModifier?.stubVisKind,
                 address = moduleAddress,
                 moduleName = moduleName,
             )

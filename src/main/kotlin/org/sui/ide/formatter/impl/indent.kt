@@ -23,7 +23,8 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
         // if (true)
         // else
         //     2 + 2;
-        parentType == ELSE_BLOCK && child.elementType == INLINE_BLOCK -> Indent.getContinuationIndent()
+        parentType == ELSE_BLOCK
+                && child.elementType == INLINE_BLOCK -> Indent.getContinuationIndent()
 
         // do not indent else block
         child.elementType == ELSE_BLOCK -> Indent.getNoneIndent()
@@ -35,7 +36,8 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
         parentType in DELIMITED_BLOCKS -> getIndentIfNotDelim(child, parentNode)
 
         // Indent flat block contents, excluding closing brace
-        node.isFlatBlock -> if (childCtx.metLBrace) {
+        node.isFlatBlock ->
+            if (childCtx.metLBrace) {
             getIndentIfNotDelim(child, node)
         } else {
             Indent.getNoneIndent()
@@ -76,7 +78,8 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
 //        Indent.getNormalIndent()
 //    }
 
-private fun getIndentIfNotDelim(child: ASTNode, parent: ASTNode): Indent = if (child.isBlockDelim(parent)) {
+private fun getIndentIfNotDelim(child: ASTNode, parent: ASTNode): Indent =
+    if (child.isBlockDelim(parent)) {
     Indent.getNoneIndent()
 } else {
     Indent.getNormalIndent()

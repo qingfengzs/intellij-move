@@ -6,6 +6,7 @@ import org.sui.lang.core.resolve.RsResolveProcessor
 import org.sui.lang.core.resolve.processAll
 import org.sui.lang.core.resolve.ref.MvPolyVariantReference
 import org.sui.lang.core.resolve.ref.MvPolyVariantReferenceBase
+import org.sui.lang.core.resolve.ref.NONE
 import org.sui.lang.core.types.infer.inference
 import org.sui.lang.core.types.ty.TyStruct
 import org.sui.stdext.wrapWithList
@@ -22,7 +23,7 @@ fun processNamedFieldVariants(
             val dotExprModule = element.namespaceModule ?: return false
             if (structItem.containingModule != dotExprModule) return false
         }
-    return processor.processAll(structItem.namedFields)
+    return processor.processAll(NONE, structItem.namedFields)
     }
 
 class MvStructDotFieldReferenceImpl(

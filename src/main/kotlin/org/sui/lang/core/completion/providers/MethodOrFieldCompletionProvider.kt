@@ -10,10 +10,7 @@ import org.jetbrains.annotations.VisibleForTesting
 import org.sui.lang.core.completion.CompletionContext
 import org.sui.lang.core.completion.createLookupElement
 import org.sui.lang.core.psi.MvFunction
-import org.sui.lang.core.psi.ext.MvMethodOrField
-import org.sui.lang.core.psi.ext.inferReceiverTy
-import org.sui.lang.core.psi.ext.isMsl
-import org.sui.lang.core.psi.ext.processNamedFieldVariants
+import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.psi.tyInfers
 import org.sui.lang.core.resolve.collectCompletionVariants
 import org.sui.lang.core.resolve.createProcessor

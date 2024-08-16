@@ -3,7 +3,6 @@ package org.sui.lang.core.resolve2
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.resolve.*
-import org.sui.lang.core.resolve.ref.FUNCTIONS
 import org.sui.lang.core.resolve.ref.Namespace
 import org.sui.lang.core.types.infer.foldTyTypeParameterWith
 import org.sui.lang.core.types.ty.Ty
@@ -11,17 +10,6 @@ import org.sui.lang.core.types.ty.TyInfer
 import org.sui.lang.core.types.ty.TyReference
 import org.sui.lang.moveProject
 import java.util.*
-
-val MvNamedElement.namespaces: Set<Namespace>
-    get() = when (this) {
-        is MvFunction -> EnumSet.of(Namespace.FUNCTION)
-        is MvStruct -> EnumSet.of(Namespace.TYPE)
-        is MvConst -> EnumSet.of(Namespace.NAME)
-//        is MvConst -> EnumSet.of(Namespace.CONST)
-        is MvSchema -> EnumSet.of(Namespace.SCHEMA)
-        is MvModule -> EnumSet.of(Namespace.MODULE)
-        else -> EnumSet.of(Namespace.NAME)
-    }
 
 val MvNamedElement.namespace
     get() = when (this) {
@@ -91,16 +79,17 @@ fun processItemsFromModuleSpecs(
     processor: RsResolveProcessor,
 ): Boolean {
     for (namespace in namespaces) {
+        val thisNs = setOf(namespace)
         for (moduleSpec in module.allModuleSpecs()) {
             val matched = when (namespace) {
                 Namespace.FUNCTION ->
                     processor.processAll(
+                        thisNs,
                         moduleSpec.specFunctions(),
                         moduleSpec.specInlineFunctions(),
-                        ns = FUNCTIONS
                     )
 
-                Namespace.SCHEMA -> processor.processAll(moduleSpec.schemas())
+                Namespace.SCHEMA -> processor.processAll(thisNs, moduleSpec.schemas())
                 else -> false
             }
             if (matched) return true

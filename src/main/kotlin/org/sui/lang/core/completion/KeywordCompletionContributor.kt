@@ -16,6 +16,7 @@ import org.sui.lang.core.MvPsiPattern.identifierStatementBeginningPattern
 import org.sui.lang.core.MvPsiPattern.itemSpecStmt
 import org.sui.lang.core.MvPsiPattern.module
 import org.sui.lang.core.MvPsiPattern.moduleSpecBlock
+import org.sui.lang.core.MvPsiPattern.onStatementBeginning
 import org.sui.lang.core.MvPsiPattern.script
 import org.sui.lang.core.MvPsiPattern.toplevel
 import org.sui.lang.core.MvPsiPattern.typeParameter

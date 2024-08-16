@@ -6,12 +6,8 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValueProvider.Result
 import com.intellij.psi.util.PsiModificationTracker
 import org.sui.lang.core.psi.*
-import org.sui.lang.core.psi.NamedItemScope.MAIN
-import org.sui.lang.core.psi.NamedItemScope.VERIFY
-import org.sui.lang.core.psi.ext.MvDocAndAttributeOwner
-import org.sui.lang.core.psi.ext.ancestorsOfType
-import org.sui.lang.core.psi.ext.qualifier
-import org.sui.lang.core.psi.ext.rootPath
+import org.sui.lang.core.psi.NamedItemScope.*
+import org.sui.lang.core.psi.ext.*
 import org.sui.utils.cache
 import org.sui.utils.cacheManager
 import org.sui.utils.cacheResult

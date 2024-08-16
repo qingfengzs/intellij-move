@@ -13,7 +13,10 @@ import org.sui.cli.Consts
 import org.sui.cli.MoveProject
 import org.sui.cli.moveProjectsService
 import org.sui.lang.core.psi.*
-import org.sui.lang.core.psi.ext.*
+import org.sui.lang.core.psi.ext.ancestorOrSelf
+import org.sui.lang.core.psi.ext.childrenOfType
+import org.sui.lang.core.psi.ext.isPreload
+import org.sui.lang.core.psi.ext.modules
 import org.sui.openapiext.resolveAbsPath
 import org.sui.openapiext.toPsiFile
 import org.sui.stdext.chain
@@ -39,13 +42,14 @@ val PsiElement.moveProject: MoveProject? get() {
 
 fun VirtualFile.hasChild(name: String) = this.findChild(name) != null
 
-fun VirtualFile.toNioPathOrNull(): Path? {
-    try {
-        return this.toNioPath()
-    } catch (e: UnsupportedOperationException) {
-        return null
-    }
-}
+fun VirtualFile.toNioPathOrNull() = fileSystem.getNioPath(this)
+//fun VirtualFile.toNioPathOrNull(): Path? {
+//    try {
+//        return this.toNioPath()
+//    } catch (e: UnsupportedOperationException) {
+//        return null
+//    }
+//}
 
 fun PsiFile.toNioPathOrNull(): Path? {
     return this.originalFile.virtualFile?.toNioPathOrNull()
@@ -102,13 +106,13 @@ fun MoveFile.preLoadItems(): List<MvStruct> {
     if (this.fileType != MoveFileType) return emptyList()
     val resultList = mutableListOf<MvStruct>()
     this.modules().forEach { mvModule ->
-        if (mvModule.isPreload() && mvModule.identifier?.text == "tx_context") {
-            mvModule.structs().filter { it.identifier?.text == "TxContext" }.let { resultList.addAll(it) }
-        }
-        if (mvModule.isPreload() && mvModule.identifier?.text == "object") {
-            mvModule.structs().filter { it.identifier?.text == "ID" || it.identifier?.text == "UID" }
-                .let { resultList.addAll(it) }
-        }
+//        if (mvModule.isPreload() && mvModule.identifier?.text == "tx_context") {
+//            mvModule.structs().filter { it.identifier?.text == "TxContext" }.let { resultList.addAll(it) }
+//        }
+//        if (mvModule.isPreload() && mvModule.identifier?.text == "object") {
+//            mvModule.structs().filter { it.identifier?.text == "ID" || it.identifier?.text == "UID" }
+//                .let { resultList.addAll(it) }
+//        }
     }
     return resultList
 }

@@ -1,5 +1,6 @@
 package org.sui.lang.core.psi.ext
 
+import com.intellij.psi.PsiComment
 import org.sui.lang.core.psi.*
 import org.sui.stdext.buildList
 
