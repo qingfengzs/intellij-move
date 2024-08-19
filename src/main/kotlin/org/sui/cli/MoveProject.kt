@@ -18,6 +18,8 @@ import org.sui.cli.manifest.AptosConfigYaml
 import org.sui.cli.manifest.MoveToml
 import org.sui.cli.manifest.SuiConfigYaml
 import org.sui.cli.tests.NamedAddressService
+import org.sui.ide.annotator.PRELOAD_STD_MODULES
+import org.sui.ide.annotator.PRELOAD_SUI_MODULES
 import org.sui.lang.MoveFile
 import org.sui.lang.core.psi.MvModule
 import org.sui.lang.core.types.Address
@@ -160,6 +162,24 @@ data class MoveProject(
             }
         }
     }
+
+    fun preloadModules(): List<MvModule> {
+        val preModules: MutableList<MvModule> = mutableListOf()
+        val depFolders = dependencies.asReversed().flatMap { it.first.moveFolders() }
+        for (floder in depFolders) {
+            floder.iterateMoveVirtualFiles {
+                val moveFile = it.toMoveFile(project) ?: return@iterateMoveVirtualFiles true
+                if (PRELOAD_STD_MODULES.contains(moveFile.name) || PRELOAD_SUI_MODULES.contains(moveFile.name)) {
+                    val preloadModules = moveFile.preloadModules()
+                    preModules += preloadModules
+                }
+                true
+            }
+        }
+        return preModules
+    }
+
+
 
     sealed class UpdateStatus(private val priority: Int) {
         //        object UpToDate : UpdateStatus(0)

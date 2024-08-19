@@ -346,6 +346,7 @@
 
         <postStartupActivity
                 implementation="org.sui.ide.newProject.projectActivity.AlwaysRefreshProjectsAfterOpen"/>
+        <postStartupActivity implementation="org.sui.ide.newProject.projectActivity.PreImportedModuleStartupActivity"/>
         <!--     background = 5 seconds delayed  -->
         <!--    <postStartupActivity-->
         <!--        implementation="org.sui.cli.openProject.CreateDefaultCompileRunConfiguration" />-->

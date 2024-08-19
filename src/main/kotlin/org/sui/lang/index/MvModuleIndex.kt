@@ -15,7 +15,7 @@ class MvModuleIndex : StringStubIndexExtension<MvModule>() {
 
     companion object {
         val KEY: StubIndexKey<String, MvModule> =
-            StubIndexKey.createIndexKey("org.move.index.ModuleIndex")
+            StubIndexKey.createIndexKey("org.sui.index.ModuleIndex")
 
         fun getAllModuleNames(project: Project): Collection<String> {
             checkCommitIsNotInProgress(project)
