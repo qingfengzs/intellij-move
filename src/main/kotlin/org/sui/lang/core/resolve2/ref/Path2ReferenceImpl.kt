@@ -2,6 +2,9 @@ package org.sui.lang.core.resolve2.ref
 
 import com.intellij.psi.ResolveResult
 import org.sui.cli.MoveProject
+import org.sui.ide.annotator.PRELOAD_MODULE_ITEMS
+import org.sui.ide.annotator.PRELOAD_STD_MODULES
+import org.sui.ide.annotator.PRELOAD_SUI_MODULES
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.resolve.*
@@ -11,6 +14,7 @@ import org.sui.lang.core.resolve2.*
 import org.sui.lang.core.resolve2.PathKind.NamedAddress
 import org.sui.lang.core.resolve2.PathKind.ValueAddress
 import org.sui.lang.moveProject
+import org.sui.lang.preLoadItems
 import kotlin.LazyThreadSafetyMode.NONE
 
 class Path2ReferenceImpl(element: MvPath) :
@@ -68,8 +72,37 @@ fun processPathResolveVariants(
                 // Self::
                 if (processor.lazy("Self", MODULES) { ctx.containingModule }) return true
             }
+
             // local
-            processNestedScopesUpwards(ctx.element, pathKind.ns, ctx, processor)
+            if (processNestedScopesUpwards(ctx.element, pathKind.ns, ctx, processor)) {
+                return true
+            }
+
+            // pre-load module
+            if (PRELOAD_SUI_MODULES.contains(ctx.element.text) || PRELOAD_STD_MODULES.contains(ctx.element.text)) {
+                ctx.moveProject!!.processMoveFiles { file ->
+                    val modules = file.preloadModules()
+                    for (module in modules) {
+                        if (processor.process(module.name.toString(), MODULES, module)) {
+                            return@processMoveFiles true
+                        }
+                    }
+                    true
+                }
+            }
+            // pre-load module-item
+            if (PRELOAD_MODULE_ITEMS.contains(ctx.element.text)) {
+                ctx.moveProject!!.processMoveFiles { file ->
+                    val items = file.preLoadItems()
+                    for (item in items) {
+                        if (processor.process(item.name.toString(), MODULES, item)) {
+                            return@processMoveFiles true
+                        }
+                    }
+                    true
+                }
+            }
+            false
         }
 
         is PathKind.QualifiedPath.Module -> {

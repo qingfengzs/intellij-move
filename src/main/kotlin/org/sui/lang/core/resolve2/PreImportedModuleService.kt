@@ -1,13 +1,12 @@
 package org.sui.lang.core.resolve2
 
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import org.sui.lang.core.psi.MvModule
 import org.sui.lang.core.psi.MvStruct
 import org.sui.lang.preLoadItems
 import org.sui.openapiext.allMoveFiles
 
-@Service(Service.Level.PROJECT)
+//@Service(Service.Level.PROJECT)
 class PreImportedModuleService(private val project: Project) {
 
     private val preImportedModules: MutableList<MvModule> = mutableListOf()
