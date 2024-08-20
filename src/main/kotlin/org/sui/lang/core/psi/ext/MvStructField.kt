@@ -14,9 +14,9 @@ val MvNamedFieldDecl.fieldsDefBlock: MvBlockFields?
     get() =
         parent as? MvBlockFields
 
-val MvNamedFieldDecl.structItem: MvStruct
+val MvNamedFieldDecl.structItem: MvStruct?
     get() =
-        fieldsDefBlock?.parent as MvStruct
+        fieldsDefBlock?.parent as? MvStruct
 
 abstract class MvNamedFieldDeclMixin(node: ASTNode) : MvMandatoryNameIdentifierOwnerImpl(node),
     MvNamedFieldDecl {

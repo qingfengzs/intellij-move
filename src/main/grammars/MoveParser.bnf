@@ -696,16 +696,22 @@ Pat ::= TuplePat
         | StructPat
         | WildPat
         | BindingPat
+        | EnumVariantPat
 
 // MatchPat ::= Pat | EnumVariantPat
 // EnumVariantPat ::= PathImpl ValueArgumentList? !('{')
-
-MatchPat ::= Pat | PathPat
-PathPat ::= PathImpl ValueArgumentList? !('{')
-
 WildPat ::= '_'
-EnumVariantPat ::= PathImpl ValueArgumentList? !('{')
+EnumVariantPat ::= PathImpl EnumPat? !('{')
+private EnumPat ::= '(' EnumArgumentList_items? ')' {
+    pin = 1
+}
+private EnumArgumentList_items ::= BindingPat (',' BindingPat)* ','?
 
+//EnumArgument ::= !')' Expr &(',' | ')') {
+//    pin = 1
+//    recoverWhile = EnumArgument_recover
+//}
+//private EnumArgument_recover ::= !(<<mslOnly SpecExpr_first>> | Expr_first | ')' | '}' | ';' | ',')
 
 // XXX(matklad): it is impossible to distinguish between nullary enum variants
 // and identifiers during parsing.
@@ -722,7 +728,7 @@ BindingPat ::= mut? IDENTIFIER !ForbiddenBindingPatLast {
     mixin = "org.sui.lang.core.psi.ext.MvBindingPatMixin"
 }
 //private ForbiddenBindingPatLast ::= '...' | '::' | '..=' | '..' | '<' | '(' | '{' | '!' {
-private ForbiddenBindingPatLast ::= '::' | '<' | '(' | '{' | '!' {
+private ForbiddenBindingPatLast ::= '::' | '<' | '(' | '{' | '!'{
   consumeTokenMethod = "consumeTokenFast"
 }
 
@@ -764,7 +770,7 @@ FieldPat ::=  (BindingPat !':') | FieldPatFull
 //}
 FieldPatBinding ::= ':' Pat
 
-private Pat_first ::= '_' | '(' | Path_first | AnyLitToken_first
+private Pat_first ::= '_' | '(' | Path_first | AnyLitToken_first | mut
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Stmts
@@ -1079,7 +1085,7 @@ MatchExpr ::= Attr* <<remapContextualKwOnRollback (match MatchArgument MatchBody
 MatchArgument ::= '(' Expr ')'
 
 MatchBody ::= '{' MatchArm_with_recover* '}' { pin = 1 }
-MatchArm ::= Attr* (Pat | EnumVariantPat) MatchArmGuard? '=>' Expr ','?
+MatchArm ::= Attr* (Pat) MatchArmGuard? '=>' Expr ','?
 {
     pin = 2
     implements = [ "org.sui.lang.core.psi.ext.MvDocAndAttributeOwner" ]

@@ -10,7 +10,6 @@ import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.resolve.ref.MvReferenceElement
 import org.sui.lang.core.resolve2.PathKind.*
 import org.sui.lang.core.resolve2.pathKind
-import org.sui.lang.core.types.infer.inference
 import org.sui.lang.core.types.ty.TyUnknown
 
 class MvUnresolvedReferenceInspection : MvLocalInspectionTool() {
@@ -157,6 +156,9 @@ class MvUnresolvedReferenceInspection : MvLocalInspectionTool() {
     private fun tryMultiResolveOrRegisterError(referenceElement: MvReferenceElement, holder: ProblemsHolder) {
         // no errors in pragmas
         if (referenceElement.hasAncestor<MvPragmaSpecStmt>()) return
+
+        // match Color::Red {x,y,z}
+        if (referenceElement.hasAncestor<MvMatchArm>() && referenceElement.parent is MvFieldPat) return
 
         val reference = referenceElement.reference ?: return
 
