@@ -160,6 +160,8 @@ class MvUnresolvedReferenceInspection : MvLocalInspectionTool() {
         // match Color::Red {x,y,z}
         if (referenceElement.hasAncestor<MvMatchArm>() && referenceElement.parent is MvFieldPat) return
 
+        if (referenceElement.hasAncestor<MvDotExpr>() && referenceElement is MvMethodCall) return
+
         val reference = referenceElement.reference ?: return
 
         val resolveVariants = reference.multiResolve()

@@ -72,37 +72,8 @@ fun processPathResolveVariants(
                 // Self::
                 if (processor.lazy("Self", MODULES) { ctx.containingModule }) return true
             }
-
             // local
-            if (processNestedScopesUpwards(ctx.element, pathKind.ns, ctx, processor)) {
-                return true
-            }
-
-            // pre-load module
-            if (PRELOAD_SUI_MODULES.contains(ctx.element.text) || PRELOAD_STD_MODULES.contains(ctx.element.text)) {
-                ctx.moveProject!!.processMoveFiles { file ->
-                    val modules = file.preloadModules()
-                    for (module in modules) {
-                        if (processor.process(module.name.toString(), MODULES, module)) {
-                            return@processMoveFiles true
-                        }
-                    }
-                    true
-                }
-            }
-            // pre-load module-item
-            if (PRELOAD_MODULE_ITEMS.contains(ctx.element.text)) {
-                ctx.moveProject!!.processMoveFiles { file ->
-                    val items = file.preLoadItems()
-                    for (item in items) {
-                        if (processor.process(item.name.toString(), MODULES, item)) {
-                            return@processMoveFiles true
-                        }
-                    }
-                    true
-                }
-            }
-            false
+            processNestedScopesUpwards(ctx.element, pathKind.ns, ctx, processor)
         }
 
         is PathKind.QualifiedPath.Module -> {
@@ -184,17 +155,47 @@ private fun resolvePath(
 //    kind: RsPathResolveKind
 ): List<RsPathResolveResult<MvElement>> {
     val pathKind = path.pathKind()
-    val result =
+    var result =
         // matches resolve variants against referenceName from path
         collectMethodOrPathResolveVariants(path, ctx) {
             // actually emits resolve variants
             processPathResolveVariants(ctx, pathKind, it)
         }
-    return result
-//    return when (result.size) {
-//        0 -> emptyList()
-//        1 -> listOf(result.single())
-//        else -> result
-//    }
+
+    if (result.isEmpty()) {
+        result = collectMethodOrPathResolveVariants(path, ctx) {
+            // pre-load module
+            if (PRELOAD_SUI_MODULES.contains(ctx.element.text) || PRELOAD_STD_MODULES.contains(ctx.element.text)) {
+                ctx.moveProject!!.processMoveFiles { file ->
+                    val modules = file.preloadModules()
+                    for (module in modules) {
+                        if (it.process(module.name.toString(), MODULES, module)) {
+                            return@processMoveFiles true
+                        }
+                    }
+                    true
+                }
+            }
+            // pre-load module-item
+            if (PRELOAD_MODULE_ITEMS.contains(ctx.element.text)) {
+                ctx.moveProject!!.processMoveFiles { file ->
+                    val items = file.preLoadItems()
+                    for (item in items) {
+                        if (it.process(item.name.toString(), MODULES, item)) {
+                            return@processMoveFiles true
+                        }
+                    }
+                    true
+                }
+            }
+        }
+    }
+
+//    return result
+    return when (result.size) {
+        0 -> emptyList()
+        1 -> listOf(result.single())
+        else -> result
+    }
 }
 
