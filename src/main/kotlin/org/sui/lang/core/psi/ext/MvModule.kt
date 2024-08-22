@@ -210,6 +210,24 @@ fun MvModule.isPreload(): Boolean {
             || this.addressRef?.namedAddress?.text == "std" && PRELOAD_STD_MODULES.contains(this.name)
 }
 
+fun MvModule.useModuleItemList(): List<String> {
+    val strings: MutableList<String> =
+        (this.useStmtList.mapNotNull { it.useSpeck?.path?.text?.split("::")?.getOrNull(1) }
+            .toMutableList() ?: mutableListOf()).toMutableList()
+    val useGroupSpeckList = this.useStmtList.mapNotNull { it.useSpeck?.useGroup?.useSpeckList }.toMutableList()
+    useGroupSpeckList.forEach() { useGroupSpeck ->
+        strings += (useGroupSpeck.mapNotNull {
+            if (it.path.text?.split("::")?.size!! > 1) {
+                it.path.text?.split("::")?.get(0)
+            } else {
+                null
+            }
+        })
+    }
+
+    return strings
+}
+
 abstract class MvModuleMixin : MvStubbedNamedElementImpl<MvModuleStub>,
                                MvModule {
 
@@ -240,5 +258,6 @@ abstract class MvModuleMixin : MvStubbedNamedElementImpl<MvModuleStub>,
             val address = this.address(moveProject) ?: Address.Value("0x0")
             return ItemQualName(this, address, null, moduleName)
         }
+
 
 }

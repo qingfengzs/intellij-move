@@ -1,12 +1,9 @@
 package org.sui.lang.core.resolve2
 
-import org.sui.lang.core.psi.MvPath
-import org.sui.lang.core.psi.MvUseGroup
-import org.sui.lang.core.psi.MvUseSpeck
-import org.sui.lang.core.psi.MvUseStmt
+import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.*
-import org.sui.lang.core.resolve.ref.MODULES
 import org.sui.lang.core.resolve.ref.ITEM_NAMESPACES
+import org.sui.lang.core.resolve.ref.MODULES
 import org.sui.lang.core.resolve.ref.NONE
 import org.sui.lang.core.resolve.ref.Namespace
 import org.sui.lang.core.types.Address
@@ -122,7 +119,12 @@ fun MvPath.pathKind(isCompletion: Boolean = false): PathKind {
             moveProject != null && qualifierItemName != null -> {
                 val namedAddress = moveProject.getNamedAddressTestAware(qualifierItemName)
                 if (namedAddress != null) {
-                    // known named address, can be module path
+                    val useModuleList = this.containingModule?.useModuleItemList()
+                    if (useModuleList?.contains(qualifierItemName) == true) {
+                        // known named address, can be module path
+                        val ns = this.allowedNamespaces(isCompletion)
+                        return PathKind.QualifiedPath.ModuleItem(this, qualifier, MODULES)
+                    }
                     return PathKind.QualifiedPath.Module(this, qualifier, MODULES, namedAddress)
                 }
                 // `use std::main`

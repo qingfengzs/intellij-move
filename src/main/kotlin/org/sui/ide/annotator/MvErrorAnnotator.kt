@@ -97,11 +97,12 @@ class MvErrorAnnotator : MvAnnotatorBase() {
                             callTy.paramTypes.size - 1
                         }
                         is MvAssertBangExpr -> {
-                            if (parentCallable.identifier.text == "assert") {
-                                2
-                            } else {
-                                return
-                            }
+//                            if (parentCallable.identifier.text == "assert") {
+//                                2
+//                            } else {
+//                                return
+//                            }
+                            return
                         }
                         else -> return
                     }
