@@ -166,26 +166,30 @@ private fun resolvePath(
         result = collectMethodOrPathResolveVariants(path, ctx) {
             // pre-load module
             if (PRELOAD_SUI_MODULES.contains(ctx.element.text) || PRELOAD_STD_MODULES.contains(ctx.element.text)) {
-                ctx.moveProject!!.processMoveFiles { file ->
-                    val modules = file.preloadModules()
-                    for (module in modules) {
-                        if (it.process(module.name.toString(), MODULES, module)) {
-                            return@processMoveFiles true
+                if (ctx.moveProject != null) {
+                    ctx.moveProject?.processMoveFiles { file ->
+                        val modules = file.preloadModules()
+                        for (module in modules) {
+                            if (it.process(module.name.toString(), MODULES, module)) {
+                                return@processMoveFiles true
+                            }
                         }
+                        true
                     }
-                    true
                 }
             }
             // pre-load module-item
             if (PRELOAD_MODULE_ITEMS.contains(ctx.element.text)) {
-                ctx.moveProject!!.processMoveFiles { file ->
-                    val items = file.preLoadItems()
-                    for (item in items) {
-                        if (it.process(item.name.toString(), MODULES, item)) {
-                            return@processMoveFiles true
+                if (ctx.moveProject != null) {
+                    ctx.moveProject!!.processMoveFiles { file ->
+                        val items = file.preLoadItems()
+                        for (item in items) {
+                            if (it.process(item.name.toString(), MODULES, item)) {
+                                return@processMoveFiles true
+                            }
                         }
+                        true
                     }
-                    true
                 }
             }
         }

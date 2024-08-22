@@ -106,7 +106,7 @@ allprojects {
         testImplementation("junit:junit:4.13.2")
 
         intellijPlatform {
-            plugins(listOf(psiViewerPlugin))
+//            plugins(listOf(psiViewerPlugin))
             create(prop("platformType"), prop("platformVersion"), useInstaller = useInstaller)
             testFramework(TestFrameworkType.Platform)
             pluginVerifier(Constraints.LATEST_VERSION)
