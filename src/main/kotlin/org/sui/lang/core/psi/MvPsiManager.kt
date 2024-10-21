@@ -94,7 +94,7 @@ interface MovePsiChangeListener {
     fun movePsiChanged(file: PsiFile, element: PsiElement, isStructureModification: Boolean)
 }
 
-class MvPsiManagerImpl(val project: Project) : MvPsiManager, Disposable {
+class MvPsiManagerImpl(val project: Project): MvPsiManager, Disposable {
 
     override val moveStructureModificationTracker = SimpleModificationTracker()
 
@@ -102,7 +102,7 @@ class MvPsiManagerImpl(val project: Project) : MvPsiManager, Disposable {
         PsiManager.getInstance(project).addPsiTreeChangeListener(CacheInvalidator(), this)
 
         project.messageBus.connect()
-            .subscribe(ModuleRootListener.TOPIC, object : ModuleRootListener {
+            .subscribe(ModuleRootListener.TOPIC, object: ModuleRootListener {
                 override fun rootsChanged(event: ModuleRootEvent) {
                     incStructureModificationCount()
                 }
@@ -115,7 +115,7 @@ class MvPsiManagerImpl(val project: Project) : MvPsiManager, Disposable {
 
     override fun dispose() {}
 
-    inner class CacheInvalidator : MvPsiTreeChangeAdapter() {
+    inner class CacheInvalidator: MvPsiTreeChangeAdapter() {
         override fun handleEvent(event: MvPsiTreeChangeEvent) {
             val element = when (event) {
                 is ChildRemoval.Before -> event.child
@@ -131,12 +131,10 @@ class MvPsiManagerImpl(val project: Project) : MvPsiManager, Disposable {
                             incStructureModificationCount()
                             return
                         }
-
                         PsiTreeChangeEvent.PROP_WRITABLE -> return
                         else -> event.element ?: return
                     }
                 }
-
                 else -> return
             }
 

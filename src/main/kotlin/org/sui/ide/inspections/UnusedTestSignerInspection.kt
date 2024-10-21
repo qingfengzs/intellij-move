@@ -7,9 +7,9 @@ import org.sui.lang.core.psi.MvAttr
 import org.sui.lang.core.psi.MvAttrItem
 import org.sui.lang.core.psi.MvVisitor
 
-class UnusedTestSignerInspection : MvLocalInspectionTool() {
+class UnusedTestSignerInspection: MvLocalInspectionTool() {
     override fun buildMvVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): MvVisitor =
-        object : MvVisitor() {
+        object: MvVisitor() {
             override fun visitAttrItem(attrItem: MvAttrItem) {
                 // stop if not a top-level item
                 if (attrItem.parent !is MvAttr) return

@@ -6,17 +6,13 @@ import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import org.jetbrains.annotations.VisibleForTesting
-import org.sui.lang.core.completion.CompletionContext
-import org.sui.lang.core.completion.getOriginalOrSelf
 import org.sui.lang.core.completion.safeGetOriginalOrSelf
 import org.sui.lang.core.psi.ext.isMsl
 import org.sui.lang.core.psiElement
-import org.sui.lang.core.resolve.collectCompletionVariants
 import org.sui.lang.core.resolve.ref.MvReferenceElement
 import org.sui.lang.core.resolve2.ref.ResolutionContext
 
-object CommonCompletionProvider : MvCompletionProvider() {
+object CommonCompletionProvider: MvCompletionProvider() {
     override val elementPattern: ElementPattern<PsiElement>
         get() = PlatformPatterns.psiElement().withParent(psiElement<MvReferenceElement>())
 

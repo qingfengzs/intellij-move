@@ -13,8 +13,7 @@ import org.sui.ide.annotator.MvAnnotationHolder
 import org.sui.ide.annotator.fixes.ItemSpecSignatureFix
 import org.sui.ide.annotator.fixes.WrapWithParensExprFix
 import org.sui.ide.annotator.pluralise
-import org.sui.ide.inspections.fixes.CompilerV2Feat.*
-import org.sui.ide.inspections.fixes.EnableCompilerV2FeatureFix
+import org.sui.ide.inspections.fixes.EnableMoveV2Fix
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.endOffset
 import org.sui.lang.core.psi.ext.itemSpecBlock
@@ -91,19 +90,36 @@ sealed class Diagnostic(
         }
     }
 
-    class StorageAccessIsNotAllowed(
-        path: MvPath,
-        private val typeName: String,
-    ): Diagnostic(path) {
+    sealed class StorageAccessError(path: MvPath): Diagnostic(path) {
+        class WrongModule(
+            path: MvPath,
+            private val correctModuleName: String,
+            private val typeName: String,
+        ): StorageAccessError(path) {
 
-        override fun prepare(): PreparedAnnotation {
-            return PreparedAnnotation(
-                ERROR,
-                "The type '$typeName' was not declared in the current module. " +
-                        "Global storage access is internal to the module"
-            )
+            override fun prepare(): PreparedAnnotation {
+                return PreparedAnnotation(
+                    ERROR,
+                    "Invalid operation: storage operation on type `$typeName` can only be done " +
+                            "within the defining module `$correctModuleName`",
+                )
+            }
+        }
+
+        class WrongItem(
+            path: MvPath,
+            private val itemName: String,
+        ): StorageAccessError(path) {
+            override fun prepare(): PreparedAnnotation {
+                return PreparedAnnotation(
+                    ERROR,
+                    "Expected a struct type. Global storage operations are restricted to struct types " +
+                            "declared in the current module. Found: `$itemName`",
+                )
+            }
         }
     }
+
 
     class FunctionSignatureMismatch(itemSpec: MvItemSpec):
         Diagnostic(
@@ -136,14 +152,14 @@ sealed class Diagnostic(
         }
     }
 
-    class NativeStructNotSupported(struct: MvStruct, errorRange: TextRange): Diagnostic(struct, errorRange) {
-        override fun prepare(): PreparedAnnotation {
-            return PreparedAnnotation(
-                ERROR,
-                "Native structs aren't supported by the Move VM anymore"
-            )
-        }
-    }
+//    class NativeStructNotSupported(struct: MvStruct, errorRange: TextRange): Diagnostic(struct, errorRange) {
+//        override fun prepare(): PreparedAnnotation {
+//            return PreparedAnnotation(
+//                ERROR,
+//                "Native structs aren't supported by the Move VM anymore"
+//            )
+//        }
+//    }
 
     class SpecFunctionRequiresReturnType(specFunction: MvSpecFunction):
         Diagnostic(
@@ -173,40 +189,40 @@ sealed class Diagnostic(
         }
     }
 
-    class IndexExprIsNotSupportedInCompilerV1(indexExpr: MvIndexExpr) : Diagnostic(indexExpr) {
+    class IndexExprIsNotSupportedInCompilerV1(indexExpr: MvIndexExpr): Diagnostic(indexExpr) {
 
         override fun prepare(): PreparedAnnotation {
             return PreparedAnnotation(
                 ERROR,
                 "Index operator is not supported in Aptos Move V1 outside specs",
-                fixes = listOf(EnableCompilerV2FeatureFix(element, INDEXING))
+                fixes = listOf(EnableMoveV2Fix(element))
             )
         }
     }
 
-    class PublicPackageIsNotSupportedInCompilerV1(modifier: MvVisibilityModifier) : Diagnostic(modifier) {
+    class PublicPackageIsNotSupportedInCompilerV1(modifier: MvVisibilityModifier): Diagnostic(modifier) {
 
         override fun prepare(): PreparedAnnotation {
             return PreparedAnnotation(
                 ERROR,
                 "public(package) is not supported in Aptos Move V1",
-                fixes = listOf(EnableCompilerV2FeatureFix(element, PUBLIC_PACKAGE))
+                fixes = listOf(EnableMoveV2Fix(element))
             )
         }
     }
 
-    class ReceiverStyleFunctionsIsNotSupportedInCompilerV1(methodCall: MvMethodCall) : Diagnostic(methodCall) {
+    class ReceiverStyleFunctionsIsNotSupportedInCompilerV1(methodCall: MvMethodCall): Diagnostic(methodCall) {
 
         override fun prepare(): PreparedAnnotation {
             return PreparedAnnotation(
                 ERROR,
                 "receiver-style functions are not supported in Aptos Move V1",
-                fixes = listOf(EnableCompilerV2FeatureFix(element, RECEIVER_STYLE_FUNCTIONS))
+                fixes = listOf(EnableMoveV2Fix(element))
             )
         }
     }
 
-    class PackageAndFriendModifiersCannotBeUsedTogether(modifier: MvVisibilityModifier) : Diagnostic(modifier) {
+    class PackageAndFriendModifiersCannotBeUsedTogether(modifier: MvVisibilityModifier): Diagnostic(modifier) {
         override fun prepare(): PreparedAnnotation {
             return PreparedAnnotation(
                 ERROR,

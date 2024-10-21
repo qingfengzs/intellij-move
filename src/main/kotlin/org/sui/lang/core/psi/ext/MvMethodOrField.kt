@@ -9,7 +9,7 @@ import org.sui.lang.core.types.infer.inference
 import org.sui.lang.core.types.ty.Ty
 import org.sui.lang.core.types.ty.TyUnknown
 
-interface MvMethodOrField : MvMandatoryReferenceElement
+interface MvMethodOrField: MvMandatoryReferenceElement
 
 val MvMethodOrField.dotExpr: MvDotExpr get() = parent as MvDotExpr
 val MvMethodOrField.receiverExpr: MvExpr get() = dotExpr.expr

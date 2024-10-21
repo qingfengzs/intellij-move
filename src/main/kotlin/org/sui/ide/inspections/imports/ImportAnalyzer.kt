@@ -7,7 +7,7 @@ import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.*
 import org.sui.stdext.chain
 
-class ImportAnalyzer2(val holder: ProblemsHolder) : MvVisitor() {
+class ImportAnalyzer2(val holder: ProblemsHolder): MvVisitor() {
 
     override fun visitModule(o: MvModule) = analyzeImportsOwner(o)
     override fun visitScript(o: MvScript) = analyzeImportsOwner(o)
@@ -50,7 +50,6 @@ class ImportAnalyzer2(val holder: ProblemsHolder) : MvVisitor() {
                                 // only hit first encountered to remove duplicates
                                 .firstOrNull { it.nameOrAlias == basePathType.itemName }
                         }
-
                         is BasePathType.Module -> {
                             reachableUseItems.filter { it.type == MODULE || it.type == SELF_MODULE }
                                 // only hit first encountered to remove duplicates
@@ -59,6 +58,7 @@ class ImportAnalyzer2(val holder: ProblemsHolder) : MvVisitor() {
                         // BasePathType.Address is fq path, and doesn't participate in imports
                         else -> null
                     }
+
                 if (useItemHit != null) {
                     allUseItemsHit.add(useItemHit)
                     break
@@ -114,7 +114,6 @@ val MvItemsOwner.itemsOwnerWithSiblings: List<MvItemsOwner>
                 // add all module spec blocks
                 listOf(this).chain(this.allModuleSpecBlocks()).toList()
             }
-
             is MvModuleSpecBlock -> {
                 // add module block
                 val moduleItem = this.moduleSpec.moduleItem
@@ -124,7 +123,6 @@ val MvItemsOwner.itemsOwnerWithSiblings: List<MvItemsOwner>
                     listOf(this)
                 }
             }
-
             else -> listOf(this)
         }
     }

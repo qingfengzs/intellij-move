@@ -21,7 +21,7 @@ class MvSyntaxErrorAnnotator: MvAnnotatorBase() {
         val visitor = object: MvVisitor() {
             override fun visitLitExpr(expr: MvLitExpr) = checkLitExpr(moveHolder, expr)
             override fun visitCastExpr(expr: MvCastExpr) = checkCastExpr(moveHolder, expr)
-            override fun visitStruct(s: MvStruct) = checkStruct(moveHolder, s)
+//            override fun visitStruct(s: MvStruct) = checkStruct(moveHolder, s)
             override fun visitFunction(o: MvFunction) = checkFunction(moveHolder, o)
             override fun visitSpecFunction(o: MvSpecFunction) = checkSpecFunction(moveHolder, o)
             override fun visitIndexExpr(o: MvIndexExpr) = checkIndexExpr(moveHolder, o)
@@ -84,12 +84,12 @@ class MvSyntaxErrorAnnotator: MvAnnotatorBase() {
         }
     }
 
-    private fun checkStruct(holder: MvAnnotationHolder, struct: MvStruct) {
-        val native = struct.native ?: return
-        val errorRange = TextRange.create(native.startOffset, struct.structKw.endOffset)
-        Diagnostic.NativeStructNotSupported(struct, errorRange)
-            .addToHolder(holder)
-    }
+//    private fun checkStruct(holder: MvAnnotationHolder, struct: MvStruct) {
+//        val native = struct.native ?: return
+//        val errorRange = TextRange.create(native.startOffset, struct.structKw.endOffset)
+//        Diagnostic.NativeStructNotSupported(struct, errorRange)
+//            .addToHolder(holder)
+//    }
 
     private fun checkVisibilityModifiers(
         holder: MvAnnotationHolder,
@@ -98,7 +98,7 @@ class MvSyntaxErrorAnnotator: MvAnnotatorBase() {
         if (!module.project.moveSettings.enablePublicPackage) {
             for (function in module.allFunctions()) {
                 val modifier = function.visibilityModifier ?: continue
-                if (modifier.isPublicPackage) {
+                if (modifier.hasPackage) {
                     Diagnostic.PublicPackageIsNotSupportedInCompilerV1(modifier)
                         .addToHolder(holder)
                 }
@@ -115,7 +115,7 @@ class MvSyntaxErrorAnnotator: MvAnnotatorBase() {
                 val visibilityModifier = function.visibilityModifier ?: continue
                 Diagnostic
                     .PackageAndFriendModifiersCannotBeUsedTogether(visibilityModifier)
-                        .addToHolder(holder)
+                    .addToHolder(holder)
             }
         }
     }

@@ -5,6 +5,7 @@ import com.intellij.codeInsight.lookup.LookupElementDecorator
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.types.infer.*
 import org.sui.lang.core.types.ty.TyUnknown
+import org.sui.lang.core.types.ty.functionTy
 
 fun LookupElement.toMvLookupElement(properties: LookupElementProperties): MvLookupElement =
     MvLookupElement(this, properties)
@@ -12,7 +13,7 @@ fun LookupElement.toMvLookupElement(properties: LookupElementProperties): MvLook
 class MvLookupElement(
     delegate: LookupElement,
     val props: LookupElementProperties
-) :
+):
     LookupElementDecorator<LookupElement>(delegate) {
 
     override fun equals(other: Any?): Boolean {
@@ -55,7 +56,7 @@ data class LookupElementProperties(
 fun getLookupElementProperties(
     element: MvNamedElement,
     subst: Substitution,
-    context: CompletionContext
+    context: MvCompletionContext
 ): LookupElementProperties {
     var props = LookupElementProperties()
     val expectedTy = context.expectedTy
@@ -63,18 +64,18 @@ fun getLookupElementProperties(
         val msl = context.msl
         val declaredTy =
             when (element) {
-            is MvFunctionLike -> element.declaredType(msl).retType
-            is MvStruct -> element.declaredType(msl)
-            is MvConst -> element.type?.loweredType(msl) ?: TyUnknown
-            is MvBindingPat -> {
-                val inference = element.inference(msl)
-                // sometimes type inference won't be able to catch up with the completion, and this line crashes,
-                // so changing to infallible getPatTypeOrUnknown()
-                inference?.getPatTypeOrUnknown(element) ?: TyUnknown
-            }
+                is MvFunctionLike -> element.functionTy(msl).returnType
+                is MvStruct -> element.declaredType(msl)
+                is MvConst -> element.type?.loweredType(msl) ?: TyUnknown
+                is MvPatBinding -> {
+                    val inference = element.inference(msl)
+                    // sometimes type inference won't be able to catch up with the completion, and this line crashes,
+                    // so changing to infallible getPatTypeOrUnknown()
+                    inference?.getPatTypeOrUnknown(element) ?: TyUnknown
+                }
                 is MvNamedFieldDecl -> element.type?.loweredType(msl) ?: TyUnknown
-            else -> TyUnknown
-        }
+                else -> TyUnknown
+            }
         val itemTy = declaredTy.substitute(subst)
 
         // NOTE: it is required for the TyInfer.TyVar to always have a different underlying unification table

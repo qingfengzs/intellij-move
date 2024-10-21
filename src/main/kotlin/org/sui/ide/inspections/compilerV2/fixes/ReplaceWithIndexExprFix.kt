@@ -8,7 +8,7 @@ import org.sui.lang.core.psi.ext.argExpr
 import org.sui.lang.core.psi.ext.argumentExprs
 import org.sui.lang.core.psi.ext.receiverExpr
 
-class ReplaceWithIndexExprFix(expr: MvExpr) : DiagnosticFix<MvExpr>(expr) {
+class ReplaceWithIndexExprFix(expr: MvExpr): DiagnosticFix<MvExpr>(expr) {
     override fun getText(): String = "Replace with index expr"
     override fun invoke(project: Project, file: PsiFile, element: MvExpr) {
         val derefExpr = element as? MvDerefExpr ?: return
@@ -21,7 +21,7 @@ class ReplaceWithIndexExprFix(expr: MvExpr) : DiagnosticFix<MvExpr>(expr) {
         indexExpr.argExpr.replace(argParamExpr)
 
         val receiverExpr = when (receiverParamExpr) {
-            is MvRefExpr, is MvParensExpr -> receiverParamExpr
+            is MvPathExpr, is MvParensExpr -> receiverParamExpr
             is MvBorrowExpr -> receiverParamExpr.expr ?: return
             else -> project.psiFactory.wrapWithParens(receiverParamExpr)
         }

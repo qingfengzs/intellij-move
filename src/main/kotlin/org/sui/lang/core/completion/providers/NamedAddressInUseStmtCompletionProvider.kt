@@ -20,7 +20,7 @@ import org.sui.lang.core.psiElement
 import org.sui.lang.core.withParent
 import org.sui.lang.moveProject
 
-object AddressInModuleDeclCompletionProvider : MvCompletionProvider() {
+object AddressInModuleDeclCompletionProvider: MvCompletionProvider() {
     override val elementPattern: ElementPattern<out PsiElement>
         get() = PlatformPatterns
             .psiElement()
@@ -50,7 +50,7 @@ object AddressInModuleDeclCompletionProvider : MvCompletionProvider() {
     }
 }
 
-object NamedAddressAtValueExprCompletionProvider : MvCompletionProvider() {
+object NamedAddressAtValueExprCompletionProvider: MvCompletionProvider() {
     override val elementPattern: ElementPattern<out PsiElement>
         get() = PlatformPatterns
             .psiElement().withParent<MvNamedAddress>()
@@ -73,7 +73,7 @@ object NamedAddressAtValueExprCompletionProvider : MvCompletionProvider() {
     }
 }
 
-object NamedAddressInUseStmtCompletionProvider : MvCompletionProvider() {
+object NamedAddressInUseStmtCompletionProvider: MvCompletionProvider() {
     override val elementPattern: ElementPattern<out PsiElement>
         get() = MvPsiPattern.path()
             .and(

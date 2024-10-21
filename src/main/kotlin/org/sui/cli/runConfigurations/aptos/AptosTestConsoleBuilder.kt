@@ -11,7 +11,7 @@ import org.sui.cli.runConfigurations.test.AptosTestConsoleProperties.Companion.T
 class AptosTestConsoleBuilder(
     private val config: AptosCommandConfiguration,
     private val executor: Executor
-) : TextConsoleBuilder() {
+): TextConsoleBuilder() {
 
     private val filters: MutableList<Filter> = mutableListOf()
 

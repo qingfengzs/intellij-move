@@ -17,7 +17,7 @@ import com.intellij.psi.util.PsiModificationTracker
 import org.sui.cli.manifest.AptosConfigYaml
 import org.sui.cli.manifest.MoveToml
 import org.sui.cli.manifest.SuiConfigYaml
-import org.sui.cli.tests.NamedAddressService
+import org.sui.cli.tests.NamedAddressFromTestAnnotationService
 import org.sui.ide.annotator.PRELOAD_STD_MODULES
 import org.sui.ide.annotator.PRELOAD_SUI_MODULES
 import org.sui.lang.MoveFile
@@ -43,7 +43,7 @@ data class MoveProject(
     val dependencies: List<Pair<MovePackage, RawAddressMap>>,
     // updates
     val fetchDepsStatus: UpdateStatus = UpdateStatus.NeedsUpdate,
-) : UserDataHolderBase() {
+): UserDataHolderBase() {
 
     val contentRoot: VirtualFile get() = this.currentPackage.contentRoot
     val contentRootPath: Path? get() = this.currentPackage.contentRoot.toNioPathOrNull()
@@ -90,22 +90,26 @@ data class MoveProject(
         return map
     }
 
-    fun getNamedAddressValue(name: String): String? = addressValues()[name]?.value
-
-    fun getNamedAddress(name: String): Address.Named? {
-        val value = getNamedAddressValue(name) ?: return null
-        return Address.Named(name, value, this)
-    }
-
     fun getNamedAddressTestAware(name: String): Address.Named? {
-        val namedAddress = getNamedAddress(name)
-        if (namedAddress != null) return namedAddress
+        val declaredNamedValue = getValueOfDeclaredNamedAddress(name)
+        if (declaredNamedValue != null) {
+            return Address.Named(name, declaredNamedValue)
+        }
         if (isUnitTestMode) {
-            val namedAddressService = project.service<NamedAddressService>()
+            val namedAddressService = project.service<NamedAddressFromTestAnnotationService>()
             return namedAddressService.getNamedAddress(this, name)
         }
         return null
     }
+    fun getNamedAddress(name: String): Address.Named? {
+        val value = getNamedAddressValue(name) ?: return null
+        return Address.Named(name, value)
+    }
+
+
+
+    fun getNamedAddressValue(name: String): String? = addressValues()[name]?.value
+    fun getValueOfDeclaredNamedAddress(name: String): String? = addressValues()[name]?.value
 
     fun getAddressNamesForValue(addressValue: String): List<String> {
         val addressLit = AddressLit(addressValue)
@@ -125,9 +129,7 @@ data class MoveProject(
             val dirScope = GlobalSearchScopes.directoryScope(project, folder, true)
             searchScope = searchScope.uniteWith(dirScope)
         }
-        if (isUnitTestMode
-            && searchScope == GlobalSearchScope.EMPTY_SCOPE
-        ) {
+        if (isUnitTestMode && searchScope == GlobalSearchScope.EMPTY_SCOPE) {
             // add current file to the search scope for the tests
             val currentFile =
                 FileEditorManager.getInstance(project).selectedTextEditor?.virtualFile
@@ -183,8 +185,8 @@ data class MoveProject(
 
     sealed class UpdateStatus(private val priority: Int) {
         //        object UpToDate : UpdateStatus(0)
-        object NeedsUpdate : UpdateStatus(1)
-        class UpdateFailed(@Tooltip val reason: String) : UpdateStatus(2) {
+        object NeedsUpdate: UpdateStatus(1)
+        class UpdateFailed(@Tooltip val reason: String): UpdateStatus(2) {
             override fun toString(): String = reason
         }
 
@@ -215,30 +217,13 @@ data class MoveProject(
                     ) as TomlFile
 
             val moveToml = MoveToml(project, tomlFile)
-            val movePackage = MovePackage(
-                project, contentRoot,
-                packageName = "DummyPackage",
-                tomlMainAddresses = moveToml.declaredAddresses()
-            )
+            val movePackage = MovePackage(project, contentRoot,
+                                          packageName = "DummyPackage",
+                                          tomlMainAddresses = moveToml.declaredAddresses())
             return movePackage
         }
 
         fun forTests(project: Project): MoveProject {
-//            checkUnitTestMode()
-//            val contentRoot = project.contentRoots.first()
-//            val tomlFile =
-//                PsiFileFactory.getInstance(project)
-//                    .createFileFromText(
-//                        TomlLanguage,
-//                        """
-//                     [package]
-//                     name = "MyPackage"
-//                """
-//                    ) as TomlFile
-//
-//            val moveToml = MoveToml(project, tomlFile)
-//            val movePackage = MovePackage(project, contentRoot, moveToml,
-//                                          declaredTomlAddresses = moveToml.declaredAddresses())
             return MoveProject(
                 project,
                 packageForTests(project),

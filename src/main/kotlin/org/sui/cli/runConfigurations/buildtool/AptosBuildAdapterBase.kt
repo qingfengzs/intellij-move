@@ -26,13 +26,7 @@ abstract class AptosBuildAdapterBase(
         }
     }
 
-    open fun onBuildOutputReaderFinish(
-        event: ProcessEvent,
-        isSuccess: Boolean,
-        isCanceled: Boolean,
-        error: Throwable?
-    ) {
-    }
+    open fun onBuildOutputReaderFinish(event: ProcessEvent, isSuccess: Boolean, isCanceled: Boolean, error: Throwable?) {}
 
     override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
         // Progress messages end with '\r' instead of '\n'. We want to replace '\r' with '\n'

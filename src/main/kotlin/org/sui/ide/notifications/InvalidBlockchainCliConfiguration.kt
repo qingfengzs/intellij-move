@@ -16,8 +16,8 @@ import org.sui.openapiext.common.isUnitTestMode
 import org.sui.openapiext.showSettingsDialog
 import org.sui.stdext.getCliFromPATH
 
-class InvalidBlockchainCliConfiguration(project: Project) : MvEditorNotificationProvider(project),
-    DumbAware {
+class InvalidBlockchainCliConfiguration(project: Project): MvEditorNotificationProvider(project),
+                                                           DumbAware {
 
     override val VirtualFile.disablingKey: String get() = NOTIFICATION_STATUS_KEY + path
 

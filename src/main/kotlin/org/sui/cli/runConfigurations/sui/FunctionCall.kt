@@ -35,7 +35,7 @@ data class FunctionCall(
     val gasBudget: String?
 ) {
     fun itemName(): String? = item?.element?.qualName?.editorText()
-    fun functionId(moveProject: MoveProject): String? = item?.element?.functionId(moveProject)
+    fun functionId(moveProject: MoveProject): String? = item?.element?.functionId()
 
     fun parametersRequired(): Boolean {
         val fn = item?.element ?: return false

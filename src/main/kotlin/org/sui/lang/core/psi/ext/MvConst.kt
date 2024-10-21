@@ -15,7 +15,7 @@ import javax.swing.Icon
 val MvConst.module: MvModule? get() = this.parent as? MvModule
 
 abstract class MvConstMixin : MvStubbedNamedElementImpl<MvConstStub>,
-    MvConst {
+                              MvConst {
 
     constructor(node: ASTNode) : super(node)
 
@@ -31,9 +31,9 @@ abstract class MvConstMixin : MvStubbedNamedElementImpl<MvConstStub>,
     override fun getIcon(flags: Int): Icon? = MoveIcons.CONST
 
     override fun getPresentation(): ItemPresentation {
-        val constType = this.typeAnnotation?.text ?: ""
+        val type = this.type?.let { ": ${it.text}" } ?: ""
         return PresentationData(
-            "${this.name}$constType",
+            "${this.name}$type",
             this.locationString(true),
             MoveIcons.CONST,
             null

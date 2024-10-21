@@ -12,12 +12,12 @@ private const val SERVICE_NAME: String = "AptosSdksSettingsService"
     storages = [Storage(StoragePathMacros.NON_ROAMABLE_FILE)],
 )
 @Service(Service.Level.APP)
-class AptosSdksSettingsService : SimplePersistentStateComponent<AptosSdksSettings>(AptosSdksSettings()) {
+class AptosSdksSettingsService: SimplePersistentStateComponent<AptosSdksSettings>(AptosSdksSettings()) {
 
     val sdksDir: String? get() = this.state.sdksDir
     val aptosSdkPaths: List<String> get() = this.state.aptosSdkPaths
 
-    class AptosSdksSettings : BaseState() {
+    class AptosSdksSettings: BaseState() {
         // null is empty string
         var sdksDir: String? by string(defaultValue = DEFAULT_SDKS_DIR)
 

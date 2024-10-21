@@ -1,19 +1,40 @@
 package org.sui.lang.core.psi.ext
 
-import org.sui.lang.core.psi.MvBlockFields
-import org.sui.lang.core.psi.MvNameIdentifierOwner
-import org.sui.lang.core.psi.MvNamedFieldDecl
+import org.sui.lang.core.psi.*
 
-interface MvFieldsOwner : MvNameIdentifierOwner {
+interface MvFieldsOwner: MvNameIdentifierOwner {
     val blockFields: MvBlockFields?
+    val tupleFields: MvTupleFields?
 }
 
-val MvFieldsOwner.fields: List<MvNamedFieldDecl>
-    get() = namedFields //+ positionalFields
+val MvFieldsOwner.itemElement: MvStructOrEnumItemElement
+    get() = when (this) {
+        is MvStruct -> this
+        is MvEnumVariant -> this.enumItem
+        else -> error("exhaustive")
+    }
+
+//val MvFieldsOwner.toItemElement: MvModule get() {
+//    when (this) {
+//        is MvStruct -> (this as MvStructOrEnumItemElement).module
+//        is MvEnumVariant -> (this.enumItem as MvStructOrEnumItemElement).module
+//        else -> error("exhaustive")
+//    }
+//}
+
+//val MvFieldsOwner.fields: List<MvNamedFieldDecl>
+//    get() = namedFields //+ positionalFields
+
+val MvFieldsOwner.fields: List<MvFieldDecl>
+    get() = namedFields + positionalFields
 
 val MvFieldsOwner.namedFields: List<MvNamedFieldDecl>
     get() = blockFields?.namedFieldDeclList.orEmpty()
 
+val MvFieldsOwner.fieldNames: List<String> get() = namedFields.map { it.name }
+
+val MvFieldsOwner.positionalFields: List<MvTupleFieldDecl>
+    get() = tupleFields?.tupleFieldDeclList.orEmpty()
 
 /**
  * True for:

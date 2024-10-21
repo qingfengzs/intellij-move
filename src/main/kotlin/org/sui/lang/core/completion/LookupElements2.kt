@@ -15,7 +15,7 @@ import org.sui.lang.core.types.ty.TyUnknown
 
 fun createLookupElement(
     scopeEntry: ScopeEntry,
-    completionContext: CompletionContext,
+    completionContext: MvCompletionContext,
     subst: Substitution = emptySubstitution,
     priority: Double = DEFAULT_PRIORITY,
     insertHandler: InsertHandler<LookupElement> = DefaultInsertHandler(completionContext)
@@ -29,7 +29,7 @@ fun createLookupElement(
 }
 
 private fun MvNamedElement.getLookupElementBuilder(
-    context: CompletionContext,
+    context: MvCompletionContext,
     scopeName: String,
     subst: Substitution = emptySubstitution,
 ): LookupElementBuilder {
@@ -49,7 +49,6 @@ private fun MvNamedElement.getLookupElementBuilder(
                     .withTypeText(this.outerFileName)
             }
         }
-
         is MvSpecFunction -> base
             .withTailText(this.parameters.joinToSignature())
             .withTypeText(this.returnType?.type?.text ?: "()")
@@ -70,14 +69,13 @@ private fun MvNamedElement.getLookupElementBuilder(
             base
                 .withTypeText(fieldTy.text(false))
         }
-
         is MvConst -> {
             val constTy = this.type?.loweredType(msl) ?: TyUnknown
             base
                 .withTypeText(constTy.text(true))
         }
 
-        is MvBindingPat -> {
+        is MvPatBinding -> {
             val bindingInference = this.inference(msl)
             // race condition sometimes happens, when file is too big, inference is not finished yet
             val ty = bindingInference?.getPatTypeOrUnknown(this) ?: TyUnknown

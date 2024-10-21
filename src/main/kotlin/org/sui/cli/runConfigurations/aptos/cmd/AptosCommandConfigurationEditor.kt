@@ -10,6 +10,7 @@ import java.nio.file.Path
 import javax.swing.JComponent
 
 class AptosCommandConfigurationEditor : SettingsEditor<AptosCommandConfiguration>() {
+
     private val commandTextField = ExpandableTextField()
     private val envVarsField = EnvironmentVariablesComponent()
     val workingDirectoryField = WorkingDirectoryField()

@@ -27,10 +27,10 @@ data class MoveProjectItem(val moveProject: MoveProject) {
     }
 }
 
-class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
+class FunctionCallConfigurationEditor<T: FunctionCallConfigurationBase>(
     private val project: Project,
     private val commandHandler: CommandConfigurationHandler,
-) :
+):
     SettingsEditor<T>() {
 
     private var moveProject: MoveProject? = null
@@ -77,19 +77,19 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
             .installOn(functionItemField)
 
         val editor = this
-        functionParametersPanel.addFunctionCallListener(object : FunctionParameterPanelListener {
+        functionParametersPanel.addFunctionCallListener(object: FunctionParameterPanelListener {
             override fun functionParametersChanged(functionCall: FunctionCall) {
                 // if current project is null, this shouldn't really be doing anything, just quit
                 val mp = editor.moveProject ?: return
 
 //                editor.functionCall = functionCall
                 editor.rawCommandField.text =
-                    commandHandler.generateCommand(mp, functionCall, accountTextField.text).unwrapOrNull() ?: ""
+                    commandHandler.generateCommand(functionCall, accountTextField.text).unwrapOrNull() ?: ""
             }
         })
 
         // enables Apply button if function name is changed and valid
-        functionItemField.addDocumentListener(object : DocumentListener {
+        functionItemField.addDocumentListener(object: DocumentListener {
             override fun documentChanged(event: DocumentEvent) {
                 // do nothing if project is null
                 val mp = moveProject ?: return
@@ -196,8 +196,8 @@ class FunctionCallConfigurationEditor<T : FunctionCallConfigurationBase>(
         functionParametersPanel.updateFromFunctionCall(FunctionCall.empty())
 
         // refill completion variants
-        val completionVariants = commandHandler.getFunctionCompletionVariants(moveProject)
-        this.functionItemField.setVariants(completionVariants)
+//        val completionVariants = commandHandler.getFunctionCompletionVariants(moveProject)
+//        this.functionItemField.setVariants(completionVariants)
 
     }
 

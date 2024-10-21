@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.panel
 import org.sui.openapiext.pathField
 import javax.swing.JComponent
 
-class DownloadAptosSdkDialog(val project: Project?) : DialogWrapper(project, true) {
+class DownloadAptosSdkDialog(val project: Project?): DialogWrapper(project, true) {
 
     val versionField = JBTextField()
     val targetSdksDirField = pathField(

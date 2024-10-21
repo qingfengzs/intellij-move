@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiParserFacade
 import org.intellij.lang.annotations.Language
+import org.sui.cli.MvConstants
 import org.sui.ide.utils.FunctionSignature
 import org.sui.lang.MoveFile
 import org.sui.lang.MoveFileType
@@ -35,7 +36,7 @@ class MvPsiFactory(val project: Project) {
 //        createFromText("module 0x1::_M { fun m() { let S { $fieldName: $binding } = 1; }}")
 //            ?: error("Failed to create MvFieldPat")
 
-    fun fieldPatFull(fieldName: String, binding: String): MvFieldPatFull =
+    fun fieldPatFull(fieldName: String, binding: String): MvPatFieldFull =
         createFromText("module 0x1::_M { fun m() { let S { $fieldName: $binding } = 1; }}")
             ?: error("Failed to create MvFieldPat")
 
@@ -129,7 +130,7 @@ class MvPsiFactory(val project: Project) {
             ?: error("Failed to create a method member from text: `$text`")
     }
 
-    fun bindingPat(text: String): MvBindingPat {
+    fun bindingPat(text: String): MvPatBinding {
         return createFromText("module 0x1::_DummyModule { fun main() { let S { $text } = 1; }}")
             ?: error("Failed to create a MvBindingPat from text: `$text`")
     }
@@ -197,7 +198,7 @@ class MvPsiFactory(val project: Project) {
     inline fun <reified T : MvElement> createFromText(@Language("Sui Move") code: CharSequence): T? {
         val dummyFile = PsiFileFactory.getInstance(project)
             .createFileFromText(
-                "DUMMY.move",
+                MvConstants.PSI_FACTORY_DUMMY_FILE,
                 MoveFileType,
                 code
             ) as MoveFile

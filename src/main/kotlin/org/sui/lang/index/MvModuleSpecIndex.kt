@@ -9,7 +9,7 @@ import org.sui.lang.core.stubs.impl.MvFileStub
 import org.sui.openapiext.checkCommitIsNotInProgress
 import org.sui.openapiext.getElements
 
-class MvModuleSpecIndex : StringStubIndexExtension<MvModuleSpec>() {
+class MvModuleSpecIndex: StringStubIndexExtension<MvModuleSpec>() {
     override fun getVersion(): Int = MvFileStub.Type.stubVersion
     override fun getKey(): StubIndexKey<String, MvModuleSpec> = KEY
 

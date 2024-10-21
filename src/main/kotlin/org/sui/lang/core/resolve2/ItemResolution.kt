@@ -3,8 +3,12 @@ package org.sui.lang.core.resolve2
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.resolve.*
+import org.sui.lang.core.resolve.ref.FUNCTIONS
+import org.sui.lang.core.resolve.ref.NAMES
 import org.sui.lang.core.resolve.ref.Namespace
-import org.sui.lang.core.types.infer.foldTyTypeParameterWith
+import org.sui.lang.core.resolve.ref.Namespace.*
+import org.sui.lang.core.resolve.ref.TYPES
+import org.sui.lang.core.types.infer.deepFoldTyTypeParameterWith
 import org.sui.lang.core.types.ty.Ty
 import org.sui.lang.core.types.ty.TyInfer
 import org.sui.lang.core.types.ty.TyReference
@@ -13,9 +17,9 @@ import java.util.*
 
 val MvNamedElement.namespace
     get() = when (this) {
-        is MvFunctionLike -> Namespace.FUNCTION
+        is MvFunctionLike -> FUNCTION
         is MvStruct -> Namespace.TYPE
-        is MvEnum -> Namespace.TYPE
+        is MvEnum -> Namespace.ENUM
         is MvConst -> Namespace.NAME
         is MvSchema -> Namespace.SCHEMA
         is MvModule -> Namespace.MODULE
@@ -37,10 +41,27 @@ fun processMethodResolveVariants(
             val selfTy = function.selfParamTy(msl) ?: return@wrapWithFilter false
             // need to use TyVar here, loweredType() erases them
             val selfTyWithTyVars =
-                selfTy.foldTyTypeParameterWith { tp -> TyInfer.TyVar(tp) }
+                selfTy.deepFoldTyTypeParameterWith { tp -> TyInfer.TyVar(tp) }
             TyReference.isCompatibleWithAutoborrow(receiverTy, selfTyWithTyVars, msl)
         }
-        .processAllItems(setOf(Namespace.FUNCTION), itemModule.allNonTestFunctions())
+        .processAllItems(setOf(FUNCTION), itemModule.allNonTestFunctions())
+}
+
+fun processEnumVariantDeclarations(
+    enum: MvEnum,
+    ns: Set<Namespace>,
+    processor: RsResolveProcessor
+): Boolean {
+    for (namespace in ns) {
+        val stop = when (namespace) {
+            NAME -> processor.processAll(NAMES, enum.variants)
+            TYPE -> processor.processAll(TYPES, enum.variants)
+            FUNCTION -> processor.processAll(FUNCTIONS, enum.tupleVariants)
+            else -> continue
+        }
+        if (stop) return true
+    }
+    return false
 }
 
 fun processItemDeclarations(
@@ -60,8 +81,7 @@ fun processItemDeclarations(
         val namespace = item.namespace
         if (namespace !in ns) continue
 
-        val visibilityFilter = item.visInfo().createFilter()
-        if (processor.process(name, item, EnumSet.of(namespace), visibilityFilter)) return true
+        if (processor.process(name, item, setOf(namespace))) return true
     }
 
     return false
@@ -82,13 +102,12 @@ fun processItemsFromModuleSpecs(
         val thisNs = setOf(namespace)
         for (moduleSpec in module.allModuleSpecs()) {
             val matched = when (namespace) {
-                Namespace.FUNCTION ->
+                FUNCTION ->
                     processor.processAll(
                         thisNs,
                         moduleSpec.specFunctions(),
                         moduleSpec.specInlineFunctions(),
                     )
-
                 Namespace.SCHEMA -> processor.processAll(thisNs, moduleSpec.schemas())
                 else -> false
             }

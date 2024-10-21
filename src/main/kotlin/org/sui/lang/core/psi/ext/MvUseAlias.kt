@@ -7,5 +7,5 @@ import org.sui.lang.core.psi.impl.MvNameIdentifierOwnerImpl
 
 val MvUseAlias.parentUseSpeck: MvUseSpeck get() = this.parent as MvUseSpeck
 
-abstract class MvUseAliasMixin(node: ASTNode) : MvNameIdentifierOwnerImpl(node),
-                                                MvUseAlias
+abstract class MvUseAliasMixin(node: ASTNode): MvNameIdentifierOwnerImpl(node),
+                                               MvUseAlias

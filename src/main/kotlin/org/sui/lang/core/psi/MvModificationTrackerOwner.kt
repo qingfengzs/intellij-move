@@ -18,7 +18,7 @@ class MvModificationTracker(val owner: MvModificationTrackerOwner): SimpleModifi
  * A PSI element that holds modification tracker for some reason.
  * This is mostly used to invalidate cached type inference results.
  */
-interface MvModificationTrackerOwner : MvElement {
+interface MvModificationTrackerOwner: MvElement {
     val modificationTracker: MvModificationTracker
 
     /**
@@ -58,7 +58,7 @@ fun PsiElement.findModificationTrackerOwner(strict: Boolean): MvModificationTrac
 ////    }
 
 @Suppress("UNCHECKED_CAST")
-private fun <T : PsiElement> PsiElement.findContextOfType(
+private fun <T: PsiElement> PsiElement.findContextOfType(
     strict: Boolean,
     vararg classes: KClass<out T>
 ): T? {

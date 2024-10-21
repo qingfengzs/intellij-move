@@ -4,13 +4,13 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.*
 import org.sui.lang.core.psi.MvElement
 
-open class PlaceholderStub(parent: StubElement<*>?, elementType: IStubElementType<*, *>) :
+open class PlaceholderStub(parent: StubElement<*>?, elementType: IStubElementType<*, *>):
     StubBase<MvElement>(parent, elementType) {
 
-    open class Type<PsiT : MvElement>(
+    open class Type<PsiT: MvElement>(
         debugName: String,
         private val psiContructor: (PlaceholderStub, IStubElementType<*, *>) -> PsiT,
-    ) : MvStubElementType<PlaceholderStub, PsiT>(debugName) {
+    ): MvStubElementType<PlaceholderStub, PsiT>(debugName) {
 
         override fun shouldCreateStub(node: ASTNode): Boolean = createStubIfParentIsStub(node)
 

@@ -11,8 +11,11 @@ import com.intellij.psi.util.CachedValuesManager.getProjectPsiDependentCache
 import com.intellij.psi.util.PsiTreeUtil
 import org.sui.cli.Consts
 import org.sui.cli.MoveProject
+import org.sui.cli.MvConstants
 import org.sui.cli.moveProjectsService
 import org.sui.lang.core.psi.*
+import org.sui.lang.core.psi.ext.ancestorOrSelf
+import org.sui.lang.core.psi.ext.childrenOfType
 import org.sui.lang.core.psi.ext.*
 import org.sui.openapiext.resolveAbsPath
 import org.sui.openapiext.toPsiFile
@@ -23,7 +26,7 @@ import java.nio.file.Path
 fun findMoveTomlPath(currentFilePath: Path): Path? {
     var dir = currentFilePath.parent
     while (dir != null) {
-        val moveTomlPath = dir.resolveAbsPath(Consts.MANIFEST_FILE)
+        val moveTomlPath = dir.resolveAbsPath(MvConstants.MANIFEST_FILE)
         if (moveTomlPath != null) {
             return moveTomlPath
         }
@@ -52,7 +55,7 @@ fun PsiFile.toNioPathOrNull(): Path? {
     return this.originalFile.virtualFile?.toNioPathOrNull()
 }
 
-abstract class MoveFileBase(fileViewProvider: FileViewProvider) : PsiFileBase(fileViewProvider, MoveLanguage) {
+abstract class MoveFileBase(fileViewProvider: FileViewProvider): PsiFileBase(fileViewProvider, MoveLanguage) {
     override fun getFileType(): FileType = MoveFileType
 }
 

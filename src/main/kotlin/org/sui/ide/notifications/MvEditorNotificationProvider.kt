@@ -15,14 +15,14 @@ fun updateAllNotifications(project: Project) {
     EditorNotifications.getInstance(project).updateAllNotifications()
 }
 
-class UpdateNotificationsOnSettingsChangeListener(val project: Project) : MoveSettingsListener {
+class UpdateNotificationsOnSettingsChangeListener(val project: Project): MoveSettingsListener {
 
-    override fun <T : MvProjectSettingsBase<T>> settingsChanged(e: SettingsChangedEventBase<T>) {
+    override fun <T: MvProjectSettingsBase<T>> settingsChanged(e: SettingsChangedEventBase<T>) {
         updateAllNotifications(project)
     }
 }
 
-abstract class MvEditorNotificationProvider(protected val project: Project) : EditorNotificationProvider {
+abstract class MvEditorNotificationProvider(protected val project: Project): EditorNotificationProvider {
 
     protected abstract val VirtualFile.disablingKey: String
 

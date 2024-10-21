@@ -1,10 +1,9 @@
 package org.sui.lang.core.psi.ext
 
-import org.sui.lang.core.psi.MvStruct
-import org.sui.lang.core.psi.MvStructPat
+import org.sui.lang.core.psi.MvPatStruct
 
-val MvStructPat.providedFieldNames: Set<String>
+val MvPatStruct.fieldNames: Set<String>
     get() =
-        fieldPatList.map { it.fieldReferenceName }.toSet()
+        patFieldList.map { it.fieldReferenceName }.toSet()
 
-val MvStructPat.structItem: MvStruct? get() = this.path.reference?.resolveFollowingAliases() as? MvStruct
+//val MvPatStruct.structItem: MvStruct? get() = this.path.reference?.resolveFollowingAliases() as? MvStruct

@@ -1,11 +1,41 @@
 package org.sui.cli.runConfigurations.test
 
+import com.intellij.execution.configurations.CommandLineState
+import com.intellij.execution.filters.Filter
+import com.intellij.execution.process.KillableColoredProcessHandler
+import com.intellij.execution.process.ProcessHandler
+import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
+import org.sui.cli.MoveFileHyperlinkFilter
 import org.sui.cli.runConfigurations.CommandConfigurationBase
-import org.sui.cli.runConfigurations.SuiRunStateBase
-import org.sui.cli.runConfigurations.sui.SuiTestConsoleBuilder
-import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfiguration
+import org.sui.cli.runConfigurations.SuiCommandLine
 
+abstract class SuiRunStateBase(
+    environment: ExecutionEnvironment,
+    val runConfiguration: CommandConfigurationBase,
+    val config: CommandConfigurationBase.CleanConfiguration.Ok
+): CommandLineState(environment) {
+
+    val project = environment.project
+    val commandLine: SuiCommandLine = config.cmd
+
+    override fun startProcess(): ProcessHandler {
+        val generalCommandLine = commandLine.toGeneralCommandLine(config.suiPath)
+        val handler = KillableColoredProcessHandler(generalCommandLine)
+        consoleBuilder.console.attachToProcess(handler)
+        ProcessTerminatedListener.attach(handler)  // shows exit code upon termination
+        return handler
+    }
+
+    protected fun createFilters(): Collection<Filter> {
+        val filters = mutableListOf<Filter>()
+        val wd = commandLine.workingDirectory
+        if (wd != null) {
+            filters.add(MoveFileHyperlinkFilter(project, wd))
+        }
+        return filters
+    }
+}
 class SuiTestRunState(
     environment: ExecutionEnvironment,
     runConfiguration: CommandConfigurationBase,
@@ -13,15 +43,7 @@ class SuiTestRunState(
 ) : SuiRunStateBase(environment, runConfiguration, config) {
 
     init {
-        consoleBuilder =
-            SuiTestConsoleBuilder(environment.runProfile as SuiCommandConfiguration, environment.executor)
         createFilters().forEach { consoleBuilder.addFilter(it) }
     }
 
-//    override fun execute(executor: Executor, runner: ProgramRunner<*>): ExecutionResult {
-//        val processHandler = startProcess()
-//        val console = createConsole(executor)
-//        console?.attachToProcess(processHandler)
-//        return DefaultExecutionResult(console, processHandler).apply { setRestartActions(ToggleAutoTestAction()) }
-//    }
 }

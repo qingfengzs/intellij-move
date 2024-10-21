@@ -18,7 +18,6 @@ data class AptosConfigYaml(
                     // TODO: error notification?
                     return null
                 }
-
             @Suppress("UNCHECKED_CAST")
             val profiles = (yaml["profiles"] as? Map<*, *>)?.keys as? Set<String> ?: return null
             return AptosConfigYaml(configYamlPath, profiles)

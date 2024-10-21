@@ -76,44 +76,45 @@ class MvImportOptimizer : ImportOptimizer {
         }
     }
 
-        /** Returns true if successfully removed, e.g. `use aaa::{bbb};` -> `use aaa::bbb;` */
-        private fun removeCurlyBracesIfPossible(rootUseSpeck: MvUseSpeck, psiFactory: MvPsiFactory) {
-            val itemUseSpeck = rootUseSpeck.useGroup?.asTrivial ?: return
-            val newUseSpeck = psiFactory.useSpeck("0x1::dummy::call")
-            val newUseSpeckPath = newUseSpeck.path
-            newUseSpeckPath.path?.replace(rootUseSpeck.path)
-            itemUseSpeck.path.identifier?.let { newUseSpeckPath.identifier?.replace(it) }
+    /** Returns true if successfully removed, e.g. `use aaa::{bbb};` -> `use aaa::bbb;` */
+    private fun removeCurlyBracesIfPossible(rootUseSpeck: MvUseSpeck, psiFactory: MvPsiFactory) {
+        val itemUseSpeck = rootUseSpeck.useGroup?.asTrivial ?: return
 
-            val useAlias = itemUseSpeck.useAlias
-            if (useAlias != null) {
-                newUseSpeck.add(useAlias)
+        val newUseSpeck = psiFactory.useSpeck("0x1::dummy::call")
+        val newUseSpeckPath = newUseSpeck.path
+        newUseSpeckPath.path?.replace(rootUseSpeck.path)
+        itemUseSpeck.path.identifier?.let { newUseSpeckPath.identifier?.replace(it) }
+
+        val useAlias = itemUseSpeck.useAlias
+        if (useAlias != null) {
+            newUseSpeck.add(useAlias)
         }
 
-            rootUseSpeck.replace(newUseSpeck)
-        }
+        rootUseSpeck.replace(newUseSpeck)
+    }
 
     private fun reorderUseStmtsIntoGroups(itemsOwner: MvItemsOwner) {
         val useStmts = itemsOwner.useStmtList
         val firstItem = itemsOwner.firstItem ?: return
         val psiFactory = itemsOwner.project.psiFactory
-            val sortedUses = useStmts
-                .asSequence()
-                .map { UseStmtWrapper(it) }
-                .sorted()
-            for ((useWrapper, nextUseWrapper) in sortedUses.withNext()) {
-                val addedUseItem = itemsOwner.addBefore(useWrapper.useStmt, firstItem)
+        val sortedUses = useStmts
+            .asSequence()
+            .map { UseStmtWrapper(it) }
+            .sorted()
+        for ((useWrapper, nextUseWrapper) in sortedUses.withNext()) {
+            val addedUseItem = itemsOwner.addBefore(useWrapper.useStmt, firstItem)
+            itemsOwner.addAfter(psiFactory.createNewline(), addedUseItem)
+            val addNewLine =
+                useWrapper.packageGroupLevel != nextUseWrapper?.packageGroupLevel
+            if (addNewLine) {
                 itemsOwner.addAfter(psiFactory.createNewline(), addedUseItem)
-                val addNewLine =
-                    useWrapper.packageGroupLevel != nextUseWrapper?.packageGroupLevel
-                if (addNewLine) {
-                    itemsOwner.addAfter(psiFactory.createNewline(), addedUseItem)
-                }
-            }
-            useStmts.forEach {
-                (it.nextSibling as? PsiWhiteSpace)?.delete()
-                it.delete()
             }
         }
+        useStmts.forEach {
+            (it.nextSibling as? PsiWhiteSpace)?.delete()
+            it.delete()
+        }
+    }
 
     private fun MvUseGroup.sortUseSpecks() {
         val sortedList = useSpeckList

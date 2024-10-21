@@ -1,5 +1,6 @@
 package org.sui.lang.core.types.ty
 
+import com.intellij.codeInsight.completion.*
 import org.sui.ide.presentation.tyToString
 import org.sui.lang.core.psi.MvStruct
 import org.sui.lang.core.psi.MvTypeParameter
@@ -9,7 +10,9 @@ import org.sui.lang.core.psi.ext.requiredAbilitiesForTypeParam
 import org.sui.lang.core.types.infer.HAS_TY_TYPE_PARAMETER_MASK
 
 
-data class TyTypeParameter(val origin: MvTypeParameter) : Ty(HAS_TY_TYPE_PARAMETER_MASK) {
+class TyTypeParameter private constructor(
+    val origin: MvTypeParameter
+) : Ty(HAS_TY_TYPE_PARAMETER_MASK) {
 
     val name: String? get() = origin.name
 
@@ -26,4 +29,13 @@ data class TyTypeParameter(val origin: MvTypeParameter) : Ty(HAS_TY_TYPE_PARAMET
     override fun hashCode(): Int = origin.hashCode()
 
     override fun toString(): String = tyToString(this)
+
+    companion object {
+        fun named(parameter: MvTypeParameter): TyTypeParameter {
+            // Treat the same parameters from original/copy files as equals
+//            val originalParameter = parameter
+            val originalParameter = CompletionUtil.getOriginalOrSelf(parameter)
+            return TyTypeParameter(originalParameter)
+        }
+    }
 }

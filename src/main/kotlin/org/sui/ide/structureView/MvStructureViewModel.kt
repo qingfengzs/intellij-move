@@ -11,7 +11,7 @@ import com.intellij.util.PlatformIcons
 import org.sui.lang.MoveFile
 import org.sui.lang.core.psi.MvNamedElement
 
-class MvStructureViewModel(editor: Editor?, moveFile: MoveFile) :
+class MvStructureViewModel(editor: Editor?, moveFile: MoveFile):
     StructureViewModelBase(
         moveFile,
         editor,

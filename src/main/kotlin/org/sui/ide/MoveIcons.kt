@@ -5,7 +5,7 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.LayeredIcon
 import com.intellij.ui.LayeredIcon.Companion.layeredIcon
-import  java.awt.Component
+import java.awt.Component
 import java.awt.Graphics
 import java.awt.Graphics2D
 import javax.swing.Icon
@@ -22,8 +22,9 @@ object MoveIcons {
     val STRUCT = load("/icons/struct.svg")
     val STRUCT_FIELD = AllIcons.Nodes.Field
     val SCHEMA = AllIcons.Nodes.Static
-    val ENUM = load("/icons/enum.svg")
-    val ENUM_VARIANT = load("/icons/enumVariant.svg")
+
+    val FIELD = load("/icons/nodes/field.svg")
+    val ENUM_VARIANT = load("/icons/nodes/enumVariant.svg")
 
     val CONST = AllIcons.Nodes.Constant
     val FUNCTION = AllIcons.Nodes.Function
@@ -90,7 +91,7 @@ fun Icon.multiple(): Icon {
  */
 fun Icon.rotated(angle: Double): Icon {
     val q = this
-    return object : Icon by this {
+    return object: Icon by this {
         override fun paintIcon(c: Component, g: Graphics, x: Int, y: Int) {
             val g2d = g.create() as Graphics2D
             try {

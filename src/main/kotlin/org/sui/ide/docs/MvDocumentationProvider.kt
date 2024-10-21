@@ -44,7 +44,7 @@ class MvDocumentationProvider : AbstractDocumentationProvider() {
                 val refName = docElement.referenceName
                 val named = moveProject.getNamedAddress(refName) ?: return null
                 val address =
-                    named.addressLit(moveProject)?.original ?: angleWrapped("unassigned")
+                    named.addressLit()?.original ?: angleWrapped("unassigned")
                 return "$refName = \"$address\""
             }
             is MvDocAndAttributeOwner -> generateOwnerDoc(docElement, buffer)
@@ -177,7 +177,7 @@ private fun PsiElement.generateDocumentation(
                 .joinToWithBuffer(buffer, ", ", "(", ")") { generateDocumentation(it) }
 
         is MvFunctionParameter -> {
-            buffer += this.bindingPat.identifier.text
+            buffer += this.patBinding.identifier.text
             this.typeAnnotation?.type?.generateDocumentation(buffer, ": ")
         }
 

@@ -9,9 +9,8 @@ import com.intellij.psi.util.parentOfType
 import org.sui.cli.runConfigurations.CommandConfigurationBase
 import org.sui.cli.settings.moveSettings
 
-abstract class CommandConfigurationProducerBase :
+abstract class CommandConfigurationProducerBase:
     LazyRunConfigurationProducer<CommandConfigurationBase>() {
-
 
     fun configFromLocation(location: PsiElement, climbUp: Boolean = true): SuiCommandLineFromContext? =
         fromLocation(location, climbUp)
@@ -49,7 +48,7 @@ abstract class CommandConfigurationProducerBase :
     }
 
     companion object {
-        inline fun <reified T : PsiElement> findElement(base: PsiElement, climbUp: Boolean): T? {
+        inline fun <reified T: PsiElement> findElement(base: PsiElement, climbUp: Boolean): T? {
             if (base is T) return base
             if (!climbUp) return null
             return base.parentOfType(withSelf = false)

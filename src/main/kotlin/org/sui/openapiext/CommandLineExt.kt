@@ -95,17 +95,15 @@ fun GeneralCommandLine.execute(
     val ownerIsAlreadyDisposed =
         runReadAction {
             // check that owner is disposed, kill process then
-        if (Disposer.isDisposed(owner)) {
-            true
-        } else {
-            Disposer.register(owner, processKiller)
-            false
+            if (Disposer.isDisposed(owner)) {
+                true
+            } else {
+                Disposer.register(owner, processKiller)
+                false
+            }
         }
-    }
-
     if (ownerIsAlreadyDisposed) {
         Disposer.dispose(processKiller) // Kill the process
-
         // On the one hand, this seems fishy,
         // on the other hand, this is isomorphic
         // to the scenario where cargoKiller triggers.
@@ -163,7 +161,6 @@ private fun showCommandLineBalloon(
                     INFORMATION
                 )
             }
-
             output.isCancelled -> {
                 showBalloonWithoutProject(
                     "Execution failed",
@@ -171,7 +168,6 @@ private fun showCommandLineBalloon(
                     INFORMATION
                 )
             }
-
             output.exitCode != 0 -> {
                 showBalloonWithoutProject(
                     "Execution failed",
@@ -181,7 +177,6 @@ private fun showCommandLineBalloon(
                     INFORMATION
                 )
             }
-
             else -> {
                 if (!command.contains("--version")) {
                     showBalloonWithoutProject(

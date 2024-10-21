@@ -5,19 +5,12 @@ import org.sui.lang.core.psi.MvModule
 import org.sui.lang.core.psi.containingModule
 import org.sui.lang.core.types.ty.*
 
-fun Ty.itemDeclaredInModule(mod: MvModule): Boolean {
-    if (this is TyUnknown) return true
-    // no declaring module means builtin
-    val declaringMod = this.declaringModule ?: return false
-    return declaringMod == mod
+// null -> builtin module
+fun Ty.declaringModule(): MvModule? = when (this) {
+    is TyReference -> this.referenced.declaringModule()
+    is TyAdt -> this.item.containingModule
+    else -> null
 }
-
-private val Ty.declaringModule: MvModule?
-    get() = when (this) {
-        is TyReference -> this.referenced.declaringModule
-        is TyStruct -> this.item.containingModule
-        else -> null
-    }
 
 fun Ty.nameNoArgs(): String {
     return this.name().replace(Regex("<.*>"), "")
@@ -36,7 +29,7 @@ fun Ty.fullname(): String {
 }
 
 fun Ty.typeLabel(relativeTo: MvElement): String {
-    val typeModule = this.declaringModule
+    val typeModule = this.declaringModule()
     if (typeModule != null && typeModule != relativeTo.containingModule) {
         return this.fullname()
     } else {
@@ -128,7 +121,7 @@ private fun render(
     return when (ty) {
         is TyFunction -> {
             val params = ty.paramTypes.joinToString(", ", "fn(", ")", transform = r)
-            var s = if (ty.retType is TyUnit) params else "$params -> ${r(ty.retType)}"
+            var s = if (ty.returnType is TyUnit) params else "$params -> ${r(ty.returnType)}"
             if (ty.acquiresTypes.isNotEmpty()) {
                 s += ty.acquiresTypes.joinToString(", ", " acquires ", transform = r)
             }
@@ -138,11 +131,18 @@ private fun render(
         is TyVector -> "vector<${r(ty.item)}>"
         is TyRange -> "range<${r(ty.item)}>"
         is TyReference -> {
-            val prefix = if (ty.permissions.contains(RefPermissions.WRITE)) "&mut " else "&"
+            val prefix = if (ty.mutability.isMut) "&mut " else "&"
             "$prefix${r(ty.referenced)}"
         }
         is TyTypeParameter -> typeParam(ty)
-        is TyStruct -> {
+//        is TyStruct -> {
+//            val name = if (fq) ty.item.qualName?.editorText() ?: anonymous else (ty.item.name ?: anonymous)
+//            val args =
+//                if (ty.typeArguments.isEmpty()) ""
+//                else ty.typeArguments.joinToString(", ", "<", ">", transform = r)
+//            name + args
+//        }
+        is TyAdt -> {
             val name = if (fq) ty.item.qualName?.editorText() ?: anonymous else (ty.item.name ?: anonymous)
             val args =
                 if (ty.typeArguments.isEmpty()) ""
@@ -155,10 +155,10 @@ private fun render(
         }
         is TyLambda -> {
             val params = ty.paramTypes.joinToString(",", "|", "|", transform = r)
-            val retType = if (ty.retType is TyUnit)
+            val retType = if (ty.returnType is TyUnit)
                 "()"
             else
-                r(ty.retType)
+                r(ty.returnType)
             "$params -> $retType"
         }
         is TySchema -> {

@@ -14,7 +14,7 @@ import com.intellij.profile.codeInspection.InspectionProjectProfileManager
 import org.sui.cli.runConfigurations.aptos.RunAptosCommandActionBase
 import org.sui.ide.inspections.MvExternalLinterInspection
 
-class MvRunExternalLinterAction : RunAptosCommandActionBase("Run External Linter") {
+class MvRunExternalLinterAction: RunAptosCommandActionBase("Run External Linter") {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 

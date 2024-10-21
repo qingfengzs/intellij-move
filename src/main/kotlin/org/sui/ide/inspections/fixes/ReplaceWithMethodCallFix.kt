@@ -8,7 +8,7 @@ import org.sui.lang.core.psi.ext.typeArguments
 import org.sui.lang.core.psi.ext.valueArguments
 import org.sui.stdext.notEmptyOrLet
 
-class ReplaceWithMethodCallFix(callExpr: MvCallExpr) : DiagnosticFix<MvCallExpr>(callExpr) {
+class ReplaceWithMethodCallFix(callExpr: MvCallExpr): DiagnosticFix<MvCallExpr>(callExpr) {
     override fun getText(): String = "Replace with method call"
 
     override fun invoke(project: Project, file: PsiFile, element: MvCallExpr) {
@@ -29,11 +29,10 @@ class ReplaceWithMethodCallFix(callExpr: MvCallExpr) : DiagnosticFix<MvCallExpr>
         when (selfArgExpr) {
             // all AtomExpr list, same priority as MvDotExpr
             is MvVectorLitExpr, is MvStructLitExpr, is MvTupleLitExpr, is MvParensExpr, is MvAnnotatedExpr,
-            is MvDotExpr, is MvIndexExpr, is MvCallExpr, is MvAssertBangExpr, is MvRefExpr, is MvLambdaExpr,
+            is MvDotExpr, is MvIndexExpr, is MvCallExpr, is MvAssertMacroExpr, is MvPathExpr, is MvLambdaExpr,
             is MvLitExpr, is MvCodeBlockExpr -> {
                 // do nothing, those operations priorities are correct without parens
             }
-
             else -> {
                 selfArgExpr = psiFactory.wrapWithParens(selfArgExpr)
             }

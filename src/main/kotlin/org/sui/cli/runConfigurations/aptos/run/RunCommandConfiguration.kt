@@ -8,7 +8,7 @@ import org.sui.cli.runConfigurations.aptos.FunctionCallConfigurationEditor
 class RunCommandConfiguration(
     project: Project,
     factory: ConfigurationFactory
-) : FunctionCallConfigurationBase(project, factory, RunCommandConfigurationHandler()) {
+): FunctionCallConfigurationBase(project, factory, RunCommandConfigurationHandler()) {
 
     override fun getConfigurationEditor(): FunctionCallConfigurationEditor<RunCommandConfiguration> {
         return FunctionCallConfigurationEditor(project, RunCommandConfigurationHandler())

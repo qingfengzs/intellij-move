@@ -11,8 +11,7 @@ import org.sui.lang.core.psi.ext.*
 
 interface MvElement : PsiElement
 
-abstract class MvElementImpl(node: ASTNode) : ASTWrapperPsiElement(node),
-                                              MvElement
+abstract class MvElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), MvElement
 
 val MvElement.containingMoveFile: MoveFile? get() = this.containingFile as? MoveFile
 
@@ -31,6 +30,7 @@ val MvElement.namespaceModule: MvModule?
             else -> null
         }
     }
+
 
 val MvElement.containingModule: MvModule? get() = ancestorStrict()
 

@@ -14,7 +14,7 @@ import org.sui.lang.core.psi.ext.hasVerifyOnlyAttr
 import org.sui.lang.core.psi.ext.isSelf
 import org.sui.lang.moveProject
 
-class UseStmtWrapper(val useStmt: MvUseStmt) : Comparable<UseStmtWrapper> {
+class UseStmtWrapper(val useStmt: MvUseStmt): Comparable<UseStmtWrapper> {
     private val namedAddress: String?
         get() {
             val useSpeck = useStmt.useSpeck ?: return null

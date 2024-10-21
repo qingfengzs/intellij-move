@@ -22,7 +22,7 @@ class SyntheticRsFmtBlock(
     private val indent: Indent? = null,
     private val wrap: Wrap? = null,
     val ctx: MvFmtContext
-) : ASTBlock {
+): ASTBlock {
 
     init {
         assert(subBlocks.isNotEmpty()) { "tried to build empty synthetic block" }

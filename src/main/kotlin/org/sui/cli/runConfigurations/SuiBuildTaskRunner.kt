@@ -10,9 +10,8 @@ import org.jetbrains.concurrency.resolvedPromise
 import org.sui.cli.moveProjectRoot
 import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfiguration
 import org.sui.ide.newProject.ProjectInitializationSteps
-import org.sui.openapiext.runManager
 import org.sui.openapiext.suiCommandConfigurationsSettings
-
+import org.sui.openapiext.runManager
 
 @Suppress("UnstableApiUsage")
 class SuiBuildTaskRunner : ProjectTaskRunner() {
@@ -52,4 +51,3 @@ class SuiBuildTaskRunner : ProjectTaskRunner() {
         }
     }
 }
-

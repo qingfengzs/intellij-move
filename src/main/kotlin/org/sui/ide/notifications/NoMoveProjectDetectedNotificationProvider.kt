@@ -18,15 +18,15 @@ import org.sui.lang.toNioPathOrNull
 import org.sui.openapiext.common.isDispatchThread
 import org.sui.openapiext.common.isUnitTestMode
 
-class NoMoveProjectDetectedNotificationProvider(project: Project) : MvEditorNotificationProvider(project),
-    DumbAware {
+class NoMoveProjectDetectedNotificationProvider(project: Project): MvEditorNotificationProvider(project),
+                                                                   DumbAware {
 
     override val VirtualFile.disablingKey: String get() = NOTIFICATION_STATUS_KEY + path
 
     init {
         project.messageBus.connect().apply {
-            subscribe(MOVE_SETTINGS_TOPIC, object : MoveSettingsListener {
-                override fun <T : MvProjectSettingsBase<T>> settingsChanged(e: SettingsChangedEventBase<T>) {
+            subscribe(MOVE_SETTINGS_TOPIC, object: MoveSettingsListener {
+                override fun <T: MvProjectSettingsBase<T>> settingsChanged(e: SettingsChangedEventBase<T>) {
                     updateAllNotifications()
                 }
             })

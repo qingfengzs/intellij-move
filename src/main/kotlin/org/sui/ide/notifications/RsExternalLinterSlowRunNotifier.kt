@@ -43,7 +43,7 @@ class RsExternalLinterSlowRunNotifier(val project: Project) {
                     when (e.description) {
                         "disable" -> project.externalLinterSettings.modify { it.runOnTheFly = false }
                         "dont-show-again" -> PropertiesComponent.getInstance()
-                            .setValue(DO_NOT_SHOW_KEY, true, false)
+                                .setValue(DO_NOT_SHOW_KEY, true, false)
                     }
                     // balloons can stack on one another sometimes, we need to remove them all if any action is called
                     disposeAllBalloons()

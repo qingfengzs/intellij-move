@@ -9,7 +9,7 @@ abstract class FunctionCallConfigurationBase(
     project: Project,
     factory: ConfigurationFactory,
     val configurationHandler: CommandConfigurationHandler,
-) : CommandConfigurationBase(project, factory) {
+): CommandConfigurationBase(project, factory) {
 
     fun firstRunShouldOpenEditor(): Boolean {
         val moveProject = workingDirectory

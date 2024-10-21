@@ -1,13 +1,13 @@
 <idea-plugin
-        require-restart="true"
+    require-restart="true"
 >
     <id>org.sui.lang</id>
     <name>Sui Move Language</name>
 
     <vendor>MoveFuns</vendor>
 
-    <description>
-        <![CDATA[
+  <description>
+    <![CDATA[
 
             <p>This IntelliJ IDEA plugin streamlines your Sui Move development workflow.</p>
 
@@ -43,14 +43,14 @@
 
             <p>Visit our GitHub repository: <a href="https://github.com/movefuns/intellij-move">https://github.com/movefuns/intellij-move</a></p>
         ]]>
-    </description>
+  </description>
 
-    <resource-bundle>messages.MvBundle</resource-bundle>
+  <resource-bundle>messages.MvBundle</resource-bundle>
 
-    <depends>com.intellij.modules.platform</depends>
-    <depends>org.toml.lang</depends>
+  <depends>com.intellij.modules.platform</depends>
+  <depends>org.toml.lang</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
+  <extensions defaultExtensionNs="com.intellij">
 
         <fileType name="SUI_BYTECODE"
                   extensions="mv"
@@ -69,7 +69,7 @@
         <codeInsight.lineMarkerProvider language="Sui Move"
                                         implementationClass="org.sui.ide.lineMarkers.ItemSpecsLineMarkerProvider"/>
 
-        <!-- PSI managing -->
+    <!-- PSI managing -->
 
         <projectService serviceInterface="org.sui.lang.core.psi.MvPsiManager"
                         serviceImplementation="org.sui.lang.core.psi.MvPsiManagerImpl"/>
@@ -77,7 +77,7 @@
         <projectService serviceImplementation="org.sui.cli.settings.MvProjectSettingsService"/>
 
         <!--specificallytosupportnamedaddressesintests,doesnothinginnon-testenvironment-->
-        <projectService serviceInterface="org.sui.cli.tests.NamedAddressService"
+        <projectService serviceInterface="org.sui.cli.tests.NamedAddressFromTestAnnotationService"
                         serviceImplementation="org.sui.cli.tests.NamedAddressServiceImpl"
                         testServiceImplementation="org.sui.cli.tests.NamedAddressServiceTestImpl"/>
 
@@ -102,7 +102,7 @@
         <stubIndex implementation="org.sui.lang.index.MvNamedElementIndex"/>
         <stubIndex implementation="org.sui.lang.index.MvEntryFunctionIndex"/>
         <stubIndex implementation="org.sui.lang.index.MvViewFunctionIndex"/>
-        <stubIndex implementation="org.sui.lang.index.MvTestFunctionIndex"/>
+<!--    <stubIndex implementation="org.move.lang.index.MvTestFunctionIndex" />-->
         <stubIndex implementation="org.sui.lang.index.MvModuleIndex"/>
         <stubIndex implementation="org.sui.lang.index.MvModuleSpecIndex"/>
 
@@ -275,10 +275,10 @@
                          displayName="Type checking"
                          enabledByDefault="true" level="ERROR"
                          implementationClass="org.sui.ide.inspections.MvTypeCheckInspection"/>
-        <localInspection language="Sui Move" groupName="SuiMove"
+        <!-- <localInspection language="Sui Move" groupName="SuiMove"
                          displayName="Ability checking"
                          enabledByDefault="false" level="ERROR"
-                         implementationClass="org.sui.ide.inspections.MvAbilityCheckInspection"/>
+                         implementationClass="org.sui.ide.inspections.MvAbilityCheckInspection"/>-->
         <localInspection language="Sui Move" groupName="SuiMove"
                          displayName="Missing acquires"
                          enabledByDefault="true" level="ERROR"
@@ -395,14 +395,14 @@
         <!--            <className>org.sui.ide.intentions.InlineAddressBlockIntention</className>-->
         <!--            <category>Move</category>-->
         <!--        </intentionAction>-->
-        <intentionAction>
+	<intentionAction>
             <language>Sui Move</language>
-            <className>org.sui.ide.intentions.ChopParameterListIntention</className>
+            <className>org.sui.ide.intentions.ChopValueArgumentListIntention</className>
             <category>Move</category>
         </intentionAction>
         <intentionAction>
             <language>Sui Move</language>
-            <className>org.sui.ide.intentions.ChopValueArgumentListIntention</className>
+            <className>org.sui.ide.intentions.ChopAttrArgumentListIntention</className>
             <category>Move</category>
         </intentionAction>
         <intentionAction>

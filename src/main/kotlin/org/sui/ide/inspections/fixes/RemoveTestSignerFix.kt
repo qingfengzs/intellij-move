@@ -13,7 +13,7 @@ import org.sui.lang.core.psi.ext.getPrevNonCommentSibling
 class RemoveTestSignerFix(
     attrItem: MvAttrItem,
     val signerName: String
-) : DiagnosticFix<MvAttrItem>(attrItem) {
+): DiagnosticFix<MvAttrItem>(attrItem) {
 
     override fun getText(): String = "Remove '$signerName'"
     override fun getFamilyName(): String = "Remove unused test signer"

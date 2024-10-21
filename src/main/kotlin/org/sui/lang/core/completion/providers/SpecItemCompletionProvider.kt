@@ -12,7 +12,7 @@ import org.sui.lang.core.psi.ext.itemSpec
 import org.sui.lang.core.psi.ext.module
 import org.sui.lang.core.psi.ext.mslSpecifiableItems
 
-object SpecItemCompletionProvider : MvCompletionProvider() {
+object SpecItemCompletionProvider: MvCompletionProvider() {
     override val elementPattern get() = MvPsiPattern.itemSpecRef()
 
     override fun addCompletions(

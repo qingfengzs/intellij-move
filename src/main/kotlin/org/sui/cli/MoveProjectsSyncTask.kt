@@ -213,13 +213,13 @@ class MoveProjectsSyncTask(
             .withContentDescriptor { buildContentDescriptor }
             .withRestartAction(refreshAction)
             .withRestartAction(StopAction(progress))
-        return object : BuildProgressDescriptor {
+        return object: BuildProgressDescriptor {
             override fun getTitle(): String = descriptor.title
             override fun getBuildDescriptor(): BuildDescriptor = descriptor
         }
     }
 
-    private class StopAction(private val progress: ProgressIndicator) :
+    private class StopAction(private val progress: ProgressIndicator):
         DumbAwareAction({ "Stop" }, AllIcons.Actions.Suspend) {
 
         override fun update(e: AnActionEvent) {
@@ -322,8 +322,8 @@ class MoveProjectsSyncTask(
 
 private class SyncProcessAdapter(
     private val context: MoveProjectsSyncTask.SyncContext
-) : ProcessAdapter(),
-    ProcessProgressListener {
+): ProcessAdapter(),
+   ProcessProgressListener {
     override fun onTextAvailable(event: ProcessEvent, outputType: Key<Any>) {
         val text = event.text.trim { it <= ' ' }
         if (text.startsWith("FETCHING GIT DEPENDENCY")) {

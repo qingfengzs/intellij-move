@@ -142,11 +142,11 @@ val Project.contentRoots: Sequence<VirtualFile>
 
 val Project.syntheticLibraries: Collection<SyntheticLibrary>
     get() {
-    val libraries = AdditionalLibraryRootsProvider.EP_NAME
-        .extensionList
-        .flatMap { it.getAdditionalProjectLibraries(this) }
-    return libraries
-}
+        val libraries = AdditionalLibraryRootsProvider.EP_NAME
+            .extensionList
+            .flatMap { it.getAdditionalProjectLibraries(this) }
+        return libraries
+    }
 
 val Project.rootDir: VirtualFile? get() = contentRoots.firstOrNull()
 
@@ -208,7 +208,7 @@ inline fun <R> Project.nonBlocking(crossinline block: () -> R, crossinline uiCon
 }
 
 @Service(PROJECT)
-class RootPluginDisposable : Disposable {
+class RootPluginDisposable: Disposable {
     override fun dispose() {}
 }
 
@@ -223,7 +223,7 @@ fun checkCommitIsNotInProgress(project: Project) {
     }
 }
 
-inline fun <Key: Any, reified Psi : PsiElement> getElements(
+inline fun <Key: Any, reified Psi: PsiElement> getElements(
     indexKey: StubIndexKey<Key, Psi>,
     key: Key,
     project: Project,

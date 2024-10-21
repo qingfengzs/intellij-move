@@ -47,14 +47,12 @@ data class FunctionSignature(
                     val function = callable.path.reference?.resolveFollowingAliases() as? MvFunction
                     function?.getSignature()
                 }
-
                 is MvMethodCall -> {
                     val function = callable.reference.resolveFollowingAliases() as? MvFunction
                     function?.getSignature()
                 }
-
                 else -> null
-        }
+            }
 
         fun fromFunction(function: MvFunction): FunctionSignature? {
             val typeParameters = function.typeParameters
@@ -79,7 +77,7 @@ data class FunctionSignature(
             val specParameters = paramList.itemSpecFunctionParameterList
             val signatureParams = specParameters.map { specParam ->
                 val paramName = specParam.referenceName
-                val paramType = specParam.typeAnnotation?.type?.text ?: ""
+                val paramType = specParam.type?.text ?: ""
                 Parameter(paramName, paramType)
             }
             val specTypeParameters =

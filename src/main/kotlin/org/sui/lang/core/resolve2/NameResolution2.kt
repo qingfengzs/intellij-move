@@ -4,20 +4,57 @@ import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.resolve.*
 import org.sui.lang.core.resolve.ref.*
+import org.sui.lang.core.resolve2.ref.FieldResolveVariant
 import org.sui.lang.core.resolve2.ref.ResolutionContext
 import org.sui.lang.core.types.Address
 import org.sui.lang.core.types.Address.Named
 import org.sui.lang.core.types.address
+import org.sui.lang.core.types.ty.TyAdt
 import org.sui.lang.index.MvModuleIndex
 
+fun processFieldLookupResolveVariants(
+    fieldLookup: MvFieldLookup,
+    receiverTy: TyAdt,
+    msl: Boolean,
+    originalProcessor: RsResolveProcessorBase<FieldResolveVariant>
+): Boolean {
+    val receiverItem = receiverTy.item
+    if (!isFieldsAccessible(fieldLookup, receiverItem, msl)) return false
+
+    val processor = originalProcessor.wrapWithMapper { it: ScopeEntry ->
+        FieldResolveVariant(it.name, it.element)
+    }
+
+    return when (receiverItem) {
+        is MvStruct -> processFieldDeclarations(receiverItem, processor)
+//        is MvStruct -> processor.processAll(NONE, receiverItem.fields)
+        is MvEnum -> {
+            val visitedFields = mutableSetOf<String>()
+            for (variant in receiverItem.variants) {
+                val visitedVariantFields = mutableSetOf<String>()
+                for (field in variant.fields) {
+                    val fieldName = field.name ?: continue
+                    if (fieldName in visitedFields) continue
+                    if (processor.process(NONE, field)) return true
+                    // collect all names for the variant
+                    visitedVariantFields.add(fieldName)
+                }
+                // add variant fields to the global fields list to skip them in the next variants
+                visitedFields.addAll(visitedVariantFields)
+            }
+            false
+        }
+        else -> error("unreachable")
+    }
+}
 
 fun processStructLitFieldResolveVariants(
     litField: MvStructLitField,
     isCompletion: Boolean,
     processor: RsResolveProcessor,
 ): Boolean {
-    val fieldsOwner = litField.structLitExpr.path.reference?.resolveFollowingAliases() as? MvFieldsOwner
-    if (fieldsOwner != null && processFieldDeclarations(fieldsOwner, processor)) return true
+    val fieldsOwner = litField.parentStructLitExpr.path.reference?.resolveFollowingAliases() as? MvFieldsOwner
+    if (fieldsOwner != null && processNamedFieldDeclarations(fieldsOwner, processor)) return true
     // if it's a shorthand, try to resolve to the underlying binding pat
     if (!isCompletion && litField.expr == null) {
         val ctx = ResolutionContext(litField, false)
@@ -28,26 +65,26 @@ fun processStructLitFieldResolveVariants(
 }
 
 fun processStructPatFieldResolveVariants(
-    field: MvFieldPatFull,
+    field: MvPatFieldFull,
     processor: RsResolveProcessor
 ): Boolean {
-    val resolved = field.parentStructPat.path.reference?.resolveFollowingAliases()
+    val resolved = field.parentPatStruct.path.reference?.resolveFollowingAliases()
     val resolvedStruct = resolved as? MvFieldsOwner ?: return false
-    return processFieldDeclarations(resolvedStruct, processor)
+    return processNamedFieldDeclarations(resolvedStruct, processor)
 }
 
-fun processBindingPatResolveVariants(
-    binding: MvBindingPat,
+fun processPatBindingResolveVariants(
+    binding: MvPatBinding,
     isCompletion: Boolean,
     originalProcessor: RsResolveProcessor
 ): Boolean {
     // field pattern shorthand
-    if (binding.parent is MvFieldPat) {
-        val parentPat = binding.parent.parent as MvStructPat
+    if (binding.parent is MvPatField) {
+        val parentPat = binding.parent.parent as MvPatStruct
         val structItem = parentPat.path.reference?.resolveFollowingAliases()
         // can be null if unresolved
         if (structItem is MvFieldsOwner) {
-            if (processFieldDeclarations(structItem, originalProcessor)) return true
+            if (processNamedFieldDeclarations(structItem, originalProcessor)) return true
             if (isCompletion) return false
         }
     }
@@ -55,18 +92,19 @@ fun processBindingPatResolveVariants(
     val processor = originalProcessor.wrapWithFilter { entry ->
         if (originalProcessor.acceptsName(entry.name)) {
             val element = entry.element
-            val isFieldless = element.isFieldlessFieldsOwner
+            val isConstantLike = element.isConstantLike
             val isPathOrDestructable = when (element) {
-                is MvEnum, is MvEnumVariant, is MvStruct -> true
+                /*is MvModule, */is MvEnum, is MvEnumVariant, is MvStruct -> true
                 else -> false
             }
-            isFieldless || (isCompletion && isPathOrDestructable)
+            isConstantLike || (isCompletion && isPathOrDestructable)
         } else {
             false
         }
     }
+    val ns = if (isCompletion) (TYPES_N_ENUMS_N_MODULES + NAMES) else NAMES
     val ctx = ResolutionContext(binding, isCompletion)
-    return processNestedScopesUpwards(binding, if (isCompletion) TYPES_N_NAMES else NAMES, ctx, processor)
+    return processNestedScopesUpwards(binding, ns, ctx, processor)
 }
 
 fun resolveBindingForFieldShorthand(
@@ -114,7 +152,7 @@ fun processModulePathResolveVariants(
     val project = ctx.element.project
     val searchScope = moveProject.searchScope()
 
-    val addrProcessor = processor.wrapWithFilter { e ->
+    val addressMatcher = processor.wrapWithFilter { e ->
         val candidate = e.element as? MvModule ?: return@wrapWithFilter false
         val candidateAddress = candidate.address(moveProject)
         val sameValues = Address.equals(address, candidateAddress)
@@ -128,30 +166,25 @@ fun processModulePathResolveVariants(
         sameValues
     }
 
-    val targetNames = addrProcessor.names
+    val targetNames = addressMatcher.names
+    // completion
     if (targetNames == null) {
-        // completion
         val moduleNames = MvModuleIndex.getAllModuleNames(project)
         moduleNames.forEach { moduleName ->
             val modules = MvModuleIndex.getModulesByName(project, moduleName, searchScope)
             for (module in modules) {
-                if (addrProcessor.process(moduleName, MODULES, module)) return true
+                if (addressMatcher.process(moduleName, MODULES, module)) return true
             }
         }
         return false
     }
 
-    var stop = false
+//    var stop = false
     for (targetModuleName in targetNames) {
-        MvModuleIndex
-            .processModulesByName(project, targetModuleName, searchScope) {
-                val module = it
-                val visFilter = module.visInfo().createFilter()
-                stop = addrProcessor.process(targetModuleName, module, MODULES, visFilter)
-                // true to continue processing, if .process does not find anything, it returns false
-                !stop
-            }
-        if (stop) return true
+        val modules = MvModuleIndex.getModulesByName(project, targetModuleName, searchScope)
+        for (module in modules) {
+            if (addressMatcher.process(targetModuleName, module, MODULES)) return true
+        }
     }
 
     return false
@@ -223,8 +256,14 @@ fun walkUpThroughScopes(
     return false
 }
 
-private fun processFieldDeclarations(struct: MvFieldsOwner, processor: RsResolveProcessor): Boolean =
-    struct.fields.any { field ->
+private fun processFieldDeclarations(item: MvFieldsOwner, processor: RsResolveProcessor): Boolean =
+    item.fields.any { field ->
+        val name = field.name ?: return@any false
+        processor.process(name, NAMES, field)
+    }
+
+private fun processNamedFieldDeclarations(struct: MvFieldsOwner, processor: RsResolveProcessor): Boolean =
+    struct.namedFields.any { field ->
         val name = field.name
         processor.process(name, NAMES, field)
     }

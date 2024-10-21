@@ -29,7 +29,6 @@ fun Logger.logOrShowBalloon(@NotificationContent content: String, productionLeve
             this.warn(content)
             showBalloonWithoutProject(content, INFORMATION)
         }
-
         else -> this.log(content, productionLevel)
     }
 }

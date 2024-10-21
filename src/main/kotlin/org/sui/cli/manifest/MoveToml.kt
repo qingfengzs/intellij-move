@@ -69,6 +69,7 @@ class MoveToml(
             val contentRoot = tomlFile.parent?.virtualFile?.toNioPathOrNull()
             val deps = contentRoot?.let { parseDependencies("dependencies", tomlFile, it) }.orEmpty()
             val devDeps = contentRoot?.let { parseDependencies("dev-dependencies", tomlFile, it) }.orEmpty()
+
             return MoveToml(
                 tomlFile.project,
                 tomlFile,

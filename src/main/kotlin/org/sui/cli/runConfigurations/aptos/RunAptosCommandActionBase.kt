@@ -17,7 +17,7 @@ abstract class RunAptosCommandActionBase(
     @ActionText text: String? = null,
     @ActionDescription description: String? = null,
     icon: Icon? = null
-) : DumbAwareAction(text, description, icon) {
+): DumbAwareAction(text, description, icon) {
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
     override fun update(e: AnActionEvent) {

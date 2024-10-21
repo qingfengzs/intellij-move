@@ -8,7 +8,7 @@ import com.intellij.psi.ResolveResult
 import org.sui.lang.core.psi.MvNamedElement
 import org.sui.utils.doRenameIdentifier
 
-abstract class MvPolyVariantReferenceBase<T : MvReferenceElement>(element: T) :
+abstract class MvPolyVariantReferenceBase<T: MvReferenceElement>(element: T):
     PsiPolyVariantReferenceBase<T>(element),
     MvPolyVariantReference {
 

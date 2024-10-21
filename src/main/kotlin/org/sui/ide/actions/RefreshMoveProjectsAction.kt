@@ -5,7 +5,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import org.sui.cli.moveProjectsService
 import org.sui.openapiext.saveAllDocuments
 
-class RefreshMoveProjectsAction : DumbAwareAction() {
+class RefreshMoveProjectsAction: DumbAwareAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return

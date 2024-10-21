@@ -153,7 +153,7 @@ private fun tryGroupWithItemSpeck(
     return true
 }
 
-private val <T : MvElement> List<T>.lastElement: T? get() = maxByOrNull { it.textOffset }
+private val <T: MvElement> List<T>.lastElement: T? get() = maxByOrNull { it.textOffset }
 
 @Suppress("SameReturnValue")
 private fun insertUseStmtAtTheCorrectLocation(mod: MvItemsOwner, useStmt: MvUseStmt): Boolean {

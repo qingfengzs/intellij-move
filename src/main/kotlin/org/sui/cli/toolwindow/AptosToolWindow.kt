@@ -18,7 +18,7 @@ import org.sui.cli.hasMoveProject
 import org.sui.cli.moveProjectsService
 import javax.swing.JComponent
 
-class AptosToolWindowFactory : ToolWindowFactory, DumbAware {
+class AptosToolWindowFactory: ToolWindowFactory, DumbAware {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         if (!project.moveProjectsService.hasAtLeastOneValidProject) {
             project.moveProjectsService
@@ -35,7 +35,7 @@ class AptosToolWindowFactory : ToolWindowFactory, DumbAware {
     //       implement it instead with ExternalToolWindowManager later
 }
 
-private class AptosToolWindowPanel(project: Project) : SimpleToolWindowPanel(true, false) {
+private class AptosToolWindowPanel(project: Project): SimpleToolWindowPanel(true, false) {
     private val aptosTab = AptosToolWindow(project)
 
     init {
@@ -66,7 +66,7 @@ class AptosToolWindow(private val project: Project) {
     private val projectTree = MoveProjectsTree()
     private val projectStructure = MoveProjectsTreeStructure(projectTree, project)
 
-    val treeExpander: TreeExpander = object : DefaultTreeExpander(projectTree) {
+    val treeExpander: TreeExpander = object: DefaultTreeExpander(projectTree) {
         override fun isCollapseAllVisible(): Boolean = project.hasMoveProject
         override fun isExpandAllVisible(): Boolean = project.hasMoveProject
     }

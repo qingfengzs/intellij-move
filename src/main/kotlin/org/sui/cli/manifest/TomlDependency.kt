@@ -44,7 +44,6 @@ sealed class TomlDependency {
                 val aptosRevName = rev.replace("/", "_")
                 return "${sanitizedRepoName}_$aptosRevName"
             }
-
             fun dirNameSui(repo: String, rev: String): String {
                 val sanitizedRepoName = repo.replace(Regex("[/:.@]"), "_")
                 val suiRevName = rev.replace("/", "__")

@@ -13,7 +13,7 @@ import org.sui.cli.settings.aptos.ChooseAptosCliPanel
 import org.sui.openapiext.showSettingsDialog
 
 // panels needs not to be bound to the Configurable itself, as it's sometimes created without calling the `createPanel()`
-class PerProjectAptosConfigurable(val project: Project) : BoundConfigurable("Aptos") {
+class PerProjectAptosConfigurable(val project: Project): BoundConfigurable("Aptos") {
 
     override fun createPanel(): DialogPanel {
         val chooseAptosCliPanel = ChooseAptosCliPanel(versionUpdateListener = null)
@@ -151,9 +151,4 @@ class PerProjectAptosConfigurable(val project: Project) : BoundConfigurable("Apt
             }
         }
     }
-
-//    override fun disposeUIResources() {
-//        super.disposeUIResources()
-//        Disposer.dispose(chooseAptosCliPanel)
-//    }
 }

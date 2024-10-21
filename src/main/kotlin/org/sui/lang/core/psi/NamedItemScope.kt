@@ -26,14 +26,12 @@ fun MvDocAndAttributeOwner.itemScopeFromAttributes(): NamedItemScope? =
                 else ->
                     this.module?.itemScopeFromAttributes() ?: NamedItemScope.MAIN
             }
-
         is MvStruct ->
             when {
                 this.hasTestOnlyAttr -> NamedItemScope.TEST
                 this.hasVerifyOnlyAttr -> NamedItemScope.VERIFY
                 else -> this.module.itemScopeFromAttributes() ?: NamedItemScope.MAIN
             }
-
         else ->
             when {
                 this.hasTestOnlyAttr -> NamedItemScope.TEST

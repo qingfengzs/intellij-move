@@ -12,7 +12,7 @@ import org.sui.ide.MoveIcons
 import javax.swing.Icon
 
 /// called only when IDE opens a project from existing sources
-class MoveLangProjectOpenProcessor : ProjectOpenProcessor() {
+class MoveLangProjectOpenProcessor: ProjectOpenProcessor() {
     override val name: String get() = "Sui Move"
     override val icon: Icon get() = MoveIcons.SUI_LOGO
 
@@ -33,14 +33,14 @@ class MoveLangProjectOpenProcessor : ProjectOpenProcessor() {
             ?.also { project ->
                 @Suppress("DEPRECATION")
                 StartupManager.getInstance(project)
-                    .runWhenProjectIsInitialized(object : DumbAwareRunnable {
+                    .runWhenProjectIsInitialized(object: DumbAwareRunnable {
                         override fun run() {
                             ProjectInitializationSteps.createDefaultCompileConfigurationIfNotExists(project)
                             // NOTE:
                             // this cannot be moved to a ProjectActivity, as Move.toml files
                             // are not created by the time those activities are executed
                             ProjectInitializationSteps.openMoveTomlInEditor(project)
-                    }
+                        }
                     })
             }
     }

@@ -10,7 +10,7 @@ import org.sui.lang.core.psi.ext.endOffset
 import org.sui.lang.core.psi.ext.startOffset
 import org.sui.lang.core.psi.psiFactory
 
-class RemoveCurlyBracesIntention : MvElementBaseIntentionAction<RemoveCurlyBracesIntention.Context>() {
+class RemoveCurlyBracesIntention: MvElementBaseIntentionAction<RemoveCurlyBracesIntention.Context>() {
     override fun getText(): String = "Remove curly braces"
     override fun getFamilyName(): String = text
 

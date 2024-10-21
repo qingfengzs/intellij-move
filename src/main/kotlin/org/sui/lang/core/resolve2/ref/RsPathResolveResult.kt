@@ -7,12 +7,12 @@ import org.sui.lang.core.psi.MvElement
 /**
  * Used as a resolve result in [org.rust.lang.core.resolve.ref.RsPathReferenceImpl]
  */
-data class RsPathResolveResult<T : MvElement>(
+data class RsPathResolveResult<T: MvElement>(
     val element: T,
 //    val resolvedSubst: Substitution = emptySubstitution,
     val isVisible: Boolean,
 //    val namespaces: Set<Namespace> = emptySet(),
-) : ResolveResult {
+): ResolveResult {
     override fun getElement(): PsiElement = element
 
     override fun isValidResult(): Boolean = true

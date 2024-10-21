@@ -9,7 +9,7 @@ import org.sui.lang.core.resolve2.processStructLitFieldResolveVariants
 
 class MvStructLitFieldReferenceImpl(
     field: MvStructLitField
-) : MvPolyVariantReferenceCached<MvStructLitField>(field) {
+): MvPolyVariantReferenceCached<MvStructLitField>(field) {
 
     override val cacheDependency: ResolveCacheDependency get() = ResolveCacheDependency.LOCAL_AND_RUST_STRUCTURE
 

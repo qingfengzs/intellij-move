@@ -20,12 +20,12 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
-abstract class MvProjectSettingsServiceBase<T : MvProjectSettingsBase<T>>(
+abstract class MvProjectSettingsServiceBase<T: MvProjectSettingsBase<T>>(
     val project: Project,
     state: T
-) : SimplePersistentStateComponent<T>(state) {
+): SimplePersistentStateComponent<T>(state) {
 
-    abstract class MvProjectSettingsBase<T : MvProjectSettingsBase<T>> : BaseState() {
+    abstract class MvProjectSettingsBase<T: MvProjectSettingsBase<T>>: BaseState() {
         abstract fun copy(): T
     }
 
@@ -68,7 +68,7 @@ abstract class MvProjectSettingsServiceBase<T : MvProjectSettingsBase<T>>(
     }
 
     interface MoveSettingsListener {
-        fun <T : MvProjectSettingsBase<T>> settingsChanged(e: SettingsChangedEventBase<T>)
+        fun <T: MvProjectSettingsBase<T>> settingsChanged(e: SettingsChangedEventBase<T>)
     }
 
     protected abstract fun createSettingsChangedEvent(oldEvent: T, newEvent: T): SettingsChangedEventBase<T>
@@ -92,7 +92,7 @@ abstract class MvProjectSettingsServiceBase<T : MvProjectSettingsBase<T>>(
         }
     }
 
-    abstract class SettingsChangedEventBase<T : MvProjectSettingsBase<T>>(val oldState: T, val newState: T) {
+    abstract class SettingsChangedEventBase<T: MvProjectSettingsBase<T>>(val oldState: T, val newState: T) {
         private val moveProjectsMetadataAffectingProps: List<KProperty1<T, *>> =
             oldState.javaClass.kotlin.memberProperties.filter { it.findAnnotation<AffectsMoveProjectsMetadata>() != null }
 

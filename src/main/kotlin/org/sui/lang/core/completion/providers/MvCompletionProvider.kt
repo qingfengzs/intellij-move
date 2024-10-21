@@ -12,14 +12,14 @@ import org.sui.lang.core.completion.DefaultInsertHandler
 import org.sui.lang.core.completion.getElementOfType
 import org.sui.lang.core.psi.MvElement
 
-abstract class MvCompletionProvider : CompletionProvider<CompletionParameters>() {
+abstract class MvCompletionProvider: CompletionProvider<CompletionParameters>() {
     abstract val elementPattern: ElementPattern<out PsiElement>
 }
 
 class ImportInsertHandler(
     val parameters: CompletionParameters,
     private val candidate: ImportCandidate
-) : DefaultInsertHandler() {
+): DefaultInsertHandler() {
 
     override fun handleInsert(element: MvElement, context: InsertionContext, item: LookupElement) {
         super.handleInsert(element, context, item)

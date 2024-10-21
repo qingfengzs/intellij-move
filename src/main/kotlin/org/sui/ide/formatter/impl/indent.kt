@@ -38,10 +38,10 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
         // Indent flat block contents, excluding closing brace
         node.isFlatBlock ->
             if (childCtx.metLBrace) {
-            getIndentIfNotDelim(child, node)
-        } else {
-            Indent.getNoneIndent()
-        }
+                getIndentIfNotDelim(child, node)
+            } else {
+                Indent.getNoneIndent()
+            }
 
 //        //     let a =
 //        //     92;
@@ -80,7 +80,7 @@ fun MoveFmtBlock.computeIndent(child: ASTNode, childCtx: MvFmtContext): Indent? 
 
 private fun getIndentIfNotDelim(child: ASTNode, parent: ASTNode): Indent =
     if (child.isBlockDelim(parent)) {
-    Indent.getNoneIndent()
-} else {
-    Indent.getNormalIndent()
-}
+        Indent.getNoneIndent()
+    } else {
+        Indent.getNormalIndent()
+    }

@@ -15,7 +15,7 @@ import java.io.IOException
 class DownloadAptosSdkTask(
     private val aptosSdk: AptosSdk,
     private val onFinish: (AptosSdk) -> Unit
-) :
+):
     Task.Modal(null, "Aptos SDK Installer", true) {
 
     override fun run(indicator: ProgressIndicator) {

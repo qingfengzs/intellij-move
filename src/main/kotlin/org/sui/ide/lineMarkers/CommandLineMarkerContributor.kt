@@ -6,6 +6,7 @@ import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.psi.PsiElement
 import org.sui.cli.runConfigurations.producers.sui.SuiTestCommandConfigurationProducer
+
 import org.sui.ide.MoveIcons
 import org.sui.lang.MvElementTypes.IDENTIFIER
 import org.sui.lang.core.psi.MvFunction

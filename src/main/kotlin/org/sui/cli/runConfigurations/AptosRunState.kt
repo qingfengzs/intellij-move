@@ -12,7 +12,7 @@ abstract class AptosRunStateBase(
     environment: ExecutionEnvironment,
     val runConfiguration: CommandConfigurationBase,
     val config: CommandConfigurationBase.CleanConfiguration.Ok
-) : CommandLineState(environment) {
+): CommandLineState(environment) {
 
     val project = environment.project
     val commandLine: AptosCommandLine = AptosCommandLine(null)
@@ -39,7 +39,7 @@ class AptosRunState(
     environment: ExecutionEnvironment,
     runConfiguration: CommandConfigurationBase,
     config: CommandConfigurationBase.CleanConfiguration.Ok
-) :
+):
     AptosRunStateBase(environment, runConfiguration, config) {
 
     init {

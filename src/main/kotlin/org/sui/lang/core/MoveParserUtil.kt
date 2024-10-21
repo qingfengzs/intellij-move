@@ -21,7 +21,7 @@ enum class FunModifier {
 }
 
 @Suppress("UNUSED_PARAMETER")
-object MoveParserUtil : GeneratedParserUtilBase() {
+object MoveParserUtil: GeneratedParserUtilBase() {
     @JvmField
     val ADJACENT_LINE_COMMENTS = WhitespacesAndCommentsBinder { tokens, _, getter ->
         var candidate = tokens.size
@@ -194,8 +194,7 @@ object MoveParserUtil : GeneratedParserUtilBase() {
     }
 
     @JvmStatic
-    fun isResourceAccessEnabled(b: PsiBuilder, level: Int): Boolean =
-        b.project.moveSettings.enableResourceAccessControl
+    fun isResourceAccessEnabled(b: PsiBuilder, level: Int): Boolean = false
 
     @JvmStatic
     fun includeStmtMode(b: PsiBuilder, level: Int, parser: Parser): Boolean {
@@ -268,9 +267,8 @@ object MoveParserUtil : GeneratedParserUtilBase() {
                 b.tokenType == NATIVE -> {
                     if (FunModifier.NATIVE !in modifiersLeft) return isParsed()
                     modifiersLeft.remove(FunModifier.NATIVE)
-                    // native alone only should give true for next token fun
-                    parsed = parsed || (b.lookAhead(1) == FUN)
                     nativeEncountered = true
+                    parsed = true
                     b.advanceLexer()
                 }
                 entryKeyword(b, level) -> {
@@ -323,12 +321,12 @@ object MoveParserUtil : GeneratedParserUtilBase() {
 
     @Suppress("FunctionName")
     @JvmStatic
-    fun VECTOR_IDENTIFIER(b: PsiBuilder, level: Int): Boolean {
+    fun vectorIdent(b: PsiBuilder, level: Int): Boolean {
         return nextTokenIs(b, "vector") && consumeToken(b, IDENTIFIER)
     }
 
     @JvmStatic
-    fun ASSERT_IDENTIFIER(b: PsiBuilder, level: Int): Boolean {
+    fun assertIdent(b: PsiBuilder, level: Int): Boolean {
         return nextTokenIs(b, "assert") && consumeToken(b, IDENTIFIER)
     }
 
@@ -364,7 +362,6 @@ object MoveParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun packageKeyword(b: PsiBuilder, level: Int): Boolean = contextualKeyword(b, "package", PACKAGE)
-
 
     @JvmStatic
     fun forKeyword(b: PsiBuilder, level: Int): Boolean = contextualKeyword(b, "for", FOR)

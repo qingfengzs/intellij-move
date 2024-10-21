@@ -1,8 +1,7 @@
 package org.sui.lang.core.completion.providers
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
@@ -10,16 +9,16 @@ import com.intellij.psi.util.elementType
 import com.intellij.util.ProcessingContext
 import org.sui.lang.MvElementTypes.L_BRACE
 import org.sui.lang.core.completion.*
-import org.sui.lang.core.psi.ext.isErrorElement
-import org.sui.lang.core.psi.ext.isWhitespace
-import org.sui.lang.core.psi.ext.rightSiblings
+import org.sui.lang.core.psi.MvFunction
+import org.sui.lang.core.psi.ext.*
+import org.sui.lang.core.psi.isNative
 
 class KeywordCompletionProvider(
     private val fillCompletions: (Project) -> List<String>
-) :
+):
     CompletionProvider<CompletionParameters>() {
 
-    constructor(vararg keywords: String) : this({ keywords.toList() })
+    constructor(vararg keywords: String): this({ keywords.toList() })
 
     override fun addCompletions(
         parameters: CompletionParameters,
@@ -29,45 +28,71 @@ class KeywordCompletionProvider(
         val project = parameters.position.project
         val keywords = fillCompletions(project)
         for (keyword in keywords) {
-            var builder = LookupElementBuilder.create(keyword).bold()
-            builder = addInsertionHandler(keyword, builder, parameters)
-            result.addElement(builder.withPriority(KEYWORD_PRIORITY))
+            result.addElement(createKeywordLookupElement(keyword, parameters))
         }
     }
 }
 
-private fun addInsertionHandler(
-    keyword: String,
-    builder: LookupElementBuilder,
-    parameters: CompletionParameters
-): LookupElementBuilder {
-    val posParent = parameters.position.parent
-    val posRightSiblings =
-        posParent.rightSiblings.filter { !it.isWhitespace() && !it.isErrorElement() }
-    val posParentNextSibling = posRightSiblings.firstOrNull()?.firstChild
+class FunctionModifierCompletionProvider: CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
+    ) {
+        val ident = parameters.position
+        val function = ident.parent as? MvFunction ?: return
 
-    return builder.withInsertHandler { ctx, _ ->
+        val keywords = buildList {
+            if (function.visibilityModifier == null) add("public")
+            if (!function.isEntry) add("entry")
+            if (!function.isNative) add("native")
+            if (!function.isInline) add("inline")
+        }
+        for (keyword in keywords) {
+            result.addElement(createKeywordLookupElement(keyword, parameters))
+        }
+    }
+}
+
+private fun createKeywordLookupElement(keyword: String, parameters: CompletionParameters): LookupElement {
+    return LookupElementBuilder
+        .create(keyword)
+        .bold()
+        .withInsertHandler(KeywordInsertionHandler(keyword, parameters))
+        .withPriority(KEYWORD_PRIORITY)
+}
+
+private class KeywordInsertionHandler(
+    val keyword: String,
+    val parameters: CompletionParameters,
+): InsertHandler<LookupElement> {
+    override fun handleInsert(context: InsertionContext, item: LookupElement) {
+        val posParent = parameters.position.parent
+        val posRightSiblings =
+            posParent.rightSiblings.filter { !it.isWhitespace() && !it.isErrorElement() }
+        val posParentNextSibling = posRightSiblings.firstOrNull()?.firstChild
+
         val elemSibling = parameters.position.nextSibling
         val suffix = when {
             keyword == "acquires" && posParentNextSibling.elementType == L_BRACE -> {
                 when {
-                    ctx.nextCharIs(' ', 0) && ctx.nextCharIs(' ', 1) -> {
-                        EditorModificationUtil.moveCaretRelatively(ctx.editor, 1)
+                    context.nextCharIs(' ', 0) && context.nextCharIs(' ', 1) -> {
+                        EditorModificationUtil.moveCaretRelatively(context.editor, 1)
                         ""
                     }
-                    ctx.nextCharIs(' ') -> {
+                    context.nextCharIs(' ') -> {
                         " "
                     }
                     else -> {
-                        EditorModificationUtil.moveCaretRelatively(ctx.editor, -1)
+                        EditorModificationUtil.moveCaretRelatively(context.editor, -1)
                         "  "
                     }
                 }
             }
             elemSibling != null && elemSibling.isWhitespace() -> ""
-            posParentNextSibling == null || !ctx.alreadyHasSpace -> " "
+            posParentNextSibling == null || !context.alreadyHasSpace -> " "
             else -> ""
         }
-        ctx.addSuffix(suffix)
+        context.addSuffix(suffix)
     }
 }

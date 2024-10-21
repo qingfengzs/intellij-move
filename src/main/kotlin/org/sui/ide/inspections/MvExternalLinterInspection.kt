@@ -34,7 +34,7 @@ import org.sui.lang.core.psi.ext.ancestorOrSelf
 import org.sui.lang.moveProject
 import org.sui.openapiext.rootPluginDisposable
 
-class MvExternalLinterInspection : GlobalSimpleInspectionTool() {
+class MvExternalLinterInspection: GlobalSimpleInspectionTool() {
 
     override fun inspectionStarted(
         manager: InspectionManager,

@@ -46,7 +46,7 @@ class AptosBuildContext(
     isTestBuild: Boolean,
     buildId: Any,
     parentId: Any
-) : AptosBuildContextBase(moveProject, progressTitle, isTestBuild, buildId, parentId) {
+): AptosBuildContextBase(moveProject, progressTitle, isTestBuild, buildId, parentId) {
 
     @Volatile
     var processHandler: ProcessHandler? = null

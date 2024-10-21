@@ -6,7 +6,7 @@ import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import org.sui.lang.core.completion.CompletionContext
+import org.sui.lang.core.completion.MvCompletionContext
 import org.sui.lang.core.completion.getOriginalOrSelf
 import org.sui.lang.core.psi.MvSchemaLitField
 import org.sui.lang.core.psi.ext.fields
@@ -17,7 +17,7 @@ import org.sui.lang.core.resolve.collectCompletionVariants
 import org.sui.lang.core.resolve.wrapWithFilter
 import org.sui.lang.core.withParent
 
-object SchemaFieldsCompletionProvider : MvCompletionProvider() {
+object SchemaFieldsCompletionProvider: MvCompletionProvider() {
     override val elementPattern: ElementPattern<out PsiElement>
         get() =
             PlatformPatterns.psiElement().withParent<MvSchemaLitField>()
@@ -35,7 +35,7 @@ object SchemaFieldsCompletionProvider : MvCompletionProvider() {
             .filter { !it.textRange.contains(pos.textOffset) }
             .map { it.referenceName }
 
-        val completionCtx = CompletionContext(literalField, literalField.isMsl())
+        val completionCtx = MvCompletionContext(literalField, literalField.isMsl())
         collectCompletionVariants(result, completionCtx) {
             val processor = it.wrapWithFilter { e -> e.name !in existingFieldNames }
             processSchemaLitFieldResolveVariants(literalField, processor)

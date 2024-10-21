@@ -6,12 +6,12 @@ import org.sui.lang.core.psi.MvMandatoryNameIdentifierOwner
 import org.sui.lang.core.psi.MvNameIdentifierOwner
 
 abstract class MvNameIdentifierOwnerImpl(node: ASTNode) : MvNamedElementImpl(node),
-    MvNameIdentifierOwner {
+                                                          MvNameIdentifierOwner {
     override fun getNameIdentifier(): PsiElement? = nameElement
 }
 
-abstract class MvMandatoryNameIdentifierOwnerImpl(node: ASTNode) : MvMandatoryNamedElementImpl(node),
-    MvMandatoryNameIdentifierOwner {
+abstract class MvMandatoryNameIdentifierOwnerImpl(node: ASTNode): MvMandatoryNamedElementImpl(node),
+                                                                  MvMandatoryNameIdentifierOwner {
 
     override fun getNameIdentifier(): PsiElement = nameElement
-}
+                                                                  }

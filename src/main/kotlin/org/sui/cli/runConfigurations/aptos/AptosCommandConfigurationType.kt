@@ -7,7 +7,7 @@ import com.intellij.openapi.util.NotNullLazyValue
 import org.sui.cli.runConfigurations.aptos.cmd.AptosCommandConfigurationFactory
 import org.sui.ide.MoveIcons
 
-class AptosCommandConfigurationType :
+class AptosCommandConfigurationType:
     ConfigurationTypeBase(
         "AptosCommandConfiguration",
         "Aptos",
@@ -15,9 +15,9 @@ class AptosCommandConfigurationType :
         NotNullLazyValue.createConstantValue(MoveIcons.APTOS_LOGO)
     ) {
 
-    init {
-        addFactory(AptosCommandConfigurationFactory(this))
-    }
+        init {
+            addFactory(AptosCommandConfigurationFactory(this))
+        }
 
     val factory: ConfigurationFactory get() = configurationFactories.single()
 

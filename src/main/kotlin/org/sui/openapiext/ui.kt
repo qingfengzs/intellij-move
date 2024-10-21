@@ -36,14 +36,14 @@ class UiDebouncer(
         if (Disposer.isDisposed(parentDisposable)) return
         alarm.cancelAllRequests()
         alarm.addRequest({
-            val r = onPooledThread()
-            invokeLater(ModalityState.any()) {
-                @Suppress("DEPRECATION")
-                if (!Disposer.isDisposed(parentDisposable)) {
-                    onUiThread(r)
-                }
-            }
-        }, delayMillis)
+                             val r = onPooledThread()
+                             invokeLater(ModalityState.any()) {
+                                 @Suppress("DEPRECATION")
+                                 if (!Disposer.isDisposed(parentDisposable)) {
+                                     onUiThread(r)
+                                 }
+                             }
+                         }, delayMillis)
     }
 }
 

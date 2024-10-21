@@ -13,7 +13,7 @@ import javax.swing.JPanel
 class RsCommandLineEditor(
     private val project: Project,
     private val completionProvider: TextFieldCompletionProvider
-) : JPanel(BorderLayout()), TextAccessor {
+): JPanel(BorderLayout()), TextAccessor {
 
     private val textField = createTextField("")
 
@@ -38,7 +38,7 @@ class RsCommandLineEditor(
             false
         )
 
-    class EmptyTextFieldCompletionProvider : TextFieldCompletionProvider() {
+    class EmptyTextFieldCompletionProvider: TextFieldCompletionProvider() {
         override fun addCompletionVariants(
             text: String,
             offset: Int,
@@ -52,7 +52,7 @@ class RsCommandLineEditor(
 private class ExpandableEditorSupportWithCustomPopup(
     field: EditorTextField,
     private val createPopup: (text: String) -> EditorTextField
-) : ExpandableEditorSupport(field) {
+): ExpandableEditorSupport(field) {
 
     override fun createPopupEditor(field: EditorTextField, text: String): EditorTextField = createPopup(text)
 }

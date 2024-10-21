@@ -6,7 +6,7 @@ import com.intellij.execution.impl.RunDialog
 import org.sui.cli.runConfigurations.aptos.FunctionCallConfigurationBase
 import org.sui.cli.runConfigurations.producers.CommandConfigurationProducerBase
 
-abstract class FunctionCallConfigurationProducerBase<T : FunctionCallConfigurationBase> :
+abstract class FunctionCallConfigurationProducerBase<T: FunctionCallConfigurationBase>:
     CommandConfigurationProducerBase() {
 
     override fun onFirstRun(

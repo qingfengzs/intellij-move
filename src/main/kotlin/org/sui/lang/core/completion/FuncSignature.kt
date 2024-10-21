@@ -10,11 +10,12 @@ import org.sui.lang.core.types.infer.TypeVisitor
 import org.sui.lang.core.types.ty.Ty
 import org.sui.lang.core.types.ty.TyReference
 import org.sui.lang.core.types.ty.TyUnit
+import org.sui.lang.core.types.ty.functionTy
 
 data class FuncSignature(
     private val params: Map<String, Ty>,
     private val retType: Ty,
-) : TypeFoldable<FuncSignature> {
+): TypeFoldable<FuncSignature> {
 
     override fun innerFoldWith(folder: TypeFolder): FuncSignature {
         return FuncSignature(
@@ -50,11 +51,12 @@ data class FuncSignature(
 
     companion object {
         fun fromFunction(function: MvFunction, msl: Boolean): FuncSignature {
-            val declaredType = function.declaredType(msl)
-            val params = function.parameters.zip(declaredType.paramTypes)
+            val functionType = function.functionTy(msl)
+            val parameters = function.parameters
+                .zip(functionType.paramTypes)
                 .associate { (param, paramTy) -> Pair(param.name, paramTy) }
-            val retType = declaredType.retType
-            return FuncSignature(params, retType)
+            val returnType = functionType.returnType
+            return FuncSignature(parameters, returnType)
         }
     }
 }

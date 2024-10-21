@@ -128,12 +128,12 @@ class MvResolveCache(project: Project) : Disposable {
                 val trackerOwner = element.findModificationTrackerOwner(strict = false)
                 return if (trackerOwner != null) {
                     CachedValuesManager.getCachedValue(trackerOwner, LOCAL_AND_RUST_STRUCTURE_CACHE_KEY) {
-                            CachedValueProvider.Result.create(
-                                createWeakMap(),
-                                trackerOwner.project.moveStructureModificationTracker,
-                                trackerOwner.modificationTracker
-                            )
-                        }
+                        CachedValueProvider.Result.create(
+                            createWeakMap(),
+                            trackerOwner.project.moveStructureModificationTracker,
+                            trackerOwner.modificationTracker
+                        )
+                    }
 
 //                    if (dep == ResolveCacheDependency.LOCAL) {
 //                        CachedValuesManager.getCachedValue(owner, LOCAL_CACHE_KEY) {

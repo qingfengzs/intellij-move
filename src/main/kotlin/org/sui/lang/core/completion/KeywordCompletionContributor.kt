@@ -8,7 +8,8 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import org.sui.cli.settings.moveSettings
 import org.sui.lang.MvElementTypes.*
-import org.sui.lang.core.MvPsiPattern
+import org.sui.lang.core.*
+import org.sui.lang.core.MvPsiPattern.afterAnySibling
 import org.sui.lang.core.MvPsiPattern.anySpecStart
 import org.sui.lang.core.MvPsiPattern.codeStatementPattern
 import org.sui.lang.core.MvPsiPattern.function
@@ -16,14 +17,13 @@ import org.sui.lang.core.MvPsiPattern.identifierStatementBeginningPattern
 import org.sui.lang.core.MvPsiPattern.itemSpecStmt
 import org.sui.lang.core.MvPsiPattern.module
 import org.sui.lang.core.MvPsiPattern.moduleSpecBlock
-import org.sui.lang.core.MvPsiPattern.onStatementBeginning
 import org.sui.lang.core.MvPsiPattern.script
 import org.sui.lang.core.MvPsiPattern.toplevel
 import org.sui.lang.core.MvPsiPattern.typeParameter
-import org.sui.lang.core.TYPES
+import org.sui.lang.core.completion.providers.FunctionModifierCompletionProvider
 import org.sui.lang.core.completion.providers.KeywordCompletionProvider
 
-class KeywordCompletionContributor : CompletionContributor() {
+class KeywordCompletionContributor: CompletionContributor() {
     init {
         extend(
             CompletionType.BASIC,
@@ -44,8 +44,8 @@ class KeywordCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             module().and(identifierStatementBeginningPattern()),
             KeywordCompletionProvider(
-                *VIS_MODIFIERS,
-                *FUNCTION_MODIFIERS,
+                *VISIBILITY_MODIFIERS,
+                *CONTEXT_FUNCTION_MODIFIERS,
                 "native",
                 "fun",
                 "struct",
@@ -69,19 +69,24 @@ class KeywordCompletionContributor : CompletionContributor() {
         )
         extend(
             CompletionType.BASIC,
-            function().with(MvPsiPattern.AfterSibling(VISIBILITY_MODIFIER)),
-            KeywordCompletionProvider("fun", *FUNCTION_MODIFIERS)
+            function().with(afterAnySibling(FUNCTION_MODIFIERS)),
+            FunctionModifierCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
-            function().with(MvPsiPattern.AfterSibling(NATIVE)),
+            function().with(afterAnySibling(FUNCTION_MODIFIERS)),
             KeywordCompletionProvider("fun")
         )
-        extend(
-            CompletionType.BASIC,
-            module().and(identifierStatementBeginningPattern("native")),
-            KeywordCompletionProvider(*VIS_MODIFIERS, "fun", "struct")
-        )
+//        extend(
+//            CompletionType.BASIC,
+//            function().with(MvPsiPattern.AfterSibling(NATIVE)),
+//            FunctionModifierCompletionProvider()
+//        )
+//        extend(
+//            CompletionType.BASIC,
+//            module().and(identifierStatementBeginningPattern("native")),
+//            KeywordCompletionProvider(*VISIBILITY_MODIFIERS, "fun", "entry")
+//        )
         extend(
             CompletionType.BASIC,
             codeStatementPattern().and(identifierStatementBeginningPattern()),
@@ -126,14 +131,7 @@ class KeywordCompletionContributor : CompletionContributor() {
                 psiElement()
                     .with(MvPsiPattern.AfterAnySibling(TYPES))
             ),
-            KeywordCompletionProvider {
-                buildList {
-                    add("acquires")
-                    if (it.moveSettings.enableResourceAccessControl) {
-                        addAll(listOf("reads", "writes", "pure"))
-                    }
-                }
-            }
+            KeywordCompletionProvider("acquires")
         )
         extend(
             CompletionType.BASIC,
@@ -155,12 +153,12 @@ class KeywordCompletionContributor : CompletionContributor() {
     }
 }
 
-private val VIS_MODIFIERS = arrayOf(
-            "public",
-            "public(script)",
-            "public(friend)",
-            "public(package)"
-        )
+private val VISIBILITY_MODIFIERS = arrayOf(
+    "public",
+//    "public(script)",
+    "public(friend)",
+    "public(package)"
+)
 
-private val FUNCTION_MODIFIERS = arrayOf("entry", "inline")
+private val CONTEXT_FUNCTION_MODIFIERS = arrayOf("entry", "inline")
 

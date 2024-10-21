@@ -10,7 +10,7 @@ class AptosTestRunState(
     environment: ExecutionEnvironment,
     runConfiguration: CommandConfigurationBase,
     config: CommandConfigurationBase.CleanConfiguration.Ok
-) : AptosRunStateBase(environment, runConfiguration, config) {
+): AptosRunStateBase(environment, runConfiguration, config) {
 
     init {
         consoleBuilder =

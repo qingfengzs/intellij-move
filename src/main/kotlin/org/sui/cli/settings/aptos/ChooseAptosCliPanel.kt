@@ -61,7 +61,7 @@ enum class AptosExecType {
     }
 }
 
-class ChooseAptosCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
+class ChooseAptosCliPanel(versionUpdateListener: (() -> Unit)?): Disposable {
 
     data class Data(
         val aptosExecType: AptosExecType,
@@ -83,7 +83,6 @@ class ChooseAptosCliPanel(versionUpdateListener: (() -> Unit)?) : Disposable {
                     bundledRadioButton.isSelected = true
                     localRadioButton.isSelected = false
                 }
-
                 LOCAL -> {
                     bundledRadioButton.isSelected = false
                     localRadioButton.isSelected = true

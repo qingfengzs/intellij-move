@@ -14,9 +14,9 @@ import org.sui.utils.cacheResult
 
 // classifies foo of `foo::bar::baz`
 sealed class BasePathType {
-    data object Address : BasePathType()
-    data class Module(val moduleName: String) : BasePathType()
-    data class Item(val itemName: String) : BasePathType()
+    data object Address: BasePathType()
+    data class Module(val moduleName: String): BasePathType()
+    data class Item(val itemName: String): BasePathType()
 }
 
 fun MvPath.basePathType(): BasePathType? {
@@ -45,7 +45,7 @@ fun MvPath.basePathType(): BasePathType? {
 
 private val USAGE_SCOPE_KEY: Key<CachedValue<NamedItemScope>> = Key.create("USAGE_SCOPE_KEY")
 
-class UsageScopeProvider(val scopeElement: MvElement) : CachedValueProvider<NamedItemScope> {
+class UsageScopeProvider(val scopeElement: MvElement): CachedValueProvider<NamedItemScope> {
     override fun compute(): Result<NamedItemScope> {
         var scope = MAIN
         for (ancestor in scopeElement.ancestorsOfType<MvDocAndAttributeOwner>()) {

@@ -12,9 +12,9 @@ import org.sui.lang.core.types.infer.inference
 import org.sui.lang.core.types.ty.isCopy
 import org.sui.lang.moveProject
 
-class ReplaceWithIndexExprInspection : MvLocalInspectionTool() {
+class ReplaceWithIndexExprInspection: MvLocalInspectionTool() {
     override fun buildMvVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): MvVisitor {
-        return object : MvVisitor() {
+        return object: MvVisitor() {
             override fun visitCallExpr(callExpr: MvCallExpr) {
                 val function = callExpr.path.reference?.resolveFollowingAliases() as? MvFunction ?: return
                 val module = function.module ?: return

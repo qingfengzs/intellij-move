@@ -11,11 +11,11 @@ import org.sui.lang.core.psi.MvNamedElement
 import org.sui.lang.core.psi.MvStruct
 import org.sui.openapiext.allMoveFiles
 
-class MvStructNavigationContributor : MvNavigationContributorBase() {
+class MvStructNavigationContributor: MvNavigationContributorBase() {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         // get all names
         val project = scope.project ?: return
-        val visitor = object : MvNamedElementsVisitor() {
+        val visitor = object: MvNamedElementsVisitor() {
             override fun processNamedElement(element: MvNamedElement) {
                 if (element is MvStruct) {
                     val elementName = element.name ?: return
@@ -32,7 +32,7 @@ class MvStructNavigationContributor : MvNavigationContributorBase() {
         parameters: FindSymbolParameters
     ) {
         val project = parameters.project
-        val visitor = object : MvNamedElementsVisitor() {
+        val visitor = object: MvNamedElementsVisitor() {
             override fun processNamedElement(element: MvNamedElement) {
                 if (element is MvStruct) {
                     val elementName = element.name ?: return

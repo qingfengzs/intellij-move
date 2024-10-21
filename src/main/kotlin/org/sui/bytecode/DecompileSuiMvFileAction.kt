@@ -1,6 +1,7 @@
 package org.sui.bytecode
 
 import com.intellij.notification.NotificationType.ERROR
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.DumbAwareAction
@@ -39,4 +40,6 @@ class DecompileSuiMvFileAction : DumbAwareAction("Decompile .mv File", null, Mov
                     && e.getData(CommonDataKeys.PROJECT)?.getSuiCli() != null)
         presentation.isEnabledAndVisible = enabled
     }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }

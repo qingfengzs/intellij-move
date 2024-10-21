@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project
 
 class AptosCommandConfigurationFactory(
     configurationType: ConfigurationType
-) :
+):
     ConfigurationFactory(configurationType) {
 
     override fun getId(): String = "AnyCommand"

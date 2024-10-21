@@ -5,39 +5,22 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import org.sui.cli.settings.moveSettings
 import org.sui.ide.MoveIcons
 import org.sui.lang.MvElementTypes
-import org.sui.lang.core.completion.CompletionContext
+import org.sui.lang.core.completion.MvCompletionContext
 import org.sui.lang.core.psi.ext.*
 import org.sui.lang.core.stubs.MvModuleStub
 import org.sui.lang.core.types.infer.InferenceContext
-import org.sui.lang.core.types.infer.foldTyInferWith
+import org.sui.lang.core.types.infer.deepFoldTyInferWith
 import org.sui.lang.core.types.infer.loweredType
 import org.sui.lang.core.types.infer.substitute
-import org.sui.lang.core.types.ty.Ty
-import org.sui.lang.core.types.ty.TyFunction
-import org.sui.lang.core.types.ty.TyLambda
-import org.sui.lang.core.types.ty.TyUnknown
+import org.sui.lang.core.types.ty.*
 
-interface MvFunctionLike : MvNameIdentifierOwner,
-                           MvTypeParametersOwner,
-                           MvDocAndAttributeOwner {
+interface MvFunctionLike: MvNameIdentifierOwner,
+                          MvGenericDeclaration,
+                          MvDocAndAttributeOwner {
 
     val functionParameterList: MvFunctionParameterList?
 
     val returnType: MvReturnType?
-
-    override fun declaredType(msl: Boolean): TyFunction {
-        val typeParameters = this.tyTypeParams
-        val paramTypes = parameters.map { it.type?.loweredType(msl) ?: TyUnknown }
-        val acquiredTypes = this.acquiresPathTypes.map { it.loweredType(msl) }
-        val retType = rawReturnType(msl)
-        return TyFunction(
-            this,
-            typeParameters,
-            paramTypes,
-            acquiredTypes,
-            retType
-        )
-    }
 }
 
 val MvFunctionLike.functionItemPresentation: PresentationData?
@@ -56,24 +39,24 @@ val MvFunctionLike.isNative get() = hasChild(MvElementTypes.NATIVE)
 
 val MvFunctionLike.parameters get() = this.functionParameterList?.functionParameterList.orEmpty()
 
-val MvFunctionLike.parametersAsBindings: List<MvBindingPat> get() = this.parameters.map { it.bindingPat }
+val MvFunctionLike.parametersAsBindings: List<MvPatBinding> get() = this.parameters.map { it.patBinding }
 
-val MvFunctionLike.valueParamsAsBindings: List<MvBindingPat>
+val MvFunctionLike.valueParamsAsBindings: List<MvPatBinding>
     get() {
         val msl = this.isMslOnlyItem
         val parameters = this.parameters
         return parameters
             .filter { it.type?.loweredType(msl) !is TyLambda }
-            .map { it.bindingPat }
+            .map { it.patBinding }
     }
 
-val MvFunctionLike.lambdaParamsAsBindings: List<MvBindingPat>
+val MvFunctionLike.lambdaParamsAsBindings: List<MvPatBinding>
     get() {
         val msl = this.isMslOnlyItem
         val parameters = this.parameters
         return parameters
             .filter { it.type?.loweredType(msl) is TyLambda }
-            .map { it.bindingPat }
+            .map { it.patBinding }
     }
 
 val MvFunctionLike.acquiresPathTypes: List<MvPathType>
@@ -134,19 +117,20 @@ val MvFunction.selfSignatureText: String
         return "$paramsText$retTypeSuffix"
     }
 
-fun MvFunctionLike.requiresExplicitlyProvidedTypeArguments(completionContext: CompletionContext?): Boolean {
+fun MvFunctionLike.requiresExplicitlyProvidedTypeArguments(completionContext: MvCompletionContext?): Boolean {
     val msl = this.isMslOnlyItem
-    val callTy = this.declaredType(msl).substitute(this.tyInfers) as TyFunction
+    val callTy = this.functionTy(msl).substitute(this.tyVarsSubst) as TyFunction
 
     val inferenceCtx = InferenceContext(msl)
-
     callTy.paramTypes.forEach {
-        inferenceCtx.combineTypes(it, it.foldTyInferWith { TyUnknown })
+        inferenceCtx.combineTypes(it, it.deepFoldTyInferWith { TyUnknown })
     }
+
     val expectedTy = completionContext?.expectedTy
     if (expectedTy != null && expectedTy !is TyUnknown) {
-        inferenceCtx.combineTypes(callTy.retType, expectedTy)
+        inferenceCtx.combineTypes(callTy.returnType, expectedTy)
     }
     val resolvedCallTy = inferenceCtx.resolveTypeVarsIfPossible(callTy) as TyFunction
+
     return resolvedCallTy.needsTypeAnnotation()
 }

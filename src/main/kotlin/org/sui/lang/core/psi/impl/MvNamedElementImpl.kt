@@ -8,7 +8,7 @@ import org.sui.lang.core.psi.MvNamedElement
 import org.sui.lang.core.psi.psiFactory
 
 abstract class MvNamedElementImpl(node: ASTNode) : MvElementImpl(node),
-    MvNamedElement {
+                                                   MvNamedElement {
     override fun getName(): String? = nameElement?.text
 
     override fun setName(name: String): PsiElement {
@@ -25,6 +25,6 @@ abstract class MvNamedElementImpl(node: ASTNode) : MvElementImpl(node),
 }
 
 abstract class MvMandatoryNamedElementImpl(node: ASTNode) : MvNamedElementImpl(node),
-    MvMandatoryNamedElement {
+                                                            MvMandatoryNamedElement {
     override fun getName(): String = nameElement.text
 }

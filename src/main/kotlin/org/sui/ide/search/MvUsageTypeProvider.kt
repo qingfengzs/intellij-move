@@ -12,7 +12,7 @@ import com.intellij.usages.impl.rules.UsageTypeProviderEx
 import org.sui.lang.core.psi.MvAddressRef
 import org.sui.lang.core.psi.MvExpr
 
-object MvUsageTypeProvider : UsageTypeProviderEx {
+object MvUsageTypeProvider: UsageTypeProviderEx {
     // Instantiate each UsageType only once, so that the equality check in UsageTypeGroup.equals() works correctly
 //    private val TYPE_REFERENCE = UsageType { "type reference" }
 

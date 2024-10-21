@@ -11,7 +11,7 @@ import org.sui.openapiext.showSettingsDialog
 import javax.swing.JComponent
 
 @Service(Service.Level.PROJECT)
-class RsExternalLinterTooltipService(private val project: Project) : Disposable {
+class RsExternalLinterTooltipService(private val project: Project): Disposable {
     private val linter: ExternalLinter get() = project.externalLinterSettings.tool
     private val turnedOn: Boolean get() = project.externalLinterSettings.runOnTheFly
 

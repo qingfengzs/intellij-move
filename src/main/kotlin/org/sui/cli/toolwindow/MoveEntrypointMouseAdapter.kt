@@ -8,14 +8,12 @@ import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
-
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.SwingUtilities
 import javax.swing.tree.DefaultMutableTreeNode
 
 class MoveEntrypointMouseAdapter : MouseAdapter() {
-
     override fun mouseClicked(e: MouseEvent) {
         if (e.clickCount < 2 || !SwingUtilities.isLeftMouseButton(e)) return
 
@@ -28,6 +26,7 @@ class MoveEntrypointMouseAdapter : MouseAdapter() {
             is MoveProjectsTreeStructure.MoveSimpleNode.View -> userObject.function
             else -> return
         }
+
         val functionLocation =
             try {
                 PsiLocation.fromPsiElement(function) ?: return

@@ -53,7 +53,7 @@ abstract class CommandConfigurationBase(
         }
     }
 
-    override fun getState(executor: Executor, environment: ExecutionEnvironment): SuiRunStateBase? {
+    override fun getState(executor: Executor, environment: ExecutionEnvironment): CommandLineState? {
         val config = clean().ok ?: return null
         return if (showTestToolWindow(config.cmd)) {
             SuiTestRunState(environment, this, config)
@@ -94,7 +94,7 @@ abstract class CommandConfigurationBase(
 
     sealed class CleanConfiguration {
         class Ok(val suiPath: Path, val cmd: SuiCommandLine) : CleanConfiguration()
-        class Err(val error: RuntimeConfigurationError) : CleanConfiguration()
+        class Err(val error: RuntimeConfigurationError): CleanConfiguration()
 
         val ok: Ok? get() = this as? Ok
 

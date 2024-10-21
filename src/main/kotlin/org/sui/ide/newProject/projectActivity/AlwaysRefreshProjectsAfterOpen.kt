@@ -7,7 +7,7 @@ import org.sui.cli.moveProjectsService
 import org.sui.openapiext.common.isUnitTestMode
 import org.sui.openapiext.debugInProduction
 
-class AlwaysRefreshProjectsAfterOpen : ProjectActivity {
+class AlwaysRefreshProjectsAfterOpen: ProjectActivity {
     override suspend fun execute(project: Project) {
         LOG.debugInProduction("activity started")
         if (!isUnitTestMode) {

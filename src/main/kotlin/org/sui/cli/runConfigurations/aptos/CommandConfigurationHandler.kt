@@ -28,7 +28,7 @@ abstract class CommandConfigurationHandler {
                 ?: return null
         val moveProject = function.moveProject ?: return null
 
-        val functionId = function.functionId(moveProject) ?: return null
+        val functionId = function.functionId() ?: return null
 //        val profileName = moveProject.profiles.firstOrNull()
         val workingDirectory = moveProject.contentRootPath
 
@@ -55,11 +55,10 @@ abstract class CommandConfigurationHandler {
     abstract fun getFunctionParameters(function: MvFunction): List<MvFunctionParameter>
 
     fun generateCommand(
-        moveProject: MoveProject,
         functionCall: FunctionCall,
         signerAccount: String?,
     ): RsResult<String, String> {
-        val functionId = functionCall.functionId(moveProject) ?: return RsResult.Err("FunctionId is null")
+        val functionId = functionCall.functionId() ?: return RsResult.Err("FunctionId is null")
 
         val typeParams = functionCall.typeParams
             .mapNotNull { it.value }.flatMap { listOf("--type-args", it) }
@@ -107,12 +106,12 @@ abstract class CommandConfigurationHandler {
             transaction.typeParams[name] = value
         }
 
-        val parameterBindings = getFunctionParameters(function).map { it.bindingPat }
+        val parameterBindings = getFunctionParameters(function).map { it.patBinding }
         val inference = function.inference(false)
         for ((binding, valueWithType) in parameterBindings.zip(callArgs.args)) {
             val name = binding.name
             val value = valueWithType.split(':')[1]
-            val ty = inference.getPatType(binding)
+            val ty = inference.getBindingType(binding)
             transaction.valueParams[name] = FunctionCallParam(value, FunctionCallParam.tyTypeName(ty))
         }
 

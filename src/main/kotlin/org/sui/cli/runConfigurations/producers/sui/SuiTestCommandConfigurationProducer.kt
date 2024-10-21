@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import org.sui.cli.MoveProject
 import org.sui.cli.runConfigurations.SuiCommandLine
-import org.sui.cli.runConfigurations.producers.CommandConfigurationProducerBase
-import org.sui.cli.runConfigurations.producers.SuiCommandLineFromContext
 import org.sui.cli.runConfigurations.sui.SuiCommandConfigurationType
 import org.sui.cli.runConfigurations.sui.cmd.SuiCommandConfigurationFactory
+import org.sui.cli.runConfigurations.producers.SuiCommandLineFromContext
+import org.sui.cli.runConfigurations.producers.CommandConfigurationProducerBase
 import org.sui.cli.settings.moveSettings
 import org.sui.lang.MoveFile
 import org.sui.lang.core.psi.MvFunction
@@ -33,12 +33,10 @@ class SuiTestCommandConfigurationProducer : CommandConfigurationProducerBase() {
                 val module = location.modules().firstOrNull { it.hasTestFunctions() } ?: return null
                 findTestModule(module, climbUp)
             }
-
             location is TomlFile && location.name == "Move.toml" -> {
                 val moveProject = location.findMoveProject() ?: return null
                 findTestProject(location, moveProject)
             }
-
             location is PsiDirectory -> {
                 val moveProject = location.findMoveProject() ?: return null
                 if (
@@ -50,7 +48,6 @@ class SuiTestCommandConfigurationProducer : CommandConfigurationProducerBase() {
                     null
                 }
             }
-
             else -> findTestFunction(location, climbUp) ?: findTestModule(location, climbUp)
         }
     }

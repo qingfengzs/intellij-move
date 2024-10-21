@@ -21,7 +21,7 @@ import org.sui.lang.MvElementTypes.*
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.*
 
-class MvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
+class MvFoldingBuilder: CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String {
         when (node.elementType) {
             L_BRACE -> return " { "
@@ -61,7 +61,7 @@ class MvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         private val usesRanges: MutableList<TextRange>,
         private val constRanges: MutableList<TextRange>,
         private val docCommentRanges: MutableList<TextRange>,
-    ) : MvVisitor() {
+    ): MvVisitor() {
 
         override fun visitCodeBlock(o: MvCodeBlock) = fold(o)
 
@@ -85,7 +85,7 @@ class MvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
         override fun visitFunctionParameterList(o: MvFunctionParameterList) {
             if (o.functionParameterList.isEmpty()) return
-                fold(o)
+            fold(o)
         }
 
         override fun visitBlockFields(o: MvBlockFields) = fold(o)

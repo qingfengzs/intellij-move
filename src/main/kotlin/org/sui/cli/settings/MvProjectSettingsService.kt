@@ -31,6 +31,7 @@ class MvProjectSettingsService(
 
     val aptosExecType: AptosExecType get() = state.aptosExecType
     val localAptosPath: String? get() = state.localAptosPath
+
     val fetchAptosDeps: Boolean get() = state.fetchAptosDeps
 
     // sui
@@ -47,9 +48,10 @@ class MvProjectSettingsService(
     val enableIndexExpr: Boolean get() = state.enableIndexExpr
     val enablePublicPackage: Boolean get() = state.enablePublicPackage
     val addCompilerV2CLIFlags: Boolean get() = state.addCompilerV2CLIFlags
+    val enableMove2: Boolean get() = state.enableMove2
 
     // default values for settings
-    class MoveProjectSettings : MvProjectSettingsBase<MoveProjectSettings>() {
+    class MoveProjectSettings: MvProjectSettingsBase<MoveProjectSettings>() {
         @AffectsMoveProjectsMetadata
         var aptosExecType: AptosExecType by enum(defaultAptosExecType)
 
@@ -86,6 +88,9 @@ class MvProjectSettingsService(
         var skipFetchLatestGitDeps: Boolean by property(true)
         var dumpStateOnTestFailure: Boolean by property(false)
 
+        @AffectsHighlighting
+        var enableMove2: Boolean by property(false)
+
         var addCompilerV2CLIFlags: Boolean by property(false)
 
         override fun copy(): MoveProjectSettings {
@@ -103,7 +108,7 @@ class MvProjectSettingsService(
     class SettingsChangedEvent(
         oldState: MoveProjectSettings,
         newState: MoveProjectSettings
-    ) : SettingsChangedEventBase<MoveProjectSettings>(oldState, newState)
+    ): SettingsChangedEventBase<MoveProjectSettings>(oldState, newState)
 
     companion object {
         private val defaultAptosExecType
@@ -161,6 +166,7 @@ fun Path?.isValidExecutable(): Boolean {
 }
 
 fun isDebugModeEnabled(): Boolean = Registry.`is`("org.sui.debug.enabled")
+fun isTypeUnknownAsError(): Boolean = Registry.`is`("org.sui.types.highlight.unknown.as.error")
 
 fun debugError(message: String) {
     if (isDebugModeEnabled()) {

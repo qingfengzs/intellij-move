@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.profile.codeInspection.InspectionProjectProfileManager
 import org.sui.ide.inspections.imports.ImportAnalyzer2
 
-class MvUnusedImportInspection : MvLocalInspectionTool() {
+class MvUnusedImportInspection: MvLocalInspectionTool() {
 
     override fun buildMvVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) = ImportAnalyzer2(holder)
 

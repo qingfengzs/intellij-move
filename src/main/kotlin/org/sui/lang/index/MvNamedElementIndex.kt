@@ -5,11 +5,12 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.stubs.StubIndexKey
+import com.intellij.util.indexing.IdFilter
 import org.sui.lang.core.psi.MvNamedElement
 import org.sui.lang.core.stubs.impl.MvFileStub
 import org.sui.openapiext.checkCommitIsNotInProgress
 
-class MvNamedElementIndex : StringStubIndexExtension<MvNamedElement>() {
+class MvNamedElementIndex: StringStubIndexExtension<MvNamedElement>() {
     override fun getVersion(): Int = MvFileStub.Type.stubVersion
     override fun getKey(): StubIndexKey<String, MvNamedElement> = KEY
 
