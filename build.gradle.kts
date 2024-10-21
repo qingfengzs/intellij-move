@@ -67,11 +67,11 @@ version = pluginVersion
 plugins {
     id("java")
     kotlin("jvm") version "1.9.25"
-    id("org.jetbrains.intellij.platform") version "2.0.1"
+    id("org.jetbrains.intellij.platform") version "2.1.0"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("net.saliman.properties") version "1.5.2"
     id("org.gradle.idea")
-    id("de.undercouch.download") version "5.5.0"
+    id("de.undercouch.download") version "5.6.0"
 }
 
 allprojects {
@@ -85,11 +85,6 @@ allprojects {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven("https://maven.aliyun.com/repository/central/")
-        maven("https://maven.aliyun.com/repository/public/")
-        maven("https://maven.aliyun.com/repository/google/")
-        maven("https://maven.aliyun.com/repository/jcenter/")
-        maven("https://maven.aliyun.com/repository/gradle-plugin")
         intellijPlatform {
             defaultRepositories()
             jetbrainsRuntime()
@@ -108,10 +103,11 @@ allprojects {
         intellijPlatform {
 //            plugins(listOf(psiViewerPlugin))
             create(prop("platformType"), prop("platformVersion"), useInstaller = useInstaller)
-            testFramework(TestFrameworkType.Platform)
+//            testFramework(TestFrameworkType.Platform)
             pluginVerifier(Constraints.LATEST_VERSION)
             bundledPlugin("org.toml.lang")
-            jetbrainsRuntime("17.0.11b1207.30")
+            jetbrainsRuntime()
+//            jetbrainsRuntime("17.0.11b1207.30")
         }
     }
 
