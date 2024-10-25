@@ -45,7 +45,7 @@ fun gitTimestamp(): String {
 val psiViewerPlugin: String by project
 val shortPlatformVersion = prop("shortPlatformVersion")
 val useInstaller = prop("useInstaller").toBooleanStrict()
-val codeVersion = "1.6.0"
+val codeVersion = "1.6.1"
 var pluginVersion = "$codeVersion.$shortPlatformVersion"
 if (publishingChannel != "default") {
     // timestamp of the commit with this eaps addition

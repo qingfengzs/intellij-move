@@ -234,7 +234,7 @@ private AddressBlockItems ::= Module*
 }
 private AddressBlockItems_recover ::= !'}'
 
-Module ::= Attr* MODULE_KW (AddressRef '::')? IDENTIFIER '{' ModuleItem_with_recover* '}'
+Module ::= Attr* MODULE_KW (AddressRef '::')? IDENTIFIER ';'? '{'? ModuleItem_with_recover* '}'?
 {
     pin = "MODULE_KW"
     name = "module declaration"

@@ -7,6 +7,7 @@ import org.sui.cli.settings.moveSettings
 import org.sui.ide.inspections.imports.AutoImportFix
 import org.sui.lang.core.psi.*
 import org.sui.lang.core.psi.ext.*
+import org.sui.lang.core.psi.impl.MvPathImpl
 import org.sui.lang.core.resolve.ref.MvReferenceElement
 import org.sui.lang.core.resolve2.PathKind.*
 import org.sui.lang.core.resolve2.pathKind
@@ -161,6 +162,7 @@ class MvUnresolvedReferenceInspection : MvLocalInspectionTool() {
         if (referenceElement.hasAncestor<MvMatchArm>() && referenceElement.parent is MvFieldPat) return
 
         if (referenceElement.hasAncestor<MvDotExpr>() && referenceElement is MvMethodCall) return
+        if (referenceElement.hasAncestor<MvCallExpr>() && referenceElement is MvPathImpl) return
 
         val reference = referenceElement.reference ?: return
 
