@@ -4,8 +4,8 @@ import com.intellij.psi.PsiComment
 import org.sui.lang.core.psi.*
 import org.sui.stdext.buildList
 
-interface MvItemsOwner : MvElement {
-    val useStmtList: List<MvUseStmt> get() = emptyList()
+interface MvItemsOwner: MvElement {
+    val useStmtList: List<MvUseStmt>
 }
 
 fun MvItemsOwner.items(): Sequence<MvElement> {
@@ -29,11 +29,11 @@ val MvModule.innerSpecItems: List<MvItemElement>
         val module = this
         return buildList {
             addAll(module.allModuleSpecs()
-                .map {
-                    it.moduleItemSpecs()
-                        .flatMap { spec -> spec.itemSpecBlock?.globalVariables().orEmpty() }
-                }
-                .flatten())
+                       .map {
+                           it.moduleItemSpecs()
+                               .flatMap { spec -> spec.itemSpecBlock?.globalVariables().orEmpty() }
+                       }
+                       .flatten())
             addAll(module.specInlineFunctions())
         }
     }
