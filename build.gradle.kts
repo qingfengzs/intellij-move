@@ -67,11 +67,11 @@ version = pluginVersion
 plugins {
     id("java")
     kotlin("jvm") version "1.9.25"
-    id("org.jetbrains.intellij.platform") version "2.1.0"
+    id("org.jetbrains.intellij.platform") version "2.0.1"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("net.saliman.properties") version "1.5.2"
     id("org.gradle.idea")
-    id("de.undercouch.download") version "5.6.0"
+    id("de.undercouch.download") version "5.5.0"
 }
 
 allprojects {
@@ -102,12 +102,12 @@ allprojects {
 
         intellijPlatform {
 //            plugins(listOf(psiViewerPlugin))
-            create(prop("platformType"), prop("platformVersion"), useInstaller = useInstaller)
-//            testFramework(TestFrameworkType.Platform)
+            pycharmCommunity("2024.2.4", useInstaller = true)
+//            create(prop("platformType"), prop("platformVersion"), useInstaller = useInstaller)
+            testFramework(TestFrameworkType.Platform)
             pluginVerifier(Constraints.LATEST_VERSION)
             bundledPlugin("org.toml.lang")
-            jetbrainsRuntime()
-//            jetbrainsRuntime("17.0.11b1207.30")
+            jetbrainsRuntime("17.0.11b1207.30")
         }
     }
 
@@ -221,6 +221,7 @@ allprojects {
         }
         task {
             systemProperty("org.sui.debug.enabled", true)
+            systemProperty("org.sui.types.highlight.unknown.as.error", true)
 //            systemProperty("org.move.external.linter.max.duration", 30)  // 30 ms
 //            systemProperty("org.move.aptos.bundled.force.unsupported", true)
 //            systemProperty("idea.log.debug.categories", "org.move.cli")
