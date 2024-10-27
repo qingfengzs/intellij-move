@@ -32,6 +32,9 @@ fun processItemsInScope(
             NAME -> {
                 val found = when (scope) {
                     is MvModule -> {
+                        // pre-imported items
+                        if (PreImportedModuleService.getInstance(scope.project).processPreImportedItems(elementNs, processor)) return true
+
                         // try enum variants first
                         if (processor.processAll(elementNs, scope.enumVariants())) return true
                         processor.processAllItems(
@@ -243,6 +246,10 @@ fun processItemsInScope(
 }
 
 private fun MvItemsOwner.processUseSpeckElements(ns: Set<Namespace>, processor: RsResolveProcessor): Boolean {
+    // pre-imported modules
+    val preImportedService = PreImportedModuleService.getInstance(project)
+    if (preImportedService.processPreImportedModules(ns, processor)) return true
+
     val useSpeckItems = getUseSpeckItems()
     for (useSpeckItem in useSpeckItems) {
         val speckPath = useSpeckItem.speckPath

@@ -54,9 +54,9 @@ fun processItemDeclarations(
     val items = itemsOwner.itemElements +
             (itemsOwner as? MvModule)?.innerSpecItems.orEmpty() +
             (itemsOwner as? MvModule)?.let { getItemsFromModuleSpecs(it, ns) }.orEmpty()
+
     for (item in items) {
         val name = item.name ?: continue
-
         val namespace = item.namespace
         if (namespace !in ns) continue
 

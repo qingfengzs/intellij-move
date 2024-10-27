@@ -10,8 +10,8 @@ interface MvItemsOwner: MvElement {
 
 fun MvItemsOwner.items(): Sequence<MvElement> {
     val startChild = when (this) {
-        is MvModule -> this.lBrace
-        is MvScript -> this.lBrace
+        is MvModule -> this.firstChild
+        is MvScript -> this.firstChild
         else -> this.firstChild
     }
     return generateSequence(startChild) { it.nextSibling }
