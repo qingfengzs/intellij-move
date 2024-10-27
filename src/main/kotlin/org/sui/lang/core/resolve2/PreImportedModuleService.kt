@@ -59,17 +59,23 @@ class PreImportedModuleService(private val project: Project) {
                 if (processor.process(name, module, setOf(Namespace.MODULE))) return true
             }
 
-            // deal with pre-imported structs
-            for (item in module.structs()) {
-                if (item.name in PRELOAD_MODULE_ITEMS) {
-                    if (item.namespace in ns) {
-                        val name = item.name ?: continue
-                        if (processor.process(name, item, setOf(item.namespace))) return true
-                    }
-                }
-            }
+//            // deal with pre-imported structs
+//            for (item in module.structs()) {
+//                if (item.name in PRELOAD_MODULE_ITEMS) {
+//                    if (item.namespace in ns) {
+//                        val name = item.name ?: continue
+//                        if (processor.process(name, item, setOf(item.namespace))) return true
+//                    }
+//                }
+//            }
         }
 
+        for (item in preImportedItems) {
+            if (item.namespace in ns) {
+                val name = item.name ?: continue
+                if (processor.process(name, item, setOf(item.namespace))) return true
+            }
+        }
         return false
     }
 
